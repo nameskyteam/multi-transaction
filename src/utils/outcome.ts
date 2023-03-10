@@ -1,0 +1,41 @@
+import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/providers';
+import {parseRpcError} from 'near-api-js/lib/utils/rpc_errors';
+import { ErrorMessage } from '../types';
+import { ValueParser } from '../types';
+import {jsonParse} from "./serialization";
+
+export function parseOutcomeValue<Value>(
+  outcome: FinalExecutionOutcome,
+  parse: ValueParser<Value> = jsonParse
+): Value | undefined {
+  const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
+  if (successValue) {
+    const valueRaw = Buffer.from(successValue, 'base64');
+    return parse(valueRaw);
+  } else if (successValue === '') {
+    return;
+  } else {
+    throw Error(`Outcome status is Failure`)
+  }
+}
+
+export function getReceiptErrors(...outcomes: FinalExecutionOutcome[]): ErrorMessage[] {
+  const errors: ErrorMessage[] = []
+  outcomes.forEach(outcome => {
+    outcome.receipts_outcome.forEach(receipt => {
+      const status = receipt.outcome.status;
+      if (typeof status !== 'string' && status.Failure) {
+        const serverError = parseRpcError(status.Failure);
+        const errorMessage = JSON.parse(serverError.message);
+        errors.push(errorMessage)
+      }
+    });
+  })
+  return errors
+}
+
+export function throwReceiptErrorsIfAny(errors: ErrorMessage[]) {
+  if (errors.length !== 0) {
+    throw Error(JSON.stringify(errors))
+  }
+}
