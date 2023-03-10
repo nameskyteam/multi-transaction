@@ -41,7 +41,7 @@ export class MultiSendAccount extends Account {
       methodName,
       args: args ?? new Uint8Array(),
       blockQuery,
-      stringify: (args: Args) => Buffer.from(stringify(args)),
+      stringify,
       parse,
     });
   }

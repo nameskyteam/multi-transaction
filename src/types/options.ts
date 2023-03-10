@@ -18,7 +18,7 @@ export interface FunctionViewOptions<Value, Args> {
   parse?: ValueParser<Value>;
 }
 
-export type ArgsStringifier<Args> = (args: Args) => Uint8Array;
+export type ArgsStringifier<Args> = (args: Args) => Buffer;
 
 export type ValueParser<Value> = (response: Uint8Array) => Value;
 
