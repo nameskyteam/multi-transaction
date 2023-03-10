@@ -66,13 +66,12 @@ export class MultiTransaction {
     this.transactions = [];
   }
 
-  // Return an empty 'MultiTransaction' object
-  // Usually followed by the method '.createTransaction(/* args */)'
+  // Return 'MultiTransaction' object without transaction.
   static new(): MultiTransaction {
     return new MultiTransaction();
   }
 
-  // Return a 'MultiTransaction' object and create a new transaction without action in this object
+  // Return 'MultiTransaction' object with transaction without action.
   static createTransaction(receiverId: string, signerId?: string): MultiTransaction {
     return MultiTransaction.new().createTransaction(receiverId, signerId);
   }
@@ -101,7 +100,7 @@ export class MultiTransaction {
 
   addActions(...actions: Action[]): MultiTransaction {
     if (this.isEmpty()) {
-      throw Error(`Error empty transaction, consider calling method '.createTransaction(/* args */)' first`);
+      throw Error(`Transaction not found, consider calling method '.createTransaction(/* args */)' first`);
     }
     this.transactions[this.currentIndex()].actions.push(...actions);
     return this;
