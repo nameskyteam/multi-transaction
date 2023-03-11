@@ -1,8 +1,7 @@
 import { Account, Connection } from 'near-api-js';
-import { ViewFunctionOptions, MultiSendAccountSendOptions } from '../types';
+import { ViewFunctionOptions, MultiSendAccountSendOptions, SignAndSendTransactionOptions } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { SignAndSendTransactionsOptions } from '../types';
-import { SignAndSendTransactionOptions } from 'near-api-js/lib/account';
 import { parseOutcomeValue, throwReceiptErrorsIfAny } from '../utils';
 import { MultiTransaction } from './MultiTransaction';
 import { stringifyJsonOrBytes, parseJson } from '../utils/serialize';

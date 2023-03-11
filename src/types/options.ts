@@ -1,5 +1,6 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 import { NearApiJsTransactionLike } from './transform';
+import { Action } from 'near-api-js/lib/transaction';
 
 export interface FunctionCallOptions<Args> {
   methodName: string;
@@ -29,6 +30,12 @@ export type ArgsOptions<Args> = Pick<FunctionCallOptions<Args>, 'args'>;
 export type AttachedDepositOptions = Pick<FunctionCallOptions<unknown>, 'attachedDeposit'>;
 
 export type GasOptions = Pick<FunctionCallOptions<unknown>, 'gas'>;
+
+export interface SignAndSendTransactionOptions {
+  receiverId: string;
+  actions: Action[];
+  returnError?: boolean;
+}
 
 export interface SignAndSendTransactionsOptions {
   transactions: NearApiJsTransactionLike[];
