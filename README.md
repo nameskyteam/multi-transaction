@@ -128,10 +128,9 @@ async function exampleManualConvertToNearApiJsTransactions(near: Near, multiTran
   const transactions = multiTransaction.toNearApiJsTransactions()
   
   for (const transaction of transactions) {
-    // Should convert account type to `any` because `signAndSendTransaction` is a protected method.
-    await (account as any).signAndSendTransaction(transaction);
+    // Won't call as `account.signAndSendTransaction` because is a protected method.
+    await account['signAndSendTransaction'](transaction);
   }
-  
 }
 
 async function exampleManualConvertToNearWalletSelectorTransactions(selector: WalletSelector, multiTransaction: MultiTransaction) {
@@ -139,7 +138,7 @@ async function exampleManualConvertToNearWalletSelectorTransactions(selector: Wa
   const transactions = multiTransaction.toNearWalletSelectorTransactions()
   
   if (transactions.length === 1) {
-    // `signAndSendTransactions` won't use local `FunctionCall` key, so if transaction is not multiple, we suggest to use 
+    // `signAndSendTransactions` deesn't use login key, so if transaction is not multiple, we suggest to use 
     // `signAndSendTransaction` instead.
     await wallet.signAndSendTransaction(transactions[0])
   } else {
