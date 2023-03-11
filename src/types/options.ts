@@ -38,3 +38,10 @@ export interface MultiSendAccountSendOptions<Value> {
   throwReceiptErrorsIfAny?: boolean;
   parse?: ValueParser<Value>;
 }
+
+export interface MultiSendWalletSelectorSendOptions<Value> {
+  walletId?: string;
+  callbackUrl?: string;
+  throwReceiptErrorsIfAny?: boolean;
+  parse?: ValueParser<Value>;
+}
