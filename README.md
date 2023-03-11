@@ -1,5 +1,7 @@
 # Make the construction of the transaction easier on NEAR blockchain
 
+Support [near-api-js](https://github.com/near/near-api-js) and [wallet-selector](https://github.com/near/wallet-selector)
+
 ## Usage
 
 ### View function example
