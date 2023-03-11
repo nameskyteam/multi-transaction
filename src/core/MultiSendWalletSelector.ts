@@ -10,12 +10,12 @@ import { MultiSendWalletSelectorSendOptions, ViewFunctionOptions } from '../type
 import { MultiTransaction } from './MultiTransaction';
 import { Amount, parseOutcomeValue, throwReceiptErrorsIfAny } from '../utils';
 
-let walletSelectorPlus: MultiSendWalletSelector | null = null;
+let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 
 export async function setupMultiSendWalletSelector(
   config: MultiSendWalletSelectorConfig
 ): Promise<MultiSendWalletSelector> {
-  if (!walletSelectorPlus) {
+  if (!multiSendWalletSelector) {
     const selector = await setupWalletSelector({ ...config });
 
     const near = new Near({
@@ -23,7 +23,7 @@ export async function setupMultiSendWalletSelector(
       keyStore: new keyStores.BrowserLocalStorageKeyStore(localStorage, config.keyStorePrefix),
     });
 
-    walletSelectorPlus = {
+    multiSendWalletSelector = {
       ...selector,
       near,
 
@@ -130,7 +130,7 @@ export async function setupMultiSendWalletSelector(
     };
   }
 
-  return walletSelectorPlus;
+  return multiSendWalletSelector;
 }
 
 export const getNetworkPreset = (networkId: NetworkId): Network => {
