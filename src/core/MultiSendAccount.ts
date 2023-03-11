@@ -7,6 +7,9 @@ import { parseOutcomeValue, throwReceiptErrorsIfAny } from '../utils';
 import { MultiTransaction } from './MultiTransaction';
 import { stringifyJsonOrBytes, parseJson } from '../utils/serialize';
 
+/**
+ * Account that support {@link `MultiTransaction`}
+ */
 export class MultiSendAccount extends Account {
   constructor(connection: Connection, accountId = '') {
     super(connection, accountId);
@@ -59,7 +62,7 @@ export class MultiSendAccount extends Account {
    * Send multiple transactions and return success value of last transaction
    * @param transaction Multiple transaction
    * @param options Send options
-   * @param options.throwReceiptErrorsIfAny If receipts have any error, it will be thrown. This is useful when
+   * @param options.throwReceiptErrorsIfAny If receipts in outcomes have any error, throw them. This is useful when
    * outcome is successful but receipts have error accrued. e.g. Standard `ft_transfer_call` will never fail,
    * but `ft_on_transfer` may have panic
    * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
