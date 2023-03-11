@@ -59,28 +59,31 @@ export async function setupMultiSendWalletSelector(
         options?: MultiSendWalletSelectorSendOptions<Value>
       ): Promise<Value | undefined> {
         const wallet = await this.wallet(options?.walletId);
-        const nearWalletSelectorTransactions = transaction.toNearWalletSelectorTransactions();
-        const outcomes: FinalExecutionOutcome[] = [];
+        const transactions = transaction.toNearWalletSelectorTransactions();
+        let outcomes: FinalExecutionOutcome[] | undefined;
 
-        if (transaction.isMultiple()) {
-          const res = await wallet.signAndSendTransactions({
-            transactions: nearWalletSelectorTransactions,
-            callbackUrl: options?.callbackUrl,
-          });
-          if (res) {
-            outcomes.push(...res);
-          }
-        } else {
+        if (transactions.length === 0) {
+          throw Error(`Transaction not found.`);
+        } else if (transactions.length === 1) {
           const outcome = await wallet.signAndSendTransaction({
-            ...nearWalletSelectorTransactions[0],
+            ...transactions[0],
             callbackUrl: options?.callbackUrl,
           });
           if (outcome) {
-            outcomes.push(outcome);
+            outcomes = [outcome];
+          }
+        } else {
+          const res = await wallet.signAndSendTransactions({
+            transactions,
+            callbackUrl: options?.callbackUrl,
+          });
+          if (res) {
+            outcomes = res;
           }
         }
 
-        if (outcomes.length === 0) {
+        if (!outcomes) {
+          // When use web wallet
           return;
         }
 
@@ -88,10 +91,10 @@ export async function setupMultiSendWalletSelector(
           throwReceiptErrorsIfAny(...outcomes);
         }
 
-        return parseOutcomeValue<Value>(outcomes.pop()!, options?.parse);
+        return parseOutcomeValue<Value>(outcomes[outcomes.length - 1], options?.parse);
       },
 
-      async sendWithLocalKey<Value>(signerID: string, transaction: MultiTransaction): Promise<Value | undefined> {
+      async sendWithLocalKey<Value>(signerID: string, transaction: MultiTransaction): Promise<Value> {
         return this.multiSendAccount(signerID).send<Value>(transaction);
       },
 

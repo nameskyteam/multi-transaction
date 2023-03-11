@@ -18,6 +18,9 @@ export class MultiSendAccount extends Account {
 
   async signAndSendTransactions(options: SignAndSendTransactionsOptions): Promise<FinalExecutionOutcome[]> {
     const outcomes: FinalExecutionOutcome[] = [];
+    if (options.transactions.length === 0) {
+      throw Error('Transaction not found.');
+    }
     for (const transaction of options.transactions) {
       const outcome = await this.signAndSendTransaction(transaction);
       outcomes.push(outcome);
@@ -61,16 +64,13 @@ export class MultiSendAccount extends Account {
    * but `ft_on_transfer` may have panic
    * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
    */
-  async send<Value>(
-    transaction: MultiTransaction,
-    options?: MultiSendAccountSendOptions<Value>
-  ): Promise<Value | undefined> {
+  async send<Value>(transaction: MultiTransaction, options?: MultiSendAccountSendOptions<Value>): Promise<Value> {
     const outcomes = await this.signAndSendTransactions({
       transactions: transaction.toNearApiJsTransactions(),
     });
     if (options?.throwReceiptErrorsIfAny) {
       throwReceiptErrorsIfAny(...outcomes);
     }
-    return parseOutcomeValue<Value>(outcomes.pop()!, options?.parse);
+    return parseOutcomeValue<Value>(outcomes[outcomes.length - 1], options?.parse);
   }
 }
