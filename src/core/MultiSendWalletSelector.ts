@@ -18,9 +18,10 @@ export async function setupMultiSendWalletSelector(
   if (!multiSendWalletSelector) {
     const selector = await setupWalletSelector({ ...config });
 
+    const keyStore = new keyStores.BrowserLocalStorageKeyStore(localStorage, config.keyStorePrefix);
     const near = new Near({
       ...resolveNetwork(config.network),
-      keyStore: new keyStores.BrowserLocalStorageKeyStore(localStorage, config.keyStorePrefix),
+      keyStore,
     });
 
     const viewer = new MultiSendAccount(near.connection);
@@ -28,6 +29,7 @@ export async function setupMultiSendWalletSelector(
     multiSendWalletSelector = {
       ...selector,
       near,
+      keyStore,
       viewer,
 
       getActiveAccountId(): string | undefined {
@@ -38,8 +40,37 @@ export async function setupMultiSendWalletSelector(
         return this.store.getState().accounts.map((accountState) => accountState.accountId);
       },
 
-      keyStore(): BrowserLocalStorageKeyStore {
-        return (this.near.connection.signer as InMemorySigner).keyStore as BrowserLocalStorageKeyStore;
+      async isLoginAccessKeyActive(accountId?: string, minAllowance = Amount.parseYoctoNear('0.01')): Promise<boolean> {
+        accountId = accountId ?? this.getActiveAccountId();
+        if (!accountId) {
+          return false;
+        }
+
+        const loginAccount = await this.wallet()
+          .then((wallet) => wallet.getAccounts())
+          .then((accounts) => accounts.find((account) => account.accountId === accountId));
+        const loginPublicKey = loginAccount?.publicKey;
+
+        if (!loginPublicKey) {
+          return false;
+        }
+
+        const accessKeys = await this.multiSendAccount(accountId).getAccessKeys();
+        const loginAccessKey = accessKeys.find(
+          (accessKey) =>
+            PublicKey.fromString(accessKey.public_key).toString() === PublicKey.fromString(loginPublicKey).toString()
+        );
+
+        if (!loginAccessKey) {
+          return false;
+        }
+
+        if (loginAccessKey.access_key.permission === 'FullAccess') {
+          return true;
+        }
+
+        const remainingAllowance = Amount.new(loginAccessKey.access_key.permission.FunctionCall.allowance);
+        return remainingAllowance.gte(minAllowance);
       },
 
       multiSendAccount(accountId?: string): MultiSendAccount {
@@ -92,39 +123,6 @@ export async function setupMultiSendWalletSelector(
 
       async sendWithLocalKey<Value>(signerID: string, transaction: MultiTransaction): Promise<Value> {
         return this.multiSendAccount(signerID).send<Value>(transaction);
-      },
-
-      async isLoginAccessKeyActive(accountId?: string): Promise<boolean> {
-        accountId = accountId ?? this.getActiveAccountId();
-        if (!accountId) {
-          return false;
-        }
-
-        const loginAccount = await this.wallet()
-          .then((wallet) => wallet.getAccounts())
-          .then((accounts) => accounts.find((account) => account.accountId === accountId));
-        const loginPublicKey = loginAccount?.publicKey;
-
-        if (!loginPublicKey) {
-          return false;
-        }
-
-        const accessKeys = await this.multiSendAccount(accountId).getAccessKeys();
-        const loginAccessKey = accessKeys.find(
-          (accessKey) =>
-            PublicKey.fromString(accessKey.public_key).toString() === PublicKey.fromString(loginPublicKey).toString()
-        );
-
-        if (!loginAccessKey) {
-          return false;
-        }
-
-        if (loginAccessKey.access_key.permission === 'FullAccess') {
-          return true;
-        }
-
-        const remainingAllowance = Amount.new(loginAccessKey.access_key.permission.FunctionCall.allowance);
-        return remainingAllowance.gte(Amount.parseYoctoNear('0.05'));
       },
     };
   }
