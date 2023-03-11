@@ -67,7 +67,7 @@ interface WalletSelectorEnhancement {
    * Sign and send multiple transaction with local key in `this.keystore`.
    * Note: login key may not in `this.keystore` in the following cases
    * 1. Default keystore prefix `near-api-js:keystore:` is not be used.
-   * 2. User doesn't use [NearWallet](https://wallet.near.org) or [MyNearWallet](https://mynearwallet.com)
+   * 2. User doesn't use [NearWallet](https://wallet.near.org) or [MyNearWallet](https://mynearwallet.com).
    * @param signerId Signer id
    * @param transaction Multiple transaction
    */
