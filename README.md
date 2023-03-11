@@ -2,15 +2,14 @@
 
 Support [near-api-js](https://github.com/near/near-api-js) and [wallet-selector](https://github.com/near/wallet-selector)
 
-## Usage
-
-### View function example
+## Usage and Examples
+This package works with three major class `MultiTransaction`, `MultiSendAccount`, `MultiSendWalletSelector`
 ```typescript
-import { Amount, MultiSendAccount } from "multi-transaction";
-import { Near } from "near-api-js";
-
-// View wNEAR balance of Alice
-async function viewFunctionExample(near: Near) {
+import { MultiTransaction, MultiSendAccount, setupMultiSendWalletSelector, Amount, Gas } from "multi-transaction";
+```
+### Example call a view function
+```typescript
+async function exampleCallViewFunction(near: Near) {
   const account = new MultiSendAccount(near.connection)
   
   const amount: string = await account.view({
@@ -25,13 +24,9 @@ async function viewFunctionExample(near: Near) {
 }
 ```
 
-### Change function example
+### Example call a change function
 ```typescript
-import { Amount, Gas, MultiSendAccount, MultiTransaction } from "multi-transaction";
-import { Near } from "near-api-js";
-
-// Alice sends 8.88 wNEAR to Bob
-async function changeFunctionExample(near: Near) {
+async function exampleCallChangeFunction(near: Near) {
   const account = new MultiSendAccount(near.connection, 'alice.near')
   
   const transaction = MultiTransaction
@@ -50,13 +45,9 @@ async function changeFunctionExample(near: Near) {
 }
 ```
 
-### Complex transaction example
+### Example send complex transactions
 ```typescript
-import { Amount, MultiSendAccount, MultiTransaction } from "multi-transaction";
-import { Near } from "near-api-js";
-
-// Alice creates an account for her honey and send 888 USDT.e to this account as birthday gift
-async function complexTransactionExample(near: Near) {
+async function exampleSendComplexTransactions(near: Near) {
   const account = new MultiSendAccount(near.connection, 'alice.near')
   
   const transaction = MultiTransaction
@@ -85,26 +76,45 @@ async function complexTransactionExample(near: Near) {
 }
 ```
 
-### With Wallet Selector
-```typescript
-import { Amount, MultiTransaction } from "multi-transaction";
-import { WalletSelector } from "@near-wallet-selector/core";
+### Example use wallet selector
+```tsx
+const useWalletSelector = () => {
+  const [ selector, setSelector ] = useState()
+  
+  useEffect(() => {
+    if (selector) {
+      return
+    }
+    setupMultiSendWalletSelector({
+      network: 'mainnet',
+      modules: [
+        /* wallet modules */
+      ]
+    }).then(setSelector)
+  }, [])
+  
+  return { selector }
+}
 
-// Sends 8.88 wNEAR to Bob
-async function withWalletSelectorExample(selector: WalletSelector) {
-  const wallet = await selector.wallet()
+const ExampleComponent = () => {
+  const { selector } = useWalletSelector()
   
-  const transaction = MultiTransaction
-    .createTransaction('wrap.near')
-    .ft_transfer({
-      args: {
-        receiver_id: 'bob.near',
-        amount: Amount.parseYoctoNear(8.88)
-      }
-    })
+  const exampleSendWnear = async () => {
+    const transaction = MultiTransaction
+      .createTransaction('wrap.near')
+      .ft_transfer({
+        args: {
+          receiver_id: 'bob.near',
+          amount: Amount.parseYoctoNear(8.88)
+        }
+      })
+    await selector!.send(transaction)
+  }
   
-  await wallet.signAndSendTransactions({
-    transactions: transaction.toNearWalletSelectorTransactions()
-  })
+  return (
+    <button onclick={exampleSendWnear}>
+      Example Button
+    </button>
+  )
 }
 ```
