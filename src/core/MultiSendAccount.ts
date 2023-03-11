@@ -3,7 +3,7 @@ import { ViewFunctionOptions, MultiSendAccountSendOptions } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { SignAndSendTransactionsOptions } from '../types';
 import { SignAndSendTransactionOptions } from 'near-api-js/lib/account';
-import { parseOutcomeValue, getReceiptErrors, throwReceiptErrorsIfAny } from '../utils';
+import { parseOutcomeValue, throwReceiptErrorsIfAny } from '../utils';
 import { MultiTransaction } from './MultiTransaction';
 import { stringifyJsonOrBytes, parseJson } from '../utils/serialize';
 
@@ -69,7 +69,7 @@ export class MultiSendAccount extends Account {
       transactions: transaction.toNearApiJsTransactions(),
     });
     if (options?.throwReceiptErrorsIfAny) {
-      throwReceiptErrorsIfAny(getReceiptErrors(...outcomes));
+      throwReceiptErrorsIfAny(...outcomes);
     }
     return parseOutcomeValue<Value>(outcomes.pop()!, options?.parse);
   }

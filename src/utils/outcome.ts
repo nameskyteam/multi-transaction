@@ -24,7 +24,11 @@ export function parseOutcomeValue<Value>(
   }
 }
 
-export function getReceiptErrors(...outcomes: FinalExecutionOutcome[]): ErrorMessage[] {
+export function throwReceiptErrorsIfAny(...outcomes: FinalExecutionOutcome[]) {
+  throwReceiptErrors(getReceiptErrors(...outcomes));
+}
+
+function getReceiptErrors(...outcomes: FinalExecutionOutcome[]): ErrorMessage[] {
   const errors: ErrorMessage[] = [];
   outcomes.forEach((outcome) => {
     outcome.receipts_outcome.forEach((receipt) => {
@@ -39,7 +43,7 @@ export function getReceiptErrors(...outcomes: FinalExecutionOutcome[]): ErrorMes
   return errors;
 }
 
-export function throwReceiptErrorsIfAny(errors: ErrorMessage[]) {
+function throwReceiptErrors(errors: ErrorMessage[]) {
   if (errors.length !== 0) {
     throw Error(JSON.stringify(errors));
   }
