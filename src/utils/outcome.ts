@@ -21,6 +21,10 @@ export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parse: 
   }
 }
 
+/**
+ * If receipts in outcomes have any error, throw them
+ * @param outcomes outcomes
+ */
 export function throwReceiptErrorsIfAny(...outcomes: FinalExecutionOutcome[]) {
   throwReceiptErrors(getReceiptErrors(...outcomes));
 }

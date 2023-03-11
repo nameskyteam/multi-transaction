@@ -23,16 +23,12 @@ export async function setupMultiSendWalletSelector(
       keyStore: new keyStores.BrowserLocalStorageKeyStore(localStorage, config.keyStorePrefix),
     });
 
+    const viewer = new MultiSendAccount(near.connection);
+
     multiSendWalletSelector = {
       ...selector,
       near,
-
-      getViewer(): MultiSendAccount {
-        if (!this.viewer) {
-          this.viewer = this.multiSendAccount();
-        }
-        return this.viewer;
-      },
+      viewer,
 
       getActiveAccountId(): string | undefined {
         return this.store.getState().accounts.find((accountState) => accountState.active)?.accountId;
@@ -51,7 +47,7 @@ export async function setupMultiSendWalletSelector(
       },
 
       async view<Value, Args>(options: ViewFunctionOptions<Value, Args>): Promise<Value> {
-        return this.getViewer().view<Value, Args>(options);
+        return this.viewer.view<Value, Args>(options);
       },
 
       async send<Value>(

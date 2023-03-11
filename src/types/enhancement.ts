@@ -7,8 +7,7 @@ import { MultiTransaction, MultiSendAccount } from '../core';
 
 interface WalletSelectorEnhancement {
   near: Near;
-  viewer?: MultiSendAccount;
-  getViewer(): MultiSendAccount;
+  viewer: MultiSendAccount;
   getActiveAccountId(): string | undefined;
   getAccountIds(): string[];
   keyStore(): BrowserLocalStorageKeyStore;
