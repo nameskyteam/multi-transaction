@@ -1,6 +1,6 @@
 import { Account } from 'near-api-js';
 import {
-  FunctionViewOptions,
+  ViewFunctionOptions,
   MultiSendAccountSendOptions
 } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
@@ -8,13 +8,9 @@ import { SignAndSendTransactionsOptions } from '../types';
 import { SignAndSendTransactionOptions } from 'near-api-js/lib/account';
 import {parseOutcomeValue, getReceiptErrors, throwReceiptErrorsIfAny} from "../utils";
 import {MultiTransaction} from "./MultiTransaction";
-import {bytesOrJsonStringify, jsonParse} from "../utils/serialization";
+import {stringifyJsonOrBytes, parseJson} from "../utils/serialize";
 
-/**
- * Enhancement of `Account` based on `MultiTransaction`
- */
 export class MultiSendAccount extends Account {
-  // rewrite to make method public
   async signAndSendTransaction(options: SignAndSendTransactionOptions): Promise<FinalExecutionOutcome> {
     return super.signAndSendTransaction(options);
   }
@@ -28,14 +24,23 @@ export class MultiSendAccount extends Account {
     return outcomes;
   }
 
+  /**
+   * View a contract method
+   * @param contractId Contract id
+   * @param methodName Method name
+   * @param args `Uint8Array` or other type args
+   * @param stringify Serialize args to bytes. Default will skip `Uint8Array` or serialize other type args in JSON format
+   * @param parse Deserialize return value from bytes. Default will deserialize return value in JSON format
+   * @param blockQuery Could view contract method in the past block
+   */
   async view<Value, Args>({
     contractId,
     methodName,
     args,
+    stringify = stringifyJsonOrBytes,
+    parse = parseJson,
     blockQuery,
-    stringify = bytesOrJsonStringify,
-    parse = jsonParse,
-  }: FunctionViewOptions<Value, Args>): Promise<Value> {
+  }: ViewFunctionOptions<Value, Args>): Promise<Value> {
     return this.viewFunctionV2({
       contractId,
       methodName,
@@ -46,6 +51,15 @@ export class MultiSendAccount extends Account {
     });
   }
 
+  /**
+   * Send multiple transactions and return success value of last transaction
+   * @param transaction Multiple transaction
+   * @param options Send options
+   * @param options.throwReceiptErrorsIfAny If receipts have any error, it will be thrown. This is useful when
+   * outcome is successful but receipts have error accrued. e.g. Standard `ft_transfer_call` will never fail,
+   * but `ft_on_transfer` may have panic
+   * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
+   */
   async send<Value>(transaction: MultiTransaction, options?: MultiSendAccountSendOptions<Value>): Promise<Value | undefined> {
     const outcomes = await this.signAndSendTransactions({
       transactions: transaction.toNearApiJsTransactions(),

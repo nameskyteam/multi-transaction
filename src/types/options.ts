@@ -1,4 +1,4 @@
-import { BlockReference } from 'near-api-js/lib/providers/provider';
+import {BlockReference} from 'near-api-js/lib/providers/provider';
 import {NearApiJsTransactionLike} from "./transform";
 
 export interface FunctionCallOptions<Args> {
@@ -9,13 +9,13 @@ export interface FunctionCallOptions<Args> {
   stringify?: ArgsStringifier<Args>;
 }
 
-export interface FunctionViewOptions<Value, Args> {
+export interface ViewFunctionOptions<Value, Args> {
+  contractId: string;
   methodName: string;
   args?: Args;
-  contractId: string;
-  blockQuery?: BlockQuery;
   stringify?: ArgsStringifier<Args>;
   parse?: ValueParser<Value>;
+  blockQuery?: BlockQuery;
 }
 
 export type ArgsStringifier<Args> = (args: Args) => Buffer;

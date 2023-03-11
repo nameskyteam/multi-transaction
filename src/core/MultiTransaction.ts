@@ -29,7 +29,7 @@ import { AccessKey, Action } from '../types';
 import { parseNearApiJsTransaction, parseNearWalletSelectorTransaction } from '../utils';
 import { Amount } from '../utils';
 import { Gas } from '../utils';
-import {bytesOrJsonStringify} from "../utils/serialization";
+import {stringifyJsonOrBytes} from "../utils/serialize";
 
 /**
  * @description Helper class for creating transaction(s) with builder pattern
@@ -66,12 +66,18 @@ export class MultiTransaction {
     this.transactions = [];
   }
 
-  // Return 'MultiTransaction' object without transaction.
+  /**
+   * New 'MultiTransaction' object without transaction
+   */
   static new(): MultiTransaction {
     return new MultiTransaction();
   }
 
-  // Return 'MultiTransaction' object with transaction without action.
+  /**
+   * New 'MultiTransaction' object with single transaction
+   * @param receiverId transaction receiver id
+   * @param signerId transaction signer id
+   */
   static createTransaction(receiverId: string, signerId?: string): MultiTransaction {
     return MultiTransaction.new().createTransaction(receiverId, signerId);
   }
@@ -80,25 +86,35 @@ export class MultiTransaction {
     return this.transactions.length - 1;
   }
 
+  /**
+   * If it has multiple transactions.
+   */
   isMultiple(): boolean {
     return this.currentIndex() > 0;
   }
 
+  /**
+   * If it has no transaction.
+   */
   isEmpty(): boolean {
     return this.currentIndex() === -1;
   }
 
-  // Create a new transaction without action in original object
+  /**
+   * Create a new transaction follow the previous transaction
+   * @param receiverId transaction receiver id
+   * @param signerId transaction signer id
+   */
   createTransaction(receiverId: string, signerId?: string): MultiTransaction {
     return this.addTransactions({ signerId, receiverId, actions: [] });
   }
 
-  addTransactions(...transactions: Transaction[]): MultiTransaction {
+  private addTransactions(...transactions: Transaction[]): MultiTransaction {
     this.transactions.push(...transactions);
     return this;
   }
 
-  addActions(...actions: Action[]): MultiTransaction {
+  private addActions(...actions: Action[]): MultiTransaction {
     if (this.isEmpty()) {
       throw Error(`Transaction not found, consider calling method '.createTransaction(/* args */)' first`);
     }
@@ -111,20 +127,36 @@ export class MultiTransaction {
   }
 
   toTransactions(): Transaction[] {
-    return [...this.transactions];
+    return this.transactions;
   }
 
-  extend(other: MultiTransaction): MultiTransaction {
-    return this.addTransactions(...other.toTransactions());
+  extend(other: MultiTransaction) {
+    this.addTransactions(...other.toTransactions())
   }
 
   // ------------------------------------------- Transform -------------------------------------------------
+  /**
+   * Transform to `near-api-js` like transactions
+   * @example
+   * const account = near.account('example.near')
+   * for (transaction of multiTransaction.toNearApiJsTransactions()) {
+   *   await account.signAndSendTransaction(transaction)
+   * }
+   */
   toNearApiJsTransactions(): NearApiJsTransactionLike[] {
     return this.toTransactions().map((transaction) => {
       return parseNearApiJsTransaction(transaction);
     });
   }
 
+  /**
+   * Transform to `wallet-selector` like transactions
+   * @example
+   * const wallet = await selector.wallet()
+   * await wallet.signAndSendTransactions({
+   *  transactions: multiTransaction.toNearWalletSelectorTransactions()
+   * })
+   */
   toNearWalletSelectorTransactions(): NearWalletSelectorTransactionLike[] {
     return this.toTransactions().map((transaction) => {
       return parseNearWalletSelectorTransaction(transaction);
@@ -132,36 +164,69 @@ export class MultiTransaction {
   }
 
   // -------------------------------------------- Action ---------------------------------------------------
+  /**
+   * Add `CreateAccount` Action
+   */
   createAccount(): MultiTransaction {
     return this.addActions(ActionFactory.createAccount());
   }
 
+  /**
+   * Add `DeleteAccount` Action
+   * @param beneficiaryId beneficiary account id
+   */
   deleteAccount(beneficiaryId: string): MultiTransaction {
     return this.addActions(ActionFactory.deleteAccount({ beneficiaryId }));
   }
 
+  /**
+   * Add `AddKey` Action
+   * @param publicKey Public key
+   * @param accessKey Public key info
+   */
   addKey(publicKey: string, accessKey: AccessKey): MultiTransaction {
     return this.addActions(ActionFactory.addKey({ publicKey, accessKey }));
   }
 
+  /**
+   * Add `DeleteKey` Action
+   * @param publicKey Public key
+   */
   deleteKey(publicKey: string): MultiTransaction {
     return this.addActions(ActionFactory.deleteKey({ publicKey }));
   }
 
+  /**
+   * Add `DeployContract` Action
+   * @param code Wasm code
+   */
   deployContract(code: Uint8Array): MultiTransaction {
     return this.addActions(ActionFactory.deployContract({ code }));
   }
 
+  /**
+   * Add `Stake` Action
+   * @param amount Staking amount
+   * @param publicKey Staking public key
+   */
   stake(amount: string, publicKey: string): MultiTransaction {
     return this.addActions(ActionFactory.stake({ amount, publicKey }));
   }
 
+  /**
+   * Add `FunctionCall` Action
+   * @param methodName Method name
+   * @param args `Uint8Array` or other type args
+   * @param attachedDeposit Attached yocto NEAR amount
+   * @param gas Prepaid gas
+   * @param stringify Serialize args to bytes. Default will skip `Uint8Array` or serialize other type args in JSON format
+   */
   functionCall<Args>({
     methodName,
     args,
     attachedDeposit = Amount.ZERO,
     gas =  Gas.DEFAULT,
-    stringify = bytesOrJsonStringify
+    stringify = stringifyJsonOrBytes
   }: FunctionCallOptions<Args>): MultiTransaction {
     return this.addActions(
       ActionFactory.functionCall({
@@ -173,6 +238,10 @@ export class MultiTransaction {
     );
   }
 
+  /**
+   * Add `Transfer` Action
+   * @param amount Transfer amount
+   */
   transfer(amount: string): MultiTransaction {
     return this.addActions(ActionFactory.transfer({ amount }));
   }

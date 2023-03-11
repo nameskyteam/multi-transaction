@@ -2,11 +2,16 @@ import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/pro
 import {parseRpcError} from 'near-api-js/lib/utils/rpc_errors';
 import { ErrorMessage } from '../types';
 import { ValueParser } from '../types';
-import {jsonParse} from "./serialization";
+import {parseJson} from "./serialize";
 
+/**
+ * Parse success value from outcome.
+ * @param outcome transaction outcome
+ * @param parse Deserialize return value from bytes. Default will deserialize return value in JSON format
+ */
 export function parseOutcomeValue<Value>(
   outcome: FinalExecutionOutcome,
-  parse: ValueParser<Value> = jsonParse
+  parse: ValueParser<Value> = parseJson
 ): Value | undefined {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
   if (successValue) {
