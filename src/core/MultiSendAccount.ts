@@ -1,14 +1,11 @@
-import {Account, Connection} from 'near-api-js';
-import {
-  ViewFunctionOptions,
-  MultiSendAccountSendOptions
-} from '../types';
+import { Account, Connection } from 'near-api-js';
+import { ViewFunctionOptions, MultiSendAccountSendOptions } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { SignAndSendTransactionsOptions } from '../types';
 import { SignAndSendTransactionOptions } from 'near-api-js/lib/account';
-import {parseOutcomeValue, getReceiptErrors, throwReceiptErrorsIfAny} from "../utils";
-import {MultiTransaction} from "./MultiTransaction";
-import {stringifyJsonOrBytes, parseJson} from "../utils/serialize";
+import { parseOutcomeValue, getReceiptErrors, throwReceiptErrorsIfAny } from '../utils';
+import { MultiTransaction } from './MultiTransaction';
+import { stringifyJsonOrBytes, parseJson } from '../utils/serialize';
 
 export class MultiSendAccount extends Account {
   constructor(connection: Connection, accountId = '') {
@@ -64,12 +61,15 @@ export class MultiSendAccount extends Account {
    * but `ft_on_transfer` may have panic
    * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
    */
-  async send<Value>(transaction: MultiTransaction, options?: MultiSendAccountSendOptions<Value>): Promise<Value | undefined> {
+  async send<Value>(
+    transaction: MultiTransaction,
+    options?: MultiSendAccountSendOptions<Value>
+  ): Promise<Value | undefined> {
     const outcomes = await this.signAndSendTransactions({
       transactions: transaction.toNearApiJsTransactions(),
     });
     if (options?.throwReceiptErrorsIfAny) {
-      throwReceiptErrorsIfAny(getReceiptErrors(...outcomes))
+      throwReceiptErrorsIfAny(getReceiptErrors(...outcomes));
     }
     return parseOutcomeValue<Value>(outcomes.pop()!, options?.parse);
   }

@@ -1,5 +1,5 @@
 import { FtTransferArgs, FtTransferCallArgs } from './args';
-import {GasOptions, ArgsOptions} from '../options';
+import { GasOptions, ArgsOptions } from '../options';
 
 export interface FtTransferOptions extends Required<ArgsOptions<FtTransferArgs>>, GasOptions {}
 

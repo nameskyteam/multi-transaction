@@ -1,8 +1,8 @@
 import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/providers';
-import {parseRpcError} from 'near-api-js/lib/utils/rpc_errors';
+import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
 import { ErrorMessage } from '../types';
 import { ValueParser } from '../types';
-import {parseJson} from "./serialize";
+import { parseJson } from './serialize';
 
 /**
  * Parse success value from outcome.
@@ -20,27 +20,27 @@ export function parseOutcomeValue<Value>(
   } else if (successValue === '') {
     return;
   } else {
-    throw Error(`Outcome status is Failure`)
+    throw Error(`Outcome status is Failure`);
   }
 }
 
 export function getReceiptErrors(...outcomes: FinalExecutionOutcome[]): ErrorMessage[] {
-  const errors: ErrorMessage[] = []
-  outcomes.forEach(outcome => {
-    outcome.receipts_outcome.forEach(receipt => {
+  const errors: ErrorMessage[] = [];
+  outcomes.forEach((outcome) => {
+    outcome.receipts_outcome.forEach((receipt) => {
       const status = receipt.outcome.status;
       if (typeof status !== 'string' && status.Failure) {
         const serverError = parseRpcError(status.Failure);
         const errorMessage = JSON.parse(serverError.message);
-        errors.push(errorMessage)
+        errors.push(errorMessage);
       }
     });
-  })
-  return errors
+  });
+  return errors;
 }
 
 export function throwReceiptErrorsIfAny(errors: ErrorMessage[]) {
   if (errors.length !== 0) {
-    throw Error(JSON.stringify(errors))
+    throw Error(JSON.stringify(errors));
   }
 }

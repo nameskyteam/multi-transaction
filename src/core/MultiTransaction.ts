@@ -29,8 +29,8 @@ import { AccessKey, Action } from '../types';
 import { parseNearApiJsTransaction, parseNearWalletSelectorTransaction } from '../utils';
 import { Amount } from '../utils';
 import { Gas } from '../utils';
-import {stringifyJsonOrBytes} from "../utils/serialize";
-import {PublicKey} from "near-api-js/lib/utils";
+import { stringifyJsonOrBytes } from '../utils/serialize';
+import { PublicKey } from 'near-api-js/lib/utils';
 
 /**
  * Helper class for creating transaction(s) with builder pattern
@@ -107,7 +107,7 @@ export class MultiTransaction {
   }
 
   extend(other: MultiTransaction) {
-    this.addTransactions(...other.toTransactions())
+    this.addTransactions(...other.toTransactions());
   }
 
   // ------------------------------------------- Transform -------------------------------------------------
@@ -161,10 +161,12 @@ export class MultiTransaction {
    * @param accessKey Public key info
    */
   addKey(publicKey: string, accessKey: AccessKey): MultiTransaction {
-    return this.addActions(ActionFactory.addKey({
-      publicKey: PublicKey.fromString(publicKey).toString(),
-      accessKey
-    }));
+    return this.addActions(
+      ActionFactory.addKey({
+        publicKey: PublicKey.fromString(publicKey).toString(),
+        accessKey,
+      })
+    );
   }
 
   /**
@@ -204,8 +206,8 @@ export class MultiTransaction {
     methodName,
     args,
     attachedDeposit = Amount.ZERO,
-    gas =  Gas.DEFAULT,
-    stringify = stringifyJsonOrBytes
+    gas = Gas.DEFAULT,
+    stringify = stringifyJsonOrBytes,
   }: FunctionCallOptions<Args>): MultiTransaction {
     return this.addActions(
       ActionFactory.functionCall({

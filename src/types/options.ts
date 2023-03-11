@@ -1,5 +1,5 @@
-import {BlockReference} from 'near-api-js/lib/providers/provider';
-import {NearApiJsTransactionLike} from "./transform";
+import { BlockReference } from 'near-api-js/lib/providers/provider';
+import { NearApiJsTransactionLike } from './transform';
 
 export interface FunctionCallOptions<Args> {
   methodName: string;
