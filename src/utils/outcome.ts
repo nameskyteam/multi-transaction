@@ -9,16 +9,13 @@ import { parseJson } from './serialize';
  * @param outcome transaction outcome
  * @param parse Deserialize return value from bytes. Default will deserialize return value in JSON format
  */
-export function parseOutcomeValue<Value>(
-  outcome: FinalExecutionOutcome,
-  parse: ValueParser<Value> = parseJson
-): Value | undefined {
+export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parse: ValueParser<Value> = parseJson): Value {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
   if (successValue) {
     const valueRaw = Buffer.from(successValue, 'base64');
     return parse(valueRaw);
   } else if (successValue === '') {
-    return;
+    return undefined as Value;
   } else {
     throw Error(`Outcome status is Failure`);
   }

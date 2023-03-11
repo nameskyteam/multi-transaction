@@ -18,7 +18,7 @@ interface WalletSelectorEnhancement {
     transaction: MultiTransaction,
     options?: MultiSendWalletSelectorSendOptions<Value>
   ): Promise<Value | undefined>;
-  sendWithLocalKey<Value>(signerId: string, transaction: MultiTransaction): Promise<Value | undefined>;
+  sendWithLocalKey<Value>(signerId: string, transaction: MultiTransaction): Promise<Value>;
   isLoginAccessKeyActive(accountId?: string): Promise<boolean>;
 }
 
