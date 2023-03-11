@@ -8,7 +8,7 @@ import { MultiTransaction } from './MultiTransaction';
 import { stringifyJsonOrBytes, parseJson } from '../utils/serialize';
 
 /**
- * Account that support [`MultiTransaction`]()
+ * Account that support {@link `MultiTransaction`}
  */
 export class MultiSendAccount extends Account {
   constructor(connection: Connection, accountId = '') {

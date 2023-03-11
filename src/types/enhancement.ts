@@ -75,6 +75,6 @@ interface WalletSelectorEnhancement {
 }
 
 /**
- * Wallet selector that support [`MultiTransaction`]()
+ * Wallet selector that support {@link `MultiTransaction`}
  */
 export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;

@@ -1,6 +1,5 @@
 import { Network, NetworkId, setupWalletSelector } from '@near-wallet-selector/core';
-import { InMemorySigner, keyStores, Near } from 'near-api-js';
-import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
+import { keyStores, Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { MultiSendWalletSelector } from '../types';
