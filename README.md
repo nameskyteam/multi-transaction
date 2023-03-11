@@ -83,5 +83,28 @@ async function complexTransactionExample(near: Near) {
   
   await account.send(transaction)
 }
+```
 
+### With Wallet Selector
+```typescript
+import { Amount, MultiTransaction } from "multi-transaction";
+import { WalletSelector } from "@near-wallet-selector/core";
+
+// Sends 8.88 wNEAR to Bob
+async function withWalletSelectorExample(selector: WalletSelector) {
+  const wallet = await selector.wallet()
+  
+  const transaction = MultiTransaction
+    .createTransaction('wrap.near')
+    .ft_transfer({
+      args: {
+        receiver_id: 'bob.near',
+        amount: Amount.parseYoctoNear(8.88)
+      }
+    })
+  
+  await wallet.signAndSendTransactions({
+    transactions: transaction.toNearWalletSelectorTransactions()
+  })
+}
 ```
