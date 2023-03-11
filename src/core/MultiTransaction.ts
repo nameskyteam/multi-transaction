@@ -30,34 +30,10 @@ import { parseNearApiJsTransaction, parseNearWalletSelectorTransaction } from '.
 import { Amount } from '../utils';
 import { Gas } from '../utils';
 import {stringifyJsonOrBytes} from "../utils/serialize";
+import {PublicKey} from "near-api-js/lib/utils";
 
 /**
- * @description Helper class for creating transaction(s) with builder pattern
- *
- * @example
- * // Create an account for alice's honey and send some wNEAR
- * // to this account for a birthday gift
- * MultiTransaction
- *   // first transaction for creating account
- *   .createTransaction('honey.alice.near', 'alice.near')
- *   .createAccount()
- *   .transfer(Amount.parseYoctoNear('0.1'))
- *   .addKey('ed25519:this is a public key', { permission: 'FullAccess' })
- *   // second transaction for sending wNEAR
- *   .createTransaction('wrap.near')
- *   .storage_deposit({
- *     args: {
- *       account_id: 'honey.alice.near'
- *     },
- *     attachedDeposit: Amount.parseYoctoNear('0.00125')
- *   })
- *   .ft_transfer({
- *     args: {
- *       receiver_id: 'honey.alice.near',
- *       amount: Amount.parseYoctoNear('100'),
- *       memo: 'Happy Birthday'
- *     }
- *   })
+ * Helper class for creating transaction(s) with builder pattern
  */
 export class MultiTransaction {
   transactions: Transaction[];
@@ -185,7 +161,10 @@ export class MultiTransaction {
    * @param accessKey Public key info
    */
   addKey(publicKey: string, accessKey: AccessKey): MultiTransaction {
-    return this.addActions(ActionFactory.addKey({ publicKey, accessKey }));
+    return this.addActions(ActionFactory.addKey({
+      publicKey: PublicKey.fromString(publicKey).toString(),
+      accessKey
+    }));
   }
 
   /**
@@ -193,7 +172,7 @@ export class MultiTransaction {
    * @param publicKey Public key
    */
   deleteKey(publicKey: string): MultiTransaction {
-    return this.addActions(ActionFactory.deleteKey({ publicKey }));
+    return this.addActions(ActionFactory.deleteKey({ publicKey: PublicKey.fromString(publicKey).toString() }));
   }
 
   /**
@@ -210,15 +189,15 @@ export class MultiTransaction {
    * @param publicKey Staking public key
    */
   stake(amount: string, publicKey: string): MultiTransaction {
-    return this.addActions(ActionFactory.stake({ amount, publicKey }));
+    return this.addActions(ActionFactory.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() }));
   }
 
   /**
    * Add `FunctionCall` Action
    * @param methodName Method name
    * @param args `Uint8Array` or other type args
-   * @param attachedDeposit Attached yocto NEAR amount
-   * @param gas Prepaid gas
+   * @param attachedDeposit Attached yocto NEAR amount. Default 0 yocto NEAR
+   * @param gas Prepaid gas. Default 30 Tera
    * @param stringify Serialize args to bytes. Default will skip `Uint8Array` or serialize other type args in JSON format
    */
   functionCall<Args>({

@@ -1,4 +1,4 @@
-import { Account } from 'near-api-js';
+import {Account, Connection} from 'near-api-js';
 import {
   ViewFunctionOptions,
   MultiSendAccountSendOptions
@@ -11,6 +11,10 @@ import {MultiTransaction} from "./MultiTransaction";
 import {stringifyJsonOrBytes, parseJson} from "../utils/serialize";
 
 export class MultiSendAccount extends Account {
+  constructor(connection: Connection, accountId = '') {
+    super(connection, accountId);
+  }
+
   async signAndSendTransaction(options: SignAndSendTransactionOptions): Promise<FinalExecutionOutcome> {
     return super.signAndSendTransaction(options);
   }
