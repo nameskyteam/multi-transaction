@@ -1,13 +1,17 @@
-# Make the construction of the transaction easier on NEAR blockchain
+# Multi Transaction
+Make the construction of the transaction easier on NEAR blockchain
 
 Support [near-api-js](https://github.com/near/near-api-js) and [wallet-selector](https://github.com/near/wallet-selector)
 
-## Usage and Examples
+## Usage
 This package contains `MultiTransaction`, `MultiSendAccount`, `MultiSendWalletSelector` and other helpful utils.
+
+### Backend
 ```typescript
-import { MultiTransaction, MultiSendAccount, setupMultiSendWalletSelector, Amount, Gas } from "multi-transaction";
+import { MultiTransaction, MultiSendAccount, Amount, Gas } from "multi-transaction";
 ```
-### Example call a view function
+
+#### Call view function
 ```typescript
 async function exampleCallViewFunction(near: Near) {
   const account = new MultiSendAccount(near.connection);
@@ -24,7 +28,7 @@ async function exampleCallViewFunction(near: Near) {
 }
 ```
 
-### Example call a change function
+#### Call change function
 ```typescript
 async function exampleCallChangeFunction(near: Near) {
   const account = new MultiSendAccount(near.connection, 'alice.near');
@@ -38,16 +42,16 @@ async function exampleCallChangeFunction(near: Near) {
         amount: Amount.parseYoctoNear('8.88')
       },
       attachedDeposit: Amount.ONE_YOCTO,
-      gas: Gas.tera(20)
+      gas: Gas.tera(10)
     });
   
   await account.send(multiTransaction);
 }
 ```
 
-### Example send complex transactions
+#### Construct complex transactions
 ```typescript
-async function exampleSendComplexTransactions(near: Near) {
+async function exampleConstructComplexTransactions(near: Near) {
   const account = new MultiSendAccount(near.connection, 'alice.near');
   
   const multiTransaction = MultiTransaction
@@ -76,8 +80,10 @@ async function exampleSendComplexTransactions(near: Near) {
 }
 ```
 
-### Example use wallet selector
+### Frontend
 ```tsx
+import { setupMultiSendWalletSelector, Amount, Gas } from "multi-transaction";
+
 const useWalletSelector = () => {
   const [selector, setSelector] = useState();
   
@@ -95,38 +101,68 @@ const useWalletSelector = () => {
   
   return { selector };
 }
-
-const ExampleComponent = () => {
+```
+#### Call view function
+```tsx
+const ExampleCallViewFunction = () => {
   const { selector } = useWalletSelector();
   
-  const exampleSendWnear = async () => {
+  const viewWnearBalance = async () => {
+    const amount: string = selector!.view({
+      contractId: 'wrap.near',
+      methodName: 'ft_balance_of',
+      args: {
+        account_id: 'alice.near'
+      }
+    });
+    
+    console.log(`Balance: ${ Amount.formatYoctoNear(amount) } NEAR`);
+  };
+  
+  return (
+    <button onclick={viewWnearBalance}>
+      View Alice's wNEAR balance
+    </button>
+  );
+}
+```
+
+#### Call change function
+```tsx
+const ExampleCallChangeFunction = () => {
+  const { selector } = useWalletSelector();
+  
+  const sendWnear = async () => {
     const multiTransaction = MultiTransaction
       .createTransaction('wrap.near')
       .ft_transfer({
         args: {
           receiver_id: 'bob.near',
           amount: Amount.parseYoctoNear(8.88)
-        }
+        },
+        gas: Gas.tera(10)
       })
     await selector!.send(multiTransaction)
   };
   
   return (
-    <button onclick={exampleSendWnear}>
-      Example Button
+    <button onclick={sendWnear}>
+      Send 8.88 wNEAR to Bob
     </button>
   );
 }
 ```
 
-### Manual Convert
-Maybe you don't want to use `MultiSendAccount` and `MultiSendWalletSelector`.
+#### Manual Convert Transactions
+Maybe you don't want to use `MultiSendAccount` or `MultiSendWalletSelector`.
 
 ```typescript
+import { MultiTransaction, parseNearApiJsTransactions, parseNearWalletSelectorTransactions } from "multi-transaction";
+
 async function exampleManualConvertToNearApiJsTransactions(near: Near, multiTransaction: MultiTransaction) {
   const account = await near.account('alice.near')
-  const transactions = multiTransaction.toNearApiJsTransactions()
-  
+  const transactions = parseNearApiJsTransactions(multiTransaction)
+
   for (const transaction of transactions) {
     // Won't call as `account.signAndSendTransaction` because is a protected method.
     await account['signAndSendTransaction'](transaction);
@@ -135,14 +171,14 @@ async function exampleManualConvertToNearApiJsTransactions(near: Near, multiTran
 
 async function exampleManualConvertToNearWalletSelectorTransactions(selector: WalletSelector, multiTransaction: MultiTransaction) {
   const wallet = await selector.wallet()
-  const transactions = multiTransaction.toNearWalletSelectorTransactions()
-  
+  const transactions = parseNearWalletSelectorTransactions(multiTransaction)
+
   if (transactions.length === 1) {
     // `signAndSendTransactions` deesn't use login key, so if transaction is not multiple, we suggest to use 
     // `signAndSendTransaction` instead.
     await wallet.signAndSendTransaction(transactions[0])
   } else {
-    await wallet.signAndSendTransactions({ transactions })
+    await wallet.signAndSendTransactions({transactions})
   }
 }
 ```
