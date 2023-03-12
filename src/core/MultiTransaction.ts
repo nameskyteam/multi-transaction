@@ -164,11 +164,12 @@ export class MultiTransaction {
 
   /**
    * Add `FunctionCall` Action
-   * @param methodName Method name
-   * @param args `Uint8Array` or other type args
-   * @param attachedDeposit Attached yocto NEAR amount. Default 0 yocto NEAR
-   * @param gas Prepaid gas. Default 30 Tera
-   * @param stringify Serialize args to bytes. Default will skip `Uint8Array` or serialize other type args in JSON format
+   * @param options FunctionCall options
+   * @param options.methodName Method name
+   * @param options.args `Uint8Array` or other type args
+   * @param options.attachedDeposit Attached yocto NEAR amount. Default 0 yocto NEAR
+   * @param options.gas Prepaid gas. Default 30 Tera
+   * @param options.stringify Serialize args to bytes. Default will skip `Uint8Array` or serialize other type args in JSON format
    */
   functionCall<Args>({
     methodName,

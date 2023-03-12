@@ -40,7 +40,14 @@ interface WalletSelectorEnhancement {
    * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
    * @param options.blockQuery Could view contract method in the past block
    */
-  view<Value, Args>(options: ViewFunctionOptions<Value, Args>): Promise<Value>;
+  view<Value, Args>({
+    contractId,
+    methodName,
+    args,
+    stringify,
+    parse,
+    blockQuery,
+  }: ViewFunctionOptions<Value, Args>): Promise<Value>;
 
   /**
    * Send multiple transactions and return success value of last transaction

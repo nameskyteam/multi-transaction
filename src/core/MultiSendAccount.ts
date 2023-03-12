@@ -37,12 +37,13 @@ export class MultiSendAccount extends Account {
 
   /**
    * View a contract method
-   * @param contractId Contract id
-   * @param methodName Method name
-   * @param args `Uint8Array` or other type args
-   * @param stringify Serialize args to bytes. Default will skip `Uint8Array` or serialize other type args in JSON format
-   * @param parse Deserialize return value from bytes. Default will deserialize return value in JSON format
-   * @param blockQuery Could view contract method in the past block
+   * @param options View options
+   * @param options.contractId Contract id
+   * @param options.methodName Method name
+   * @param options.args `Uint8Array` or other type args
+   * @param options.stringify Serialize args to bytes. Default will skip `Uint8Array` or serialize other type args in JSON format
+   * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
+   * @param options.blockQuery Could view contract method in the past block
    */
   async view<Value, Args>({
     contractId,
