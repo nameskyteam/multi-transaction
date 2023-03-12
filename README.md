@@ -3,6 +3,11 @@ Make the construction of the transaction easier on NEAR blockchain
 
 Support [near-api-js](https://github.com/near/near-api-js) and [wallet-selector](https://github.com/near/wallet-selector)
 
+## Install
+```shell
+yarn add multi-transaction
+```
+
 ## Usage
 This package contains `MultiTransaction`, `MultiSendAccount`, `MultiSendWalletSelector` and other helpful utils.
 
@@ -12,6 +17,8 @@ import { MultiTransaction, MultiSendAccount, Amount, Gas } from "multi-transacti
 ```
 
 #### Call view function
+Call view function on backend
+
 ```typescript
 async function exampleCallViewFunction(near: Near) {
   const account = new MultiSendAccount(near.connection);
@@ -29,6 +36,8 @@ async function exampleCallViewFunction(near: Near) {
 ```
 
 #### Call change function
+Call change function on backend
+
 ```typescript
 async function exampleCallChangeFunction(near: Near) {
   const account = new MultiSendAccount(near.connection, 'alice.near');
@@ -49,7 +58,86 @@ async function exampleCallChangeFunction(near: Near) {
 }
 ```
 
-#### Construct complex transactions
+### Frontend
+```tsx
+import { setupMultiSendWalletSelector, Amount, Gas } from "multi-transaction";
+
+// Example Hook
+const useWalletSelector = () => {
+  const [selector, setSelector] = useState();
+  
+  useEffect(() => {
+    if (selector) {
+      return;
+    }
+    setupMultiSendWalletSelector({
+      network: 'mainnet',
+      modules: [
+        /* wallet modules */
+      ]
+    }).then(setSelector);
+  }, []);
+  
+  return { selector };
+}
+```
+#### Call view function
+Call view function on frontend
+```tsx
+const ExampleCallViewFunction = () => {
+  const { selector } = useWalletSelector();
+  
+  const viewWnearBalance = async () => {
+    const amount: string = selector!.view({
+      contractId: 'wrap.near',
+      methodName: 'ft_balance_of',
+      args: {
+        account_id: 'alice.near'
+      }
+    });
+    
+    console.log(`Balance: ${ Amount.formatYoctoNear(amount) } NEAR`);
+  };
+  
+  return (
+    <button onclick={viewWnearBalance}>
+      View Alice's wNEAR balance
+    </button>
+  );
+}
+```
+
+#### Call change function
+Call change function on frontend
+
+```tsx
+const ExampleCallChangeFunction = () => {
+  const { selector } = useWalletSelector();
+  
+  const sendWnear = async () => {
+    const multiTransaction = MultiTransaction
+      .createTransaction('wrap.near')
+      .ft_transfer({
+        args: {
+          receiver_id: 'bob.near',
+          amount: Amount.parseYoctoNear(8.88)
+        },
+        gas: Gas.tera(10)
+      });
+    await selector!.send(multiTransaction);
+  };
+  
+  return (
+    <button onclick={sendWnear}>
+      Send 8.88 wNEAR to Bob
+    </button>
+  );
+}
+```
+
+### Construct complex transactions
+`MultiTransaction` allow you to construct complex multiple transactions (not only multiple actions)
+
 ```typescript
 async function exampleConstructComplexTransactions(near: Near) {
   const account = new MultiSendAccount(near.connection, 'alice.near');
@@ -80,88 +168,16 @@ async function exampleConstructComplexTransactions(near: Near) {
 }
 ```
 
-### Frontend
-```tsx
-import { setupMultiSendWalletSelector, Amount, Gas } from "multi-transaction";
-
-const useWalletSelector = () => {
-  const [selector, setSelector] = useState();
-  
-  useEffect(() => {
-    if (selector) {
-      return;
-    }
-    setupMultiSendWalletSelector({
-      network: 'mainnet',
-      modules: [
-        /* wallet modules */
-      ]
-    }).then(setSelector);
-  }, []);
-  
-  return { selector };
-}
-```
-#### Call view function
-```tsx
-const ExampleCallViewFunction = () => {
-  const { selector } = useWalletSelector();
-  
-  const viewWnearBalance = async () => {
-    const amount: string = selector!.view({
-      contractId: 'wrap.near',
-      methodName: 'ft_balance_of',
-      args: {
-        account_id: 'alice.near'
-      }
-    });
-    
-    console.log(`Balance: ${ Amount.formatYoctoNear(amount) } NEAR`);
-  };
-  
-  return (
-    <button onclick={viewWnearBalance}>
-      View Alice's wNEAR balance
-    </button>
-  );
-}
-```
-
-#### Call change function
-```tsx
-const ExampleCallChangeFunction = () => {
-  const { selector } = useWalletSelector();
-  
-  const sendWnear = async () => {
-    const multiTransaction = MultiTransaction
-      .createTransaction('wrap.near')
-      .ft_transfer({
-        args: {
-          receiver_id: 'bob.near',
-          amount: Amount.parseYoctoNear(8.88)
-        },
-        gas: Gas.tera(10)
-      })
-    await selector!.send(multiTransaction)
-  };
-  
-  return (
-    <button onclick={sendWnear}>
-      Send 8.88 wNEAR to Bob
-    </button>
-  );
-}
-```
-
-#### Manual Convert Transactions
+### Manual Convert Transactions
 Maybe you don't want to use `MultiSendAccount` or `MultiSendWalletSelector`.
 
 ```typescript
 import { MultiTransaction, parseNearApiJsTransactions, parseNearWalletSelectorTransactions } from "multi-transaction";
 
+// Backend
 async function exampleManualConvertToNearApiJsTransactions(near: Near, multiTransaction: MultiTransaction) {
-  const account = await near.account('alice.near')
-  const transactions = parseNearApiJsTransactions(multiTransaction)
+  const account = await near.account('alice.near');
+  const transactions = parseNearApiJsTransactions(multiTransaction);
 
   for (const transaction of transactions) {
     // Won't call as `account.signAndSendTransaction` because is a protected method.
@@ -169,16 +185,17 @@ async function exampleManualConvertToNearApiJsTransactions(near: Near, multiTran
   }
 }
 
+// Frontend
 async function exampleManualConvertToNearWalletSelectorTransactions(selector: WalletSelector, multiTransaction: MultiTransaction) {
-  const wallet = await selector.wallet()
-  const transactions = parseNearWalletSelectorTransactions(multiTransaction)
+  const wallet = await selector.wallet();
+  const transactions = parseNearWalletSelectorTransactions(multiTransaction);
 
   if (transactions.length === 1) {
     // `signAndSendTransactions` deesn't use login key, so if transaction is not multiple, we suggest to use 
     // `signAndSendTransaction` instead.
-    await wallet.signAndSendTransaction(transactions[0])
+    await wallet.signAndSendTransaction(transactions[0]);
   } else {
-    await wallet.signAndSendTransactions({transactions})
+    await wallet.signAndSendTransactions({ transactions });
   }
 }
 ```
