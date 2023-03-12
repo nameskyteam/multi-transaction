@@ -47,7 +47,7 @@ export class MultiSendAccount extends Account {
     parse = parseJson,
     blockQuery,
   }: ViewFunctionOptions<Value, Args>): Promise<Value> {
-    return this.viewFunctionV2({
+    return super.viewFunctionV2({
       contractId,
       methodName,
       args: args ?? new Uint8Array(),

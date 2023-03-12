@@ -54,7 +54,7 @@ export async function setupMultiSendWalletSelector(
           return false;
         }
 
-        const accessKeys = await this.multiSendAccount(accountId).getAccessKeys();
+        const accessKeys = await this.near.account(accountId).then((account) => account.getAccessKeys());
         const loginAccessKey = accessKeys.find(
           (accessKey) =>
             PublicKey.fromString(accessKey.public_key).toString() === PublicKey.fromString(loginPublicKey).toString()
@@ -70,10 +70,6 @@ export async function setupMultiSendWalletSelector(
 
         const remainingAllowance = Amount.new(loginAccessKey.access_key.permission.FunctionCall.allowance);
         return remainingAllowance.gte(minAllowance);
-      },
-
-      multiSendAccount(accountId?: string): MultiSendAccount {
-        return new MultiSendAccount(this.near.connection, accountId);
       },
 
       async view<Value, Args>(options: ViewFunctionOptions<Value, Args>): Promise<Value> {
@@ -121,7 +117,7 @@ export async function setupMultiSendWalletSelector(
       },
 
       async sendWithLocalKey<Value>(signerID: string, transaction: MultiTransaction): Promise<Value> {
-        return this.multiSendAccount(signerID).send<Value>(transaction);
+        return new MultiSendAccount(this.near.connection, signerID).send<Value>(transaction);
       },
     };
   }
