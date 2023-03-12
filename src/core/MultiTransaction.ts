@@ -26,7 +26,7 @@ import { ActionFactory } from './ActionFactory';
 import { AccessKey, Action } from '../types';
 import { Amount } from '../utils';
 import { Gas } from '../utils';
-import { stringifyJsonOrBytes } from '../utils/serialize';
+import { stringifyJson, stringifyJsonOrBytes } from '../utils/serialize';
 import { PublicKey } from 'near-api-js/lib/utils';
 
 /**
@@ -181,7 +181,7 @@ export class MultiTransaction {
     return this.addActions(
       ActionFactory.functionCall({
         methodName,
-        args: args ? stringify(args) : stringifyJsonOrBytes({}), // Don't use `new Uint8Array()` by default because contract method may have optional args, it will still do JSON deserialization by `near_sdk`.
+        args: args ? stringify(args) : stringifyJson({}), // Don't use `new Uint8Array()` by default because contract method may have optional args, it will still do JSON deserialization by `near_sdk`.
         attachedDeposit,
         gas,
       })

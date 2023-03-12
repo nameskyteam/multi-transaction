@@ -4,7 +4,14 @@
 export function stringifyJsonOrBytes<T>(data: T): Buffer {
   const isUint8Array =
     (data as Uint8Array).byteLength && (data as Uint8Array).byteLength === (data as Uint8Array).length;
-  return isUint8Array ? Buffer.from(data as Uint8Array) : Buffer.from(JSON.stringify(data));
+  return isUint8Array ? Buffer.from(data as Uint8Array) : stringifyJson(data);
+}
+
+/**
+ * Serialize data in JSON format.
+ */
+export function stringifyJson<T>(data: T): Buffer {
+  return Buffer.from(JSON.stringify(data));
 }
 
 /**

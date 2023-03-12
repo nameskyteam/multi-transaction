@@ -13,7 +13,7 @@ import {
   parseOutcomeValue,
   throwReceiptErrorsIfAny,
 } from '../utils';
-import { parseJson, stringifyJsonOrBytes } from '../utils/serialize';
+import { parseJson, stringifyJson, stringifyJsonOrBytes } from '../utils/serialize';
 import { SendOptions, SendWithLocalKeyOptions } from '../types/enhancement';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
@@ -91,7 +91,7 @@ export async function setupMultiSendWalletSelector(
         return this.viewer.viewFunctionV2({
           contractId,
           methodName,
-          args: args ?? {}, // Don't use `new Uint8Array()` by default because contract method may have optional args, it will still do JSON deserialization by `near_sdk`.
+          args: args ?? stringifyJson({}), // Don't use `new Uint8Array()` by default because contract method may have optional args, it will still do JSON deserialization by `near_sdk`.
           stringify,
           parse,
           blockQuery,
