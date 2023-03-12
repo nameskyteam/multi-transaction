@@ -8,7 +8,7 @@ import {
   throwReceiptErrorsIfAny,
 } from '../utils';
 import { MultiTransaction } from './MultiTransaction';
-import { stringifyJsonOrBytes, parseJson } from '../utils/serialize';
+import { stringifyJsonOrBytes, parseJson, stringifyJson } from '../utils/serialize';
 import { Action } from 'near-api-js/lib/transaction';
 
 /**
@@ -56,7 +56,7 @@ export class MultiSendAccount extends Account {
     return super.viewFunctionV2({
       contractId,
       methodName,
-      args: args ?? new Uint8Array(),
+      args: args ?? stringifyJson({}), // Don't use `new Uint8Array()` by default because contract method may have optional args, it will still do JSON deserialization by `near_sdk`.
       stringify,
       parse,
       blockQuery,
