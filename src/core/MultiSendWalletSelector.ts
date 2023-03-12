@@ -91,7 +91,7 @@ export async function setupMultiSendWalletSelector(
         return this.viewer.viewFunctionV2({
           contractId,
           methodName,
-          args: args ?? new Uint8Array(),
+          args: args ?? {}, // Don't use `new Uint8Array()` by default because contract method may have optional args, it will still do JSON deserialization by `near_sdk`.
           stringify,
           parse,
           blockQuery,
