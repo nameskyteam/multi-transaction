@@ -177,7 +177,7 @@ async function exampleConstructComplexTransactions(near: Near) {
 ```
 
 ### Manual Convert Transactions
-Maybe you don't want to use `MultiSendAccount` or `MultiSendWalletSelector`.
+Maybe you don't want to use `MultiSendAccount` or `MultiSendWalletSelector`, you can convert transactions manually
 
 ```typescript
 import { MultiTransaction, parseNearApiJsTransactions, parseNearWalletSelectorTransactions } from "multi-transaction";
