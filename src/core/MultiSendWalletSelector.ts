@@ -4,10 +4,17 @@ import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { MultiSendWalletSelector } from '../types';
 import { MultiSendWalletSelectorConfig } from '../types';
-import { MultiSendAccount } from './MultiSendAccount';
-import { MultiSendWalletSelectorSendOptions, ViewFunctionOptions } from '../types';
+import { ViewFunctionOptions } from '../types';
 import { MultiTransaction } from './MultiTransaction';
-import { Amount, parseOutcomeValue, throwReceiptErrorsIfAny } from '../utils';
+import {
+  Amount,
+  parseNearApiJsTransactions,
+  parseNearWalletSelectorTransactions,
+  parseOutcomeValue,
+  throwReceiptErrorsIfAny,
+} from '../utils';
+import { parseJson, stringifyJsonOrBytes } from '../utils/serialize';
+import { SendOptions, SendWithLocalKeyOptions } from '../types/enhancement';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 
@@ -18,12 +25,13 @@ export async function setupMultiSendWalletSelector(
     const selector = await setupWalletSelector({ ...config });
 
     const keyStore = new keyStores.BrowserLocalStorageKeyStore(localStorage, config.keyStorePrefix);
+
     const near = new Near({
       ...resolveNetwork(config.network),
       keyStore,
     });
 
-    const viewer = new MultiSendAccount(near.connection);
+    const viewer = await near.account('');
 
     multiSendWalletSelector = {
       ...selector,
@@ -72,16 +80,27 @@ export async function setupMultiSendWalletSelector(
         return remainingAllowance.gte(minAllowance);
       },
 
-      async view<Value, Args>(options: ViewFunctionOptions<Value, Args>): Promise<Value> {
-        return this.viewer.view<Value, Args>(options);
+      async view<Value, Args>({
+        contractId,
+        methodName,
+        args,
+        stringify = stringifyJsonOrBytes,
+        parse = parseJson,
+        blockQuery,
+      }: ViewFunctionOptions<Value, Args>): Promise<Value> {
+        return this.viewer.viewFunctionV2({
+          contractId,
+          methodName,
+          args: args ?? new Uint8Array(),
+          stringify,
+          parse,
+          blockQuery,
+        });
       },
 
-      async send<Value>(
-        transaction: MultiTransaction,
-        options?: MultiSendWalletSelectorSendOptions<Value>
-      ): Promise<Value | undefined> {
+      async send<Value>(transaction: MultiTransaction, options?: SendOptions<Value>): Promise<Value | undefined> {
         const wallet = await this.wallet(options?.walletId);
-        const transactions = transaction.toNearWalletSelectorTransactions();
+        const transactions = parseNearWalletSelectorTransactions(transaction);
         let outcomes: FinalExecutionOutcome[] | undefined;
 
         if (transactions.length === 0) {
@@ -116,8 +135,29 @@ export async function setupMultiSendWalletSelector(
         return parseOutcomeValue<Value>(outcomes[outcomes.length - 1], options?.parse);
       },
 
-      async sendWithLocalKey<Value>(signerID: string, transaction: MultiTransaction): Promise<Value> {
-        return new MultiSendAccount(this.near.connection, signerID).send<Value>(transaction);
+      async sendWithLocalKey<Value>(
+        signerID: string,
+        multiTransaction: MultiTransaction,
+        options?: SendWithLocalKeyOptions<Value>
+      ): Promise<Value> {
+        const account = await this.near.account(signerID);
+        const outcomes: FinalExecutionOutcome[] = [];
+        const transactions = parseNearApiJsTransactions(multiTransaction);
+
+        if (transactions.length === 0) {
+          throw Error('Transaction not found.');
+        }
+
+        for (const transaction of transactions) {
+          const outcome = await account['signAndSendTransaction'](transaction);
+          outcomes.push(outcome);
+        }
+
+        if (options?.throwReceiptErrorsIfAny) {
+          throwReceiptErrorsIfAny(...outcomes);
+        }
+
+        return parseOutcomeValue<Value>(outcomes[outcomes.length - 1], options?.parse);
       },
     };
   }

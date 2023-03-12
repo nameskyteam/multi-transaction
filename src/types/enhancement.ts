@@ -1,14 +1,15 @@
 import { Modify } from '@near-wallet-selector/core/lib/utils.types';
 import { WalletSelector } from '@near-wallet-selector/core';
-import { Near } from 'near-api-js';
-import { MultiSendWalletSelectorSendOptions, ViewFunctionOptions } from './options';
+import { Account, Near } from 'near-api-js';
+import { ValueParser, ViewFunctionOptions } from './options';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
-import { MultiTransaction, MultiSendAccount } from '../core';
+import { MultiTransaction } from '../core';
+import { WalletSelectorParams } from '@near-wallet-selector/core/lib/wallet-selector.types';
 
 interface WalletSelectorEnhancement {
   near: Near;
   keyStore: BrowserLocalStorageKeyStore;
-  viewer: MultiSendAccount;
+  viewer: Account;
 
   /**
    * Account that current login
@@ -47,15 +48,10 @@ interface WalletSelectorEnhancement {
    * @param options Send options
    * @param options.walletId Wallet id, e.g. `near-wallet`
    * @param options.callbackUrl Callback when use web wallet
-   * @param options.throwReceiptErrorsIfAny If receipts in outcomes have any error, throw them. This is useful when
-   * outcome is successful but receipts have error accrued. e.g. Standard `ft_transfer_call` will never fail,
-   * but `ft_on_transfer` may have panic
+   * @param options.throwReceiptErrorsIfAny If receipts in outcomes have any error, throw them.
    * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
    */
-  send<Value>(
-    transaction: MultiTransaction,
-    options?: MultiSendWalletSelectorSendOptions<Value>
-  ): Promise<Value | undefined>;
+  send<Value>(transaction: MultiTransaction, options?: SendOptions<Value>): Promise<Value | undefined>;
 
   /**
    * Sign and send multiple transaction with local key in `this.keystore`.
@@ -64,11 +60,34 @@ interface WalletSelectorEnhancement {
    * 2. User doesn't use [NearWallet](https://wallet.near.org) or [MyNearWallet](https://mynearwallet.com).
    * @param signerId Signer id
    * @param transaction Multiple transaction
+   * @param options Send options
+   * @param options.throwReceiptErrorsIfAny If receipts in outcomes have any error, throw them.
+   * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
    */
-  sendWithLocalKey<Value>(signerId: string, transaction: MultiTransaction): Promise<Value>;
+  sendWithLocalKey<Value>(
+    signerId: string,
+    transaction: MultiTransaction,
+    options?: SendWithLocalKeyOptions<Value>
+  ): Promise<Value>;
 }
 
 /**
  * Wallet selector that support {@link `MultiTransaction`}
  */
 export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
+
+export interface MultiSendWalletSelectorConfig extends WalletSelectorParams {
+  keyStorePrefix?: string;
+}
+
+export interface SendOptions<Value> {
+  walletId?: string;
+  callbackUrl?: string;
+  throwReceiptErrorsIfAny?: boolean;
+  parse?: ValueParser<Value>;
+}
+
+export interface SendWithLocalKeyOptions<Value> {
+  throwReceiptErrorsIfAny?: boolean;
+  parse?: ValueParser<Value>;
+}
