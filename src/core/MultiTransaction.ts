@@ -181,7 +181,7 @@ export class MultiTransaction {
     return this.addActions(
       ActionFactory.functionCall({
         methodName,
-        args: args ? stringify(args) : stringifyJson({}), // Don't use `new Uint8Array()` by default because contract method may have optional args, it will still do JSON deserialization by `near_sdk`.
+        args: stringify(args ?? ({} as Args)),
         attachedDeposit,
         gas,
       })
