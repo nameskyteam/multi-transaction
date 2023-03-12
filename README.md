@@ -3,6 +3,14 @@ Make the construction of the transaction easier on [NEAR](https://near.org) bloc
 
 Support [near-api-js](https://github.com/near/near-api-js) and [wallet-selector](https://github.com/near/wallet-selector)
 
+## Dependencies
+```json
+{
+  "near-api-js": "^1.1.0",
+  "@near-wallet-selector/core": "^7.8.0"
+}
+```
+
 ## Install
 ```shell
 yarn add multi-transaction
@@ -180,7 +188,7 @@ async function exampleManualConvertToNearApiJsTransactions(near: Near, multiTran
   const transactions = parseNearApiJsTransactions(multiTransaction);
 
   for (const transaction of transactions) {
-    // Won't call as `account.signAndSendTransaction` because is a protected method.
+    // Won't call as `account.signAndSendTransaction` because it is a protected method.
     await account['signAndSendTransaction'](transaction);
   }
 }
