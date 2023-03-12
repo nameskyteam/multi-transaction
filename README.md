@@ -1,5 +1,5 @@
 # Multi Transaction
-Make the construction of the transaction easier on NEAR blockchain
+Make the construction of the transaction easier on [NEAR](https://near.org) blockchain
 
 Support [near-api-js](https://github.com/near/near-api-js) and [wallet-selector](https://github.com/near/wallet-selector)
 
