@@ -7,8 +7,20 @@ import {
 } from '../types';
 import * as nearApiJs from 'near-api-js';
 import { Transaction } from '../types';
+import { MultiTransaction } from '../core';
 
-export function parseNearApiJsAction(action: Action): NearApiJsActionLike {
+export function parseNearApiJsTransactions(multiTransaction: MultiTransaction): NearApiJsTransactionLike[] {
+  return multiTransaction.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));
+}
+
+function parseNearApiJsTransaction({ receiverId, actions }: Transaction): NearApiJsTransactionLike {
+  return {
+    receiverId,
+    actions: actions.map((action) => parseNearApiJsAction(action)),
+  };
+}
+
+function parseNearApiJsAction(action: Action): NearApiJsActionLike {
   switch (action.type) {
     case 'CreateAccount': {
       return nearApiJs.transactions.createAccount();
@@ -47,14 +59,33 @@ export function parseNearApiJsAction(action: Action): NearApiJsActionLike {
   }
 }
 
-export function parseNearApiJsTransaction({ receiverId, actions }: Transaction): NearApiJsTransactionLike {
+function parseNearApiJsAccessKey(accessKey: AccessKey): nearApiJs.transactions.AccessKey {
+  const { permission } = accessKey;
+  if (permission === 'FullAccess') {
+    return nearApiJs.transactions.fullAccessKey();
+  } else {
+    const { receiverId, methodNames, allowance } = permission;
+    return nearApiJs.transactions.functionCallAccessKey(receiverId, methodNames, allowance);
+  }
+}
+
+export function parseNearWalletSelectorTransactions(multiTransaction: MultiTransaction) {
+  return multiTransaction.toTransactions().map((transaction) => parseNearWalletSelectorTransaction(transaction));
+}
+
+function parseNearWalletSelectorTransaction({
+  signerId,
+  receiverId,
+  actions,
+}: Transaction): NearWalletSelectorTransactionLike {
   return {
+    signerId,
     receiverId,
-    actions: actions.map((action) => parseNearApiJsAction(action)),
+    actions: actions.map((action) => parseNearWalletSelectorAction(action)),
   };
 }
 
-export function parseNearWalletSelectorAction(action: Action): NearWalletSelectorActionLike {
+function parseNearWalletSelectorAction(action: Action): NearWalletSelectorActionLike {
   switch (action.type) {
     case 'CreateAccount': {
       return action;
@@ -102,27 +133,5 @@ export function parseNearWalletSelectorAction(action: Action): NearWalletSelecto
         },
       };
     }
-  }
-}
-
-export function parseNearWalletSelectorTransaction({
-  signerId,
-  receiverId,
-  actions,
-}: Transaction): NearWalletSelectorTransactionLike {
-  return {
-    signerId,
-    receiverId,
-    actions: actions.map((action) => parseNearWalletSelectorAction(action)),
-  };
-}
-
-function parseNearApiJsAccessKey(accessKey: AccessKey): nearApiJs.transactions.AccessKey {
-  const { permission } = accessKey;
-  if (permission === 'FullAccess') {
-    return nearApiJs.transactions.fullAccessKey();
-  } else {
-    const { receiverId, methodNames, allowance } = permission;
-    return nearApiJs.transactions.functionCallAccessKey(receiverId, methodNames, allowance);
   }
 }

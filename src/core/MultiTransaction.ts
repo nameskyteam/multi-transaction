@@ -8,8 +8,6 @@ import {
   NftTransferCallArgs,
   Transaction,
   FunctionCallOptions,
-  NearApiJsTransactionLike,
-  NearWalletSelectorTransactionLike,
   StorageDepositOptions,
   StorageWithdrawOptions,
   StorageUnregisterOptions,
@@ -26,7 +24,6 @@ import {
 } from '../types';
 import { ActionFactory } from './ActionFactory';
 import { AccessKey, Action } from '../types';
-import { parseNearApiJsTransaction, parseNearWalletSelectorTransaction } from '../utils';
 import { Amount } from '../utils';
 import { Gas } from '../utils';
 import { stringifyJsonOrBytes } from '../utils/serialize';
@@ -108,35 +105,6 @@ export class MultiTransaction {
 
   extend(other: MultiTransaction) {
     this.addTransactions(...other.toTransactions());
-  }
-
-  // ------------------------------------------- Transform -------------------------------------------------
-  /**
-   * Transform to `near-api-js` like transactions
-   * @example
-   * const account = near.account('example.near')
-   * for (transaction of multiTransaction.toNearApiJsTransactions()) {
-   *   await account.signAndSendTransaction(transaction)
-   * }
-   */
-  toNearApiJsTransactions(): NearApiJsTransactionLike[] {
-    return this.toTransactions().map((transaction) => {
-      return parseNearApiJsTransaction(transaction);
-    });
-  }
-
-  /**
-   * Transform to `wallet-selector` like transactions
-   * @example
-   * const wallet = await selector.wallet()
-   * await wallet.signAndSendTransactions({
-   *  transactions: multiTransaction.toNearWalletSelectorTransactions()
-   * })
-   */
-  toNearWalletSelectorTransactions(): NearWalletSelectorTransactionLike[] {
-    return this.toTransactions().map((transaction) => {
-      return parseNearWalletSelectorTransaction(transaction);
-    });
   }
 
   // -------------------------------------------- Action ---------------------------------------------------

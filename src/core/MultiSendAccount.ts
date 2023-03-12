@@ -1,10 +1,10 @@
 import { Account, Connection } from 'near-api-js';
-import { ViewFunctionOptions, MultiSendAccountSendOptions, SignAndSendTransactionOptions } from '../types';
+import { ViewFunctionOptions, ValueParser, NearApiJsTransactionLike } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
-import { SignAndSendTransactionsOptions } from '../types';
-import { parseOutcomeValue, throwReceiptErrorsIfAny } from '../utils';
+import { parseNearApiJsTransactions, parseOutcomeValue, throwReceiptErrorsIfAny } from '../utils';
 import { MultiTransaction } from './MultiTransaction';
 import { stringifyJsonOrBytes, parseJson } from '../utils/serialize';
+import { Action } from 'near-api-js/lib/transaction';
 
 /**
  * Account that support {@link `MultiTransaction`}
@@ -51,9 +51,9 @@ export class MultiSendAccount extends Account {
       contractId,
       methodName,
       args: args ?? new Uint8Array(),
-      blockQuery,
       stringify,
       parse,
+      blockQuery,
     });
   }
 
@@ -61,18 +61,31 @@ export class MultiSendAccount extends Account {
    * Send multiple transactions and return success value of last transaction
    * @param transaction Multiple transaction
    * @param options Send options
-   * @param options.throwReceiptErrorsIfAny If receipts in outcomes have any error, throw them. This is useful when
-   * outcome is successful but receipts have error accrued. e.g. Standard `ft_transfer_call` will never fail,
-   * but `ft_on_transfer` may have panic
+   * @param options.throwReceiptErrorsIfAny If receipts in outcomes have any error, throw them.
    * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
    */
-  async send<Value>(transaction: MultiTransaction, options?: MultiSendAccountSendOptions<Value>): Promise<Value> {
+  async send<Value>(transaction: MultiTransaction, options?: SendOptions<Value>): Promise<Value> {
     const outcomes = await this.signAndSendTransactions({
-      transactions: transaction.toNearApiJsTransactions(),
+      transactions: parseNearApiJsTransactions(transaction),
     });
     if (options?.throwReceiptErrorsIfAny) {
       throwReceiptErrorsIfAny(...outcomes);
     }
     return parseOutcomeValue<Value>(outcomes[outcomes.length - 1], options?.parse);
   }
+}
+
+interface SignAndSendTransactionOptions {
+  receiverId: string;
+  actions: Action[];
+  returnError?: boolean;
+}
+
+interface SignAndSendTransactionsOptions {
+  transactions: NearApiJsTransactionLike[];
+}
+
+interface SendOptions<Value> {
+  throwReceiptErrorsIfAny?: boolean;
+  parse?: ValueParser<Value>;
 }
