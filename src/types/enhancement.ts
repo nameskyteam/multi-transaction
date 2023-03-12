@@ -4,6 +4,7 @@ import { Account, Near } from 'near-api-js';
 import { ValueParser, ViewFunctionOptions } from './options';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
+import { WalletSelectorParams } from '@near-wallet-selector/core/lib/wallet-selector.types';
 
 interface WalletSelectorEnhancement {
   near: Near;
@@ -74,6 +75,10 @@ interface WalletSelectorEnhancement {
  * Wallet selector that support {@link `MultiTransaction`}
  */
 export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
+
+export interface MultiSendWalletSelectorConfig extends WalletSelectorParams {
+  keyStorePrefix?: string;
+}
 
 export interface SendOptions<Value> {
   walletId?: string;

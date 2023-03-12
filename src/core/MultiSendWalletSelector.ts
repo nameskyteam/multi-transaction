@@ -2,7 +2,7 @@ import { Network, NetworkId, setupWalletSelector } from '@near-wallet-selector/c
 import { keyStores, Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
-import { MultiSendWalletSelector, SendOptions, SendWithLocalKeyOptions } from '../types';
+import { MultiSendWalletSelector } from '../types';
 import { MultiSendWalletSelectorConfig } from '../types';
 import { ViewFunctionOptions } from '../types';
 import { MultiTransaction } from './MultiTransaction';
@@ -14,6 +14,7 @@ import {
   throwReceiptErrorsIfAny,
 } from '../utils';
 import { parseJson, stringifyJsonOrBytes } from '../utils/serialize';
+import { SendOptions, SendWithLocalKeyOptions } from '../types/enhancement';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 

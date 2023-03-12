@@ -1,7 +1,12 @@
 import { Account, Connection } from 'near-api-js';
-import { ViewFunctionOptions, ValueParser, NearApiJsTransactionLike } from '../types';
+import { ViewFunctionOptions, ValueParser } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
-import { parseNearApiJsTransactions, parseOutcomeValue, throwReceiptErrorsIfAny } from '../utils';
+import {
+  NearApiJsTransactionLike,
+  parseNearApiJsTransactions,
+  parseOutcomeValue,
+  throwReceiptErrorsIfAny,
+} from '../utils';
 import { MultiTransaction } from './MultiTransaction';
 import { stringifyJsonOrBytes, parseJson } from '../utils/serialize';
 import { Action } from 'near-api-js/lib/transaction';

@@ -17,14 +17,14 @@ export interface ViewFunctionOptions<Value, Args> {
   blockQuery?: BlockQuery;
 }
 
-export type ArgsStringifier<Args> = (args: Args) => Buffer;
-
-export type ValueParser<Value> = (response: Uint8Array) => Value;
-
-export type BlockQuery = BlockReference;
-
 export type ArgsOptions<Args> = Pick<FunctionCallOptions<Args>, 'args'>;
 
 export type AttachedDepositOptions = Pick<FunctionCallOptions<unknown>, 'attachedDeposit'>;
 
 export type GasOptions = Pick<FunctionCallOptions<unknown>, 'gas'>;
+
+export type ArgsStringifier<Args> = (args: Args) => Buffer;
+
+export type ValueParser<Value> = (response: Uint8Array) => Value;
+
+export type BlockQuery = BlockReference;

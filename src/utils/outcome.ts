@@ -1,6 +1,5 @@
 import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/providers';
 import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
-import { ErrorMessage } from '../types';
 import { ValueParser } from '../types';
 import { parseJson } from './serialize';
 
@@ -48,4 +47,11 @@ function throwReceiptErrors(errors: ErrorMessage[]) {
   if (errors.length !== 0) {
     throw Error(JSON.stringify(errors));
   }
+}
+
+interface ErrorMessage {
+  index: number;
+  kind: {
+    ExecutionError: string;
+  };
 }

@@ -1,13 +1,8 @@
 import { AccessKey, Action } from '../types';
-import {
-  NearApiJsActionLike,
-  NearApiJsTransactionLike,
-  NearWalletSelectorActionLike,
-  NearWalletSelectorTransactionLike,
-} from '../types';
 import * as nearApiJs from 'near-api-js';
 import { Transaction } from '../types';
 import { MultiTransaction } from '../core';
+import * as nearWalletSelector from '@near-wallet-selector/core';
 
 export function parseNearApiJsTransactions(multiTransaction: MultiTransaction): NearApiJsTransactionLike[] {
   return multiTransaction.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));
@@ -135,3 +130,18 @@ function parseNearWalletSelectorAction(action: Action): NearWalletSelectorAction
     }
   }
 }
+
+export interface NearApiJsTransactionLike {
+  receiverId: string;
+  actions: NearApiJsActionLike[];
+}
+
+type NearApiJsActionLike = nearApiJs.transactions.Action;
+
+export interface NearWalletSelectorTransactionLike {
+  signerId?: string;
+  receiverId: string;
+  actions: NearWalletSelectorActionLike[];
+}
+
+type NearWalletSelectorActionLike = nearWalletSelector.Action;
