@@ -30,12 +30,6 @@ interface WalletSelectorEnhancement {
   isLoginAccessKeyActive(accountId?: string, minAllowance?: string): Promise<boolean>;
 
   /**
-   * New a `MultiSendAccount` object
-   * @param accountId Account id
-   */
-  multiSendAccount(accountId?: string): MultiSendAccount;
-
-  /**
    * View a contract method
    * @param options View options
    * @param options.contractId Contract id
