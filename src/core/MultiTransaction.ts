@@ -21,12 +21,13 @@ import {
   NftApproveOptions,
   NftRevokeOptions,
   NftRevokeAllOptions,
+  EmptyObject,
 } from '../types';
 import { ActionFactory } from './ActionFactory';
 import { AccessKey, Action } from '../types';
 import { Amount } from '../utils';
 import { Gas } from '../utils';
-import { stringifyJson, stringifyJsonOrBytes } from '../utils/serialize';
+import { stringifyJsonOrBytes } from '../utils/serialize';
 import { PublicKey } from 'near-api-js/lib/utils';
 
 /**
@@ -166,12 +167,12 @@ export class MultiTransaction {
    * Add `FunctionCall` Action
    * @param options FunctionCall options
    * @param options.methodName Method name
-   * @param options.args `Uint8Array` or other type args
+   * @param options.args `Uint8Array` or other type args, default `{}`
    * @param options.attachedDeposit Attached yocto NEAR amount. Default 0 yocto NEAR
    * @param options.gas Prepaid gas. Default 30 Tera
    * @param options.stringify Serialize args to bytes. Default will skip `Uint8Array` or serialize other type args in JSON format
    */
-  functionCall<Args>({
+  functionCall<Args = EmptyObject>({
     methodName,
     args,
     attachedDeposit = Amount.ZERO,
