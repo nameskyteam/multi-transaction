@@ -2,7 +2,7 @@ import { Network, NetworkId, setupWalletSelector } from '@near-wallet-selector/c
 import { keyStores, Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
-import { MultiSendWalletSelector } from '../types';
+import { EmptyObject, MultiSendWalletSelector } from '../types';
 import { MultiSendWalletSelectorConfig } from '../types';
 import { ViewFunctionOptions } from '../types';
 import { MultiTransaction } from './MultiTransaction';
@@ -47,7 +47,10 @@ export async function setupMultiSendWalletSelector(
         return this.store.getState().accounts.map((accountState) => accountState.accountId);
       },
 
-      async isLoginAccessKeyActive(accountId?: string, minAllowance = Amount.parseYoctoNear('0.01')): Promise<boolean> {
+      async isLoginAccessKeyActive(
+        accountId?: string,
+        requiredMinAllowance = Amount.parseYoctoNear('0.01')
+      ): Promise<boolean> {
         accountId = accountId ?? this.getActiveAccountId();
         if (!accountId) {
           return false;
@@ -77,10 +80,10 @@ export async function setupMultiSendWalletSelector(
         }
 
         const remainingAllowance = Amount.new(loginAccessKey.access_key.permission.FunctionCall.allowance);
-        return remainingAllowance.gte(minAllowance);
+        return remainingAllowance.gte(requiredMinAllowance);
       },
 
-      async view<Value, Args>({
+      async view<Value, Args = EmptyObject>({
         contractId,
         methodName,
         args,

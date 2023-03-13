@@ -28,3 +28,5 @@ export type ArgsStringifier<Args> = (args: Args) => Buffer;
 export type ValueParser<Value> = (response: Uint8Array) => Value;
 
 export type BlockQuery = BlockReference;
+
+export type EmptyObject = Record<string, never>;
