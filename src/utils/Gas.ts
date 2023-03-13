@@ -5,6 +5,9 @@ export type GasSource = Gas | BigSource;
 export class Gas {
   inner: Big;
 
+  /**
+   * 30 tera gas
+   */
   static DEFAULT = Gas.tera(30);
 
   private constructor(n: GasSource) {
@@ -63,15 +66,44 @@ export class Gas {
     return this.inner.eq(Gas.new(n).inner);
   }
 
+  /**
+   * Fix to `string` type
+   * @example
+   * const gas = Gas.parse(5); // Gas(5000000000000)
+   * const gasFixed = gas.toFixed(); // '5000000000000'
+   */
   toFixed(): string {
     return this.inner.toFixed(0, Big.roundDown);
   }
 
-  static parse(tera: GasSource): Gas {
-    return Gas.new(tera).mulPow(10, 12);
+  /**
+   * Parse from tera units
+   * @example
+   * const gas = Gas.parse(5); // Gas(5000000000000)
+   * @param teraGas Gas in tera units
+   */
+  static parse(teraGas: GasSource): Gas {
+    return Gas.new(teraGas).mulPow(10, 12);
   }
 
-  static tera(_: GasSource): string {
-    return Gas.parse(_).toFixed();
+  /**
+   * Format in tera units
+   * @example
+   * const gas = Gas.parse(5); // Gas(5000000000000)
+   * const teraGas = Gas.format(gas); // Gas(5)
+   * @param gas Gas without units
+   */
+  static format(gas: GasSource): Gas {
+    return Gas.new(gas).divPow(10, 12);
+  }
+
+  /**
+   * Parse from tera units and fix to `string` type
+   * @example
+   * const gasFixed = Gas.tera(5); // '5000000000000'
+   * @param teraGas Gas in tera units
+   */
+  static tera(teraGas: GasSource): string {
+    return Gas.parse(teraGas).toFixed();
   }
 }

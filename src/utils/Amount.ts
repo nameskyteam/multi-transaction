@@ -87,27 +87,70 @@ export class Amount {
       })[0];
   }
 
+  /**
+   * Round
+   * @param dp decimal places
+   */
   round(dp: number): Amount {
     return new Amount(this.inner.round(dp, Big.roundDown));
   }
 
+  /**
+   * Fix to `string` type, round down for decimal places
+   * @example
+   * const USDT_DECIMALS = 6;
+   * const amount = Amount.parse(5, USDT_DECIMALS); //Amount(5000000)
+   * const amountFixed = amount.toFixed(); // '5000000'
+   * @param dp Decimal places
+   */
   toFixed(dp?: number): string {
     return this.inner.toFixed(dp, Big.roundDown);
   }
 
-  static parse(readable: AmountSource, decimals: number): Amount {
-    return Amount.new(readable).mulPow(10, decimals).round(0);
+  /**
+   * Parse from specify units
+   * @example
+   * const USDT_DECIMALS = 6;
+   * const amount = Amount.parse(5, USDT_DECIMALS); //Amount(5000000)
+   * @param humanReadAmount human read amount
+   * @param decimals
+   */
+  static parse(humanReadAmount: AmountSource, decimals: number): Amount {
+    return Amount.new(humanReadAmount).mulPow(10, decimals).round(0);
   }
 
+  /**
+   * Format in specify units
+   * @example
+   * const USDT_DECIMALS = 6;
+   * const amount = Amount.parse(5, USDT_DECIMALS); //Amount(5000000)
+   * const humanReadAmount = Amount.format(amount, USDT_DECIMALS); // Amount(5)
+   * @param amount amount
+   * @param decimals Units decimals
+   */
   static format(amount: AmountSource, decimals: number): Amount {
     return Amount.new(amount).divPow(10, decimals);
   }
 
-  static parseYoctoNear(readable: AmountSource): string {
-    return Amount.parse(readable, Amount.NEAR_DECIMALS).toFixed();
+  /**
+   * Parse from NEAR units and fix to `string` type
+   * @example
+   * const yoctoAmount = Amount.parseYoctoNear(5); // '5000000000000000000000000'
+   * @param nearAmount amount in NEAR units
+   */
+  static parseYoctoNear(nearAmount: AmountSource): string {
+    return Amount.parse(nearAmount, Amount.NEAR_DECIMALS).toFixed();
   }
 
-  static formatYoctoNear(amount: AmountSource, dp?: number): string {
-    return Amount.format(amount, Amount.NEAR_DECIMALS).toFixed(dp);
+  /**
+   * Format in NEAR units and fix to `string` type
+   * @example
+   * const yoctoAmount = Amount.parseYoctoNear(5); // '5000000000000000000000000'
+   * const nearAmount = Amount.formatYoctoNear(yoctoAmount); // '5'
+   * @param yoctoAmount Amount in yocto units
+   * @param dp Decimal places
+   */
+  static formatYoctoNear(yoctoAmount: AmountSource, dp?: number): string {
+    return Amount.format(yoctoAmount, Amount.NEAR_DECIMALS).toFixed(dp);
   }
 }
