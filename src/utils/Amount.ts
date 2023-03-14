@@ -33,6 +33,10 @@ export class Amount {
     return Amount.new(this.inner.sub(n instanceof Amount ? n.inner : n));
   }
 
+  shift(n: number): Amount {
+    return Amount.new(this).mulPow(10, n);
+  }
+
   pow(exp: number): Amount {
     return Amount.new(this.inner.pow(exp));
   }
@@ -42,7 +46,7 @@ export class Amount {
   }
 
   divPow(base: AmountSource, exp: number): Amount {
-    return this.div(Amount.new(base).pow(exp));
+    return this.mulPow(base, -exp);
   }
 
   gt(n: AmountSource): boolean {
@@ -116,7 +120,7 @@ export class Amount {
    * @param decimals
    */
   static parse(humanReadAmount: AmountSource, decimals: number): Amount {
-    return Amount.new(humanReadAmount).mulPow(10, decimals).round(0);
+    return Amount.new(humanReadAmount).shift(decimals).round(0);
   }
 
   /**
@@ -129,7 +133,7 @@ export class Amount {
    * @param decimals Units decimals
    */
   static format(amount: AmountSource, decimals: number): Amount {
-    return Amount.new(amount).divPow(10, decimals);
+    return Amount.new(amount).shift(-decimals);
   }
 
   /**

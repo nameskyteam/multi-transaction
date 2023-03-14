@@ -38,12 +38,16 @@ export class Gas {
     return Gas.new(this.inner.pow(exp));
   }
 
+  shift(n: number): Gas {
+    return Gas.new(this).mulPow(10, n);
+  }
+
   mulPow(base: GasSource, exp: number): Gas {
     return this.mul(Gas.new(base).pow(exp));
   }
 
   divPow(base: GasSource, exp: number): Gas {
-    return this.div(Gas.new(base).pow(exp));
+    return this.mulPow(base, -exp);
   }
 
   gt(n: GasSource): boolean {
@@ -83,7 +87,7 @@ export class Gas {
    * @param teraGas Gas in tera units
    */
   static parse(teraGas: GasSource): Gas {
-    return Gas.new(teraGas).mulPow(10, 12);
+    return Gas.new(teraGas).shift(12);
   }
 
   /**
@@ -94,7 +98,7 @@ export class Gas {
    * @param gas Gas without units
    */
   static format(gas: GasSource): Gas {
-    return Gas.new(gas).divPow(10, 12);
+    return Gas.new(gas).shift(-12);
   }
 
   /**
