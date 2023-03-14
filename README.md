@@ -7,7 +7,7 @@ Support [near-api-js](https://github.com/near/near-api-js) and [wallet-selector]
 ```json
 {
   "near-api-js": "^1.1.0",
-  "@near-wallet-selector/core": "^7.8.0"
+  "@near-wallet-selector/core": "^7.9.0"
 }
 ```
 
