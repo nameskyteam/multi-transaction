@@ -1,6 +1,8 @@
 /**
  * Serialize data in JSON format, if data type is `Uint8Array`, skip serialize.
  */
+import { Buffer } from 'buffer';
+
 export function stringifyJsonOrBytes<T>(data: T): Buffer {
   const isUint8Array =
     (data as Uint8Array).byteLength && (data as Uint8Array).byteLength === (data as Uint8Array).length;

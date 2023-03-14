@@ -2,6 +2,7 @@ import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/pro
 import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
 import { ValueParser } from '../types';
 import { parseJson } from './serialize';
+import { Buffer } from 'buffer';
 
 /**
  * Parse success value from outcome.

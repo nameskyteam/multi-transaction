@@ -1,4 +1,5 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
+import { Buffer } from 'buffer';
 
 export interface FunctionCallOptions<Args> {
   methodName: string;
