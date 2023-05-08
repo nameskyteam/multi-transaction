@@ -83,9 +83,15 @@ interface WalletSelectorEnhancement {
  */
 export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
 
-export interface MultiSendWalletSelectorConfig extends WalletSelectorParams {
+export interface WalletSelectorParamsExtra {
   keyStorePrefix?: string;
 }
+
+export type MultiSendWalletSelectorParams = WalletSelectorParams & WalletSelectorParamsExtra;
+
+export type MultiSendWalletSelectorParamsWithSelector = { selector: WalletSelector } & WalletSelectorParamsExtra;
+
+export type MultiSendWalletSelectorConfig = MultiSendWalletSelectorParams | MultiSendWalletSelectorParamsWithSelector;
 
 export interface SendOptions<Value> {
   walletId?: string;
