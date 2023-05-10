@@ -21,11 +21,11 @@ import {
   NftRevokeOptions,
   NftRevokeAllOptions,
   EmptyObject,
-} from '~/types';
+} from '../types';
 import { ActionFactory } from './ActionFactory';
-import { Transaction, AccessKey, Action } from '~/types';
-import { Amount, Gas } from '~/utils';
-import { stringifyJsonOrBytes } from '~/utils/serialize';
+import { Transaction, AccessKey, Action } from '../types';
+import { Amount, Gas } from '../utils';
+import { stringifyJsonOrBytes } from '../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
 
 /**

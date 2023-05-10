@@ -1,5 +1,5 @@
-import { NftTransferArgs, NftTransferCallArgs, NftApproveArgs, NftRevokeArgs, NftRevokeAllArgs } from '~/types/nep171';
-import { AttachedDepositOptions, GasOptions, ArgsOptions } from '~/types/options';
+import { NftTransferArgs, NftTransferCallArgs, NftApproveArgs, NftRevokeArgs, NftRevokeAllArgs } from './args';
+import { AttachedDepositOptions, GasOptions, ArgsOptions } from '../options';
 
 export interface NftTransferOptions extends Required<ArgsOptions<NftTransferArgs>>, GasOptions {}
 

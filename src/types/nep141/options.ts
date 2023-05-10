@@ -1,5 +1,5 @@
-import { FtTransferArgs, FtTransferCallArgs } from '~/types/nep141';
-import { GasOptions, ArgsOptions } from '~/types/options';
+import { FtTransferArgs, FtTransferCallArgs } from './args';
+import { GasOptions, ArgsOptions } from '../options';
 
 export interface FtTransferOptions extends Required<ArgsOptions<FtTransferArgs>>, GasOptions {}
 

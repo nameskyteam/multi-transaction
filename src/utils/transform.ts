@@ -1,7 +1,7 @@
-import { AccessKey, Action } from '~/types';
+import { AccessKey, Action } from '../types';
 import * as nearApiJs from 'near-api-js';
-import { Transaction } from '~/types';
-import { MultiTransaction } from '~/core';
+import { Transaction } from '../types';
+import { MultiTransaction } from '../core';
 import * as nearWalletSelector from '@near-wallet-selector/core';
 
 export function parseNearApiJsTransactions(multiTransaction: MultiTransaction): NearApiJsTransactionLike[] {

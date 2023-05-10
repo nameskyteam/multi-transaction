@@ -1,5 +1,5 @@
-import { StorageDepositArgs, StorageUnregisterArgs, StorageWithdrawArgs } from '~/types/nep145';
-import { ArgsOptions, AttachedDepositOptions, GasOptions } from '~/types/options';
+import { StorageDepositArgs, StorageUnregisterArgs, StorageWithdrawArgs } from './args';
+import { ArgsOptions, AttachedDepositOptions, GasOptions } from '../options';
 
 export interface StorageDepositOptions
   extends ArgsOptions<StorageDepositArgs>,

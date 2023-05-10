@@ -2,9 +2,9 @@ import { setupWalletSelector, WalletSelector } from '@near-wallet-selector/core'
 import { keyStores, Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
-import { EmptyObject, MultiSendWalletSelector } from '~/types';
-import { MultiSendWalletSelectorConfig } from '~/types';
-import { ViewFunctionOptions } from '~/types';
+import { EmptyObject, MultiSendWalletSelector } from '../types';
+import { MultiSendWalletSelectorConfig } from '../types';
+import { ViewFunctionOptions } from '../types';
 import { MultiTransaction } from './MultiTransaction';
 import {
   Amount,
@@ -12,9 +12,9 @@ import {
   parseNearWalletSelectorTransactions,
   parseOutcomeValue,
   throwReceiptErrorsIfAny,
-} from '~/utils';
-import { parseJson, stringifyJsonOrBytes } from '~/utils/serialize';
-import { SendOptions, SendWithLocalKeyOptions } from '~/types/enhancement';
+} from '../utils';
+import { parseJson, stringifyJsonOrBytes } from '../utils';
+import { SendOptions, SendWithLocalKeyOptions } from '../types/enhancement';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 
