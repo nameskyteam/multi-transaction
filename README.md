@@ -199,7 +199,7 @@ async function exampleManualConvertToNearWalletSelectorTransactions(selector: Wa
   const transactions = parseNearWalletSelectorTransactions(multiTransaction);
 
   if (transactions.length === 1) {
-    // `signAndSendTransactions` deesn't use login key, so if transaction is not multiple, we suggest to use 
+    // `signAndSendTransactions` doesn't use login key, so if transaction is not multiple, we suggest to use 
     // `signAndSendTransaction` instead.
     await wallet.signAndSendTransaction(transactions[0]);
   } else {
