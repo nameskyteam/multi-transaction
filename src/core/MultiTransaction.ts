@@ -6,7 +6,6 @@ import {
   NftRevokeArgs,
   NftTransferArgs,
   NftTransferCallArgs,
-  Transaction,
   FunctionCallOptions,
   StorageDepositOptions,
   StorageWithdrawOptions,
@@ -22,12 +21,11 @@ import {
   NftRevokeOptions,
   NftRevokeAllOptions,
   EmptyObject,
-} from '../types';
+} from '~/types';
 import { ActionFactory } from './ActionFactory';
-import { AccessKey, Action } from '../types';
-import { Amount } from '../utils';
-import { Gas } from '../utils';
-import { stringifyJsonOrBytes } from '../utils/serialize';
+import { Transaction, AccessKey, Action } from '~/types';
+import { Amount, Gas } from '~/utils';
+import { stringifyJsonOrBytes } from '~/utils/serialize';
 import { PublicKey } from 'near-api-js/lib/utils';
 
 /**
@@ -202,7 +200,7 @@ export class MultiTransaction {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',
       args,
-      attachedDeposit: attachedDeposit ?? Amount.ONE_YOCTO,
+      attachedDeposit,
       gas,
     });
   }
@@ -267,7 +265,7 @@ export class MultiTransaction {
     return this.functionCall<NftApproveArgs>({
       methodName: 'nft_approve',
       args,
-      attachedDeposit: attachedDeposit ?? Amount.ONE_YOCTO,
+      attachedDeposit: attachedDeposit ?? Amount.parseYoctoNear('0.005'),
       gas,
     });
   }

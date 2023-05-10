@@ -1,15 +1,15 @@
 import { Account, Connection } from 'near-api-js';
-import { ViewFunctionOptions, ValueParser, EmptyObject } from '../types';
+import { ViewFunctionOptions, ValueParser, EmptyObject } from '~/types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   NearApiJsTransactionLike,
   parseNearApiJsTransactions,
   parseOutcomeValue,
   throwReceiptErrorsIfAny,
-} from '../utils';
-import { MultiTransaction } from './MultiTransaction';
-import { stringifyJsonOrBytes, parseJson } from '../utils/serialize';
+} from '~/utils';
+import { stringifyJsonOrBytes, parseJson } from '~/utils/serialize';
 import { Action } from 'near-api-js/lib/transaction';
+import { MultiTransaction } from '~/core/MultiTransaction';
 
 /**
  * Account that support {@link `MultiTransaction`}

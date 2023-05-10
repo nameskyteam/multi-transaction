@@ -1,9 +1,9 @@
 import { Modify } from '@near-wallet-selector/core/lib/utils.types';
 import { WalletSelector } from '@near-wallet-selector/core';
 import { Account, Near } from 'near-api-js';
-import { EmptyObject, ValueParser, ViewFunctionOptions } from './options';
+import { EmptyObject, ValueParser, ViewFunctionOptions } from '~/types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
-import { MultiTransaction } from '../core';
+import { MultiTransaction } from '~/core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/lib/wallet-selector.types';
 
 interface WalletSelectorEnhancement {
