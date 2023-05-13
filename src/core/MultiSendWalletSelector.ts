@@ -85,7 +85,13 @@ export async function setupMultiSendWalletSelector(
           return true;
         }
 
-        const remainingAllowance = Amount.new(loginAccessKey.access_key.permission.FunctionCall.allowance);
+        const allowance = loginAccessKey.access_key.permission.FunctionCall.allowance;
+
+        if (!allowance) {
+          return true;
+        }
+
+        const remainingAllowance = Amount.new(allowance);
         return remainingAllowance.gte(requiredMinAllowance);
       },
 
