@@ -54,6 +54,10 @@ export class MultiTransaction {
     return MultiTransaction.new().createTransaction(receiverId, signerId);
   }
 
+  /**
+   * current index
+   * @private
+   */
   private currentIndex(): number {
     return this.transactions.length - 1;
   }
@@ -66,10 +70,42 @@ export class MultiTransaction {
   }
 
   /**
+   * If it has only one transaction.
+   */
+  isSingle(): boolean {
+    return this.currentIndex() === 0;
+  }
+
+  /**
    * If it has no transaction.
    */
   isEmpty(): boolean {
-    return this.currentIndex() === -1;
+    return this.currentIndex() < 0;
+  }
+
+  /**
+   * Count transaction
+   */
+  transactionCount(): number {
+    return this.transactions.length;
+  }
+
+  /**
+   * Count action of transaction
+   * @param transactionIndex
+   */
+  actionCount(transactionIndex: number): number {
+    if (transactionIndex > this.currentIndex()) {
+      throw Error(`Wrong transaction index`);
+    }
+    return this.transactions[transactionIndex].actions.length;
+  }
+
+  /**
+   * Count action of current transaction
+   */
+  currentActionCount(): number {
+    return this.actionCount(this.currentIndex());
   }
 
   /**
