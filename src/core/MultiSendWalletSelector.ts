@@ -151,11 +151,11 @@ export async function setupMultiSendWalletSelector(
       },
 
       async sendWithLocalKey<Value>(
-        signerID: string,
+        signerId: string,
         multiTransaction: MultiTransaction,
         options?: SendWithLocalKeyOptions<Value>
       ): Promise<Value> {
-        const account = await this.near.account(signerID);
+        const account = await this.near.account(signerId);
         const outcomes: FinalExecutionOutcome[] = [];
         const transactions = parseNearApiJsTransactions(multiTransaction);
 
