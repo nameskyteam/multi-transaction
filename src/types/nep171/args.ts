@@ -39,3 +39,20 @@ export interface NftIsApprovedArgs {
 }
 
 export interface NftMetadataArgs {}
+
+export interface NftTotalSupplyArgs {}
+
+export interface NftTokensArgs {
+  from_index?: string;
+  limit?: number;
+}
+
+export interface NftSupplyForOwnerArgs {
+  account_id: string;
+}
+
+export interface NftTokensForOwnerArgs {
+  account_id: string;
+  from_index?: string;
+  limit?: number;
+}
