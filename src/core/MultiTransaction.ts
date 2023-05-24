@@ -51,7 +51,7 @@ export class MultiTransaction {
    * @param signerId transaction signer id
    */
   static createTransaction(receiverId: string, signerId?: string): MultiTransaction {
-    return MultiTransaction.new().createTransaction(receiverId, signerId);
+    return MultiTransaction.new().appendTransaction(receiverId, signerId);
   }
 
   /**
@@ -109,11 +109,11 @@ export class MultiTransaction {
   }
 
   /**
-   * Create a new transaction follow the previous transaction
+   * Append a new transaction follow the previous transaction
    * @param receiverId transaction receiver id
    * @param signerId transaction signer id
    */
-  createTransaction(receiverId: string, signerId?: string): MultiTransaction {
+  appendTransaction(receiverId: string, signerId?: string): MultiTransaction {
     return this.addTransactions({ signerId, receiverId, actions: [] });
   }
 

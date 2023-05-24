@@ -157,7 +157,7 @@ async function exampleConstructComplexTransactions(near: Near) {
     .transfer(Amount.parseYoctoNear('0.1'))
     .addKey('ed25519:<data>', { permission: 'FullAccess' })
     // 2nd transaction for sending USDT.e
-    .createTransaction('dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near')
+    .appendTransaction('dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near')
     .storage_deposit({
       args: {
         account_id: 'honey.alice.near'

@@ -1,6 +1,6 @@
 {
-  "name": "multi-transaction",
-  "version": "2.0.3",
+  "name": "@corndao/near-multi-tx",
+  "version": "0.0.1",
   "license": "MIT License",
   "description": "Make the construction of the transaction easier on NEAR blockchain.",
   "main": "dist/index.js",
