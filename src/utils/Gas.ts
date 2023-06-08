@@ -1,117 +1,42 @@
-import Big, { BigSource, Comparison } from 'big.js';
+import { BigSource } from 'big.js';
+import { BigWrapper } from './BigWrapper';
 
-export type GasSource = Gas | BigSource;
-
-export class Gas {
-  inner: Big;
-
-  /**
-   * 30 tera gas
-   */
+export class Gas extends BigWrapper<Gas> {
   static DEFAULT = Gas.tera(30);
 
-  private constructor(n: GasSource) {
-    this.inner = new Big(n instanceof Gas ? n.inner : n);
+  private constructor(n: BigSource) {
+    super(n);
   }
 
-  static new(n: GasSource): Gas {
+  /**
+   * construct a `Gas` instance
+   * @param n
+   */
+  static from(n: BigSource): Gas {
     return new Gas(n);
   }
 
-  mul(n: GasSource): Gas {
-    return Gas.new(this.inner.mul(n instanceof Gas ? n.inner : n));
-  }
-
-  div(n: GasSource): Gas {
-    return Gas.new(this.inner.div(n instanceof Gas ? n.inner : n));
-  }
-
-  add(n: GasSource): Gas {
-    return Gas.new(this.inner.add(n instanceof Gas ? n.inner : n));
-  }
-
-  sub(n: GasSource): Gas {
-    return Gas.new(this.inner.sub(n instanceof Gas ? n.inner : n));
-  }
-
-  pow(exp: number): Gas {
-    return Gas.new(this.inner.pow(exp));
-  }
-
-  shift(n: number): Gas {
-    return Gas.new(this).mulPow(10, n);
-  }
-
-  mulPow(base: GasSource, exp: number): Gas {
-    return this.mul(Gas.new(base).pow(exp));
-  }
-
-  divPow(base: GasSource, exp: number): Gas {
-    return this.mulPow(base, -exp);
-  }
-
-  gt(n: GasSource): boolean {
-    return this.inner.gt(Gas.new(n).inner);
-  }
-
-  gte(n: GasSource): boolean {
-    return this.inner.gte(Gas.new(n).inner);
-  }
-
-  lt(n: GasSource): boolean {
-    return this.inner.lt(Gas.new(n).inner);
-  }
-
-  lte(n: GasSource): boolean {
-    return this.inner.lte(Gas.new(n).inner);
-  }
-
-  eq(n: GasSource): boolean {
-    return this.inner.eq(Gas.new(n).inner);
-  }
-
-  cmp(n: GasSource): Comparison {
-    return this.inner.cmp(Gas.new(n).inner);
+  protected from(n: BigSource): Gas {
+    return Gas.from(n);
   }
 
   /**
-   * Fix to `string` type
+   * parse from tera units
    * @example
-   * const gas = Gas.parse(5); // Gas(5000000000000)
-   * const gasFixed = gas.toFixed(); // '5000000000000'
+   * const rawGas = Gas.parse('5'); // Gas('5000000000000')
+   * @param gas tera gas
    */
-  toFixed(): string {
-    return this.inner.toFixed(0, Big.roundDown);
+  static parse(gas: BigSource): Gas {
+    return Gas.from(gas).shift(12).round(0);
   }
 
   /**
-   * Parse from tera units
+   * parse from tera units and fix to `string` type
    * @example
-   * const gas = Gas.parse(5); // Gas(5000000000000)
-   * @param teraGas Gas in tera units
+   * const rawGas = Gas.tera('5'); // '5000000000000'
+   * @param gas tera gas
    */
-  static parse(teraGas: GasSource): Gas {
-    return Gas.new(teraGas).shift(12);
-  }
-
-  /**
-   * Format in tera units
-   * @example
-   * const gas = Gas.parse(5); // Gas(5000000000000)
-   * const teraGas = Gas.format(gas); // Gas(5)
-   * @param gas Gas without units
-   */
-  static format(gas: GasSource): Gas {
-    return Gas.new(gas).shift(-12);
-  }
-
-  /**
-   * Parse from tera units and fix to `string` type
-   * @example
-   * const gasFixed = Gas.tera(5); // '5000000000000'
-   * @param teraGas Gas in tera units
-   */
-  static tera(teraGas: GasSource): string {
-    return Gas.parse(teraGas).toFixed();
+  static tera(gas: BigSource): string {
+    return Gas.parse(gas).toFixed();
   }
 }

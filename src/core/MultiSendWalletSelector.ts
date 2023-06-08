@@ -91,7 +91,7 @@ export async function setupMultiSendWalletSelector(
           return true;
         }
 
-        const remainingAllowance = Amount.new(allowance);
+        const remainingAllowance = Amount.from(allowance);
         return remainingAllowance.gte(requiredMinAllowance);
       },
 

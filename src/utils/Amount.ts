@@ -1,158 +1,69 @@
-import Big, { BigSource, Comparison } from 'big.js';
+import { BigSource } from 'big.js';
+import { BigWrapper } from './BigWrapper';
 
-export type AmountSource = Amount | BigSource;
-
-export class Amount {
-  inner: Big;
-
+export class Amount extends BigWrapper<Amount> {
   static NEAR_DECIMALS = 24;
   static ZERO = '0';
   static ONE_YOCTO = '1';
 
-  private constructor(n: AmountSource) {
-    this.inner = new Big(n instanceof Amount ? n.inner : n);
+  private constructor(n: BigSource) {
+    super(n);
   }
 
-  static new(n: AmountSource): Amount {
+  /**
+   * construct an `Amount` instance
+   * @param n
+   */
+  static from(n: BigSource): Amount {
     return new Amount(n);
   }
 
-  mul(n: AmountSource): Amount {
-    return Amount.new(this.inner.mul(n instanceof Amount ? n.inner : n));
-  }
-
-  div(n: AmountSource): Amount {
-    return Amount.new(this.inner.div(n instanceof Amount ? n.inner : n));
-  }
-
-  add(n: AmountSource): Amount {
-    return Amount.new(this.inner.add(n instanceof Amount ? n.inner : n));
-  }
-
-  sub(n: AmountSource): Amount {
-    return Amount.new(this.inner.sub(n instanceof Amount ? n.inner : n));
-  }
-
-  shift(n: number): Amount {
-    return Amount.new(this).mulPow(10, n);
-  }
-
-  pow(exp: number): Amount {
-    return Amount.new(this.inner.pow(exp));
-  }
-
-  mulPow(base: AmountSource, exp: number): Amount {
-    return this.mul(Amount.new(base).pow(exp));
-  }
-
-  divPow(base: AmountSource, exp: number): Amount {
-    return this.mulPow(base, -exp);
-  }
-
-  gt(n: AmountSource): boolean {
-    return this.inner.gt(Amount.new(n).inner);
-  }
-
-  gte(n: AmountSource): boolean {
-    return this.inner.gte(Amount.new(n).inner);
-  }
-
-  lt(n: AmountSource): boolean {
-    return this.inner.lt(Amount.new(n).inner);
-  }
-
-  lte(n: AmountSource): boolean {
-    return this.inner.lte(Amount.new(n).inner);
-  }
-
-  eq(n: AmountSource): boolean {
-    return this.inner.eq(Amount.new(n).inner);
-  }
-
-  cmp(n: AmountSource): Comparison {
-    return this.inner.cmp(Amount.new(n).inner);
-  }
-
-  static max(...values: AmountSource[]): Amount {
-    return values
-      .map((n) => Amount.new(n))
-      .sort((n1, n2) => {
-        return n2.cmp(n1);
-      })[0];
-  }
-
-  static min(...values: AmountSource[]): Amount {
-    return values
-      .map((n) => Amount.new(n))
-      .sort((n1, n2) => {
-        return n1.cmp(n2);
-      })[0];
+  protected from(n: BigSource): Amount {
+    return Amount.from(n);
   }
 
   /**
-   * Round
-   * @param dp decimal places
-   */
-  round(dp: number): Amount {
-    return new Amount(this.inner.round(dp, Big.roundDown));
-  }
-
-  /**
-   * Fix to `string` type, round down for decimal places
+   * parse from specific units
    * @example
    * const USDT_DECIMALS = 6;
-   * const amount = Amount.parse(5, USDT_DECIMALS); //Amount(5000000)
-   * const amountFixed = amount.toFixed(); // '5000000'
-   * @param dp Decimal places
+   * const rawAmount = Amount.parse('5', USDT_DECIMALS); // Amount('5000000')
+   * @param amount human readable amount
+   * @param decimals units decimals
    */
-  toFixed(dp?: number): string {
-    return this.inner.toFixed(dp, Big.roundDown);
+  static parse(amount: BigSource, decimals: number): Amount {
+    return Amount.from(amount).shift(decimals).round(0);
   }
 
   /**
-   * Parse from specify units
+   * format in specific units
    * @example
    * const USDT_DECIMALS = 6;
-   * const amount = Amount.parse(5, USDT_DECIMALS); //Amount(5000000)
-   * @param humanReadAmount human read amount
-   * @param decimals
+   * const humanReadableAmount = Amount.format('5000000', USDT_DECIMALS); // Amount('5')
+   * @param amount raw amount
+   * @param decimals units decimals
    */
-  static parse(humanReadAmount: AmountSource, decimals: number): Amount {
-    return Amount.new(humanReadAmount).shift(decimals).round(0);
+  static format(amount: BigSource, decimals: number): Amount {
+    return Amount.from(amount).shift(-decimals);
   }
 
   /**
-   * Format in specify units
+   * parse from NEAR units and fix to `string` type
    * @example
-   * const USDT_DECIMALS = 6;
-   * const amount = Amount.parse(5, USDT_DECIMALS); //Amount(5000000)
-   * const humanReadAmount = Amount.format(amount, USDT_DECIMALS); // Amount(5)
-   * @param amount amount
-   * @param decimals Units decimals
+   * const yoctoNearAmount = Amount.parseYoctoNear('5'); // '5000000000000000000000000'
+   * @param amount NEAR amount
    */
-  static format(amount: AmountSource, decimals: number): Amount {
-    return Amount.new(amount).shift(-decimals);
+  static parseYoctoNear(amount: BigSource): string {
+    return Amount.parse(amount, Amount.NEAR_DECIMALS).toFixed();
   }
 
   /**
-   * Parse from NEAR units and fix to `string` type
+   * format in NEAR units and fix to `string` type
    * @example
-   * const yoctoAmount = Amount.parseYoctoNear(5); // '5000000000000000000000000'
-   * @param nearAmount amount in NEAR units
+   * const nearAmount = Amount.formatYoctoNear('5000000000000000000000000'); // '5'
+   * @param amount yocto NEAR amount
+   * @param dp decimal places, if not provided, reserve as many decimal places as possible
    */
-  static parseYoctoNear(nearAmount: AmountSource): string {
-    return Amount.parse(nearAmount, Amount.NEAR_DECIMALS).toFixed();
-  }
-
-  /**
-   * Format in NEAR units and fix to `string` type
-   * @example
-   * const yoctoAmount = Amount.parseYoctoNear(5); // '5000000000000000000000000'
-   * const nearAmount = Amount.formatYoctoNear(yoctoAmount); // '5'
-   * @param yoctoAmount Amount in yocto units
-   * @param dp Decimal places
-   */
-  static formatYoctoNear(yoctoAmount: AmountSource, dp?: number): string {
-    return Amount.format(yoctoAmount, Amount.NEAR_DECIMALS).toFixed(dp);
+  static formatYoctoNear(amount: BigSource, dp?: number): string {
+    return Amount.format(amount, Amount.NEAR_DECIMALS).toFixed(dp);
   }
 }
