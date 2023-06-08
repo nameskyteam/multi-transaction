@@ -1,4 +1,4 @@
-import Big, { BigSource } from 'big.js';
+import Big, { BigSource, Comparison, RoundingMode } from 'big.js';
 
 export abstract class BigWrapper<T extends Big> extends Big {
   // --------------------------- override ---------------------------
@@ -97,6 +97,54 @@ export abstract class BigWrapper<T extends Big> extends Big {
   }
 
   /**
+   * gt
+   * @param n
+   */
+  gt(n: BigSource): boolean {
+    return super.gt(n);
+  }
+
+  /**
+   * gte
+   * @param n
+   */
+  gte(n: BigSource): boolean {
+    return super.gte(n);
+  }
+
+  /**
+   * lt
+   * @param n
+   */
+  lt(n: BigSource): boolean {
+    return super.lt(n);
+  }
+
+  /**
+   * lte
+   * @param n
+   */
+  lte(n: BigSource): boolean {
+    return super.lte(n);
+  }
+
+  /**
+   * eq
+   * @param n
+   */
+  eq(n: BigSource): boolean {
+    return super.eq(n);
+  }
+
+  /**
+   * cmp
+   * @param n
+   */
+  cmp(n: BigSource): Comparison {
+    return super.cmp(n);
+  }
+
+  /**
    * reserve significant digits
    * @param sd significant digits
    * @param rm rounding mod, default to `Big.roundDown`
@@ -115,7 +163,7 @@ export abstract class BigWrapper<T extends Big> extends Big {
   }
 
   /**
-   * convert to fixed string
+   * convert to fixed `string`
    * @param dp decimal places, if not provided, reserve as many decimal places as possible
    * @param rm rounding mod, default to `Big.roundDown`
    */
@@ -124,10 +172,21 @@ export abstract class BigWrapper<T extends Big> extends Big {
   }
 
   /**
-   * equal to `toFixed()`
+   * convert to `string` with reserved significant digits
+   * @param sd significant digits, if not provided, reserve as many significant digits as possible
+   * @param rm rounding mod, default to `Big.roundDown`
    */
-  toString(): string {
-    return this.toFixed();
+  toPrecision(sd?: number, rm = Big.roundDown): string {
+    return super.toPrecision(sd, rm);
+  }
+
+  /**
+   * convert to `string` in exponential notation with reserved decimal places
+   * @param dp decimal places, if not provided, reserve as many decimal places as possible
+   * @param rm rounding mod, default to `Big.roundDown`
+   */
+  toExponential(dp?: number, rm = Big.roundDown): string {
+    return super.toExponential(dp, rm);
   }
 
   // --------------------------- enhancement ------------------------
@@ -142,5 +201,10 @@ export abstract class BigWrapper<T extends Big> extends Big {
 
   // --------------------------- abstract ---------------------------
 
+  /**
+   * construct a `T` instance
+   * @param n
+   * @protected
+   */
   protected abstract from(n: BigSource): T;
 }
