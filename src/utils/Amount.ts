@@ -1,4 +1,4 @@
-import Big, { BigSource } from 'big.js';
+import Big, { BigSource, Comparison } from 'big.js';
 
 export type AmountSource = Amount | BigSource;
 
@@ -69,14 +69,15 @@ export class Amount {
     return this.inner.eq(Amount.new(n).inner);
   }
 
+  cmp(n: AmountSource): Comparison {
+    return this.inner.cmp(Amount.new(n).inner);
+  }
+
   static max(...values: AmountSource[]): Amount {
     return values
       .map((n) => Amount.new(n))
       .sort((n1, n2) => {
-        if (n1.gte(n2)) {
-          return -1;
-        }
-        return 1;
+        return n2.cmp(n1);
       })[0];
   }
 
@@ -84,10 +85,7 @@ export class Amount {
     return values
       .map((n) => Amount.new(n))
       .sort((n1, n2) => {
-        if (n1.lte(n2)) {
-          return -1;
-        }
-        return 1;
+        return n1.cmp(n2);
       })[0];
   }
 

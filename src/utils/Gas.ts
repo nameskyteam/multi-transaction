@@ -1,4 +1,4 @@
-import Big, { BigSource } from 'big.js';
+import Big, { BigSource, Comparison } from 'big.js';
 
 export type GasSource = Gas | BigSource;
 
@@ -68,6 +68,10 @@ export class Gas {
 
   eq(n: GasSource): boolean {
     return this.inner.eq(Gas.new(n).inner);
+  }
+
+  cmp(n: GasSource): Comparison {
+    return this.inner.cmp(Gas.new(n).inner);
   }
 
   /**
