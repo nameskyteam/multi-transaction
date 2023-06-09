@@ -1,12 +1,11 @@
-import { BigSource } from 'big.js';
-import { BigWrapper } from './BigWrapper';
+import { BigWrapper, BigWrapperSource } from './BigWrapper';
 
 export class Amount extends BigWrapper<Amount> {
   static NEAR_DECIMALS = 24;
   static ZERO = '0';
   static ONE_YOCTO = '1';
 
-  private constructor(n: BigSource) {
+  private constructor(n: BigWrapperSource<Amount>) {
     super(n);
   }
 
@@ -14,11 +13,11 @@ export class Amount extends BigWrapper<Amount> {
    * construct an `Amount` instance
    * @param n
    */
-  static from(n: BigSource): Amount {
+  static from(n: BigWrapperSource<Amount>): Amount {
     return new Amount(n);
   }
 
-  protected from(n: BigSource): Amount {
+  protected from(n: BigWrapperSource<Amount>): Amount {
     return Amount.from(n);
   }
 
@@ -30,7 +29,7 @@ export class Amount extends BigWrapper<Amount> {
    * @param amount human readable amount
    * @param decimals units decimals
    */
-  static parse(amount: BigSource, decimals: number): Amount {
+  static parse(amount: BigWrapperSource<Amount>, decimals: number): Amount {
     return Amount.from(amount).shift(decimals).round(0);
   }
 
@@ -42,7 +41,7 @@ export class Amount extends BigWrapper<Amount> {
    * @param amount raw amount
    * @param decimals units decimals
    */
-  static format(amount: BigSource, decimals: number): Amount {
+  static format(amount: BigWrapperSource<Amount>, decimals: number): Amount {
     return Amount.from(amount).shift(-decimals);
   }
 
@@ -52,7 +51,7 @@ export class Amount extends BigWrapper<Amount> {
    * const yoctoNearAmount = Amount.parseYoctoNear('5'); // '5000000000000000000000000'
    * @param amount NEAR amount
    */
-  static parseYoctoNear(amount: BigSource): string {
+  static parseYoctoNear(amount: BigWrapperSource<Amount>): string {
     return Amount.parse(amount, Amount.NEAR_DECIMALS).toFixed();
   }
 
@@ -61,9 +60,9 @@ export class Amount extends BigWrapper<Amount> {
    * @example
    * const nearAmount = Amount.formatYoctoNear('5000000000000000000000000'); // '5'
    * @param amount yocto NEAR amount
-   * @param dp decimal places, if not provided, reserve as many decimal places as possible
+   * @param dp decimal places
    */
-  static formatYoctoNear(amount: BigSource, dp?: number): string {
+  static formatYoctoNear(amount: BigWrapperSource<Amount>, dp?: number): string {
     return Amount.format(amount, Amount.NEAR_DECIMALS).toFixed(dp);
   }
 }

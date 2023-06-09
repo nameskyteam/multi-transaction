@@ -1,62 +1,76 @@
-import Big, { BigSource, Comparison, RoundingMode } from 'big.js';
+import Big from 'big.js';
 
-export abstract class BigWrapper<T extends Big> extends Big {
+export type BigWrapperSource<T extends BigWrapper<T>> = BigWrapper<T> | Big | string | number;
+
+/**
+ * Abstract class wrap the `Big`
+ */
+export abstract class BigWrapper<T extends BigWrapper<T>> {
+  inner: Big;
+
+  protected constructor(n: BigWrapperSource<T>) {
+    if (n instanceof BigWrapper) {
+      this.inner = n.inner;
+    } else {
+      this.inner = Big(n);
+    }
+  }
   // --------------------------- override ---------------------------
 
   /**
    * add
    * @param n
    */
-  add(n: BigSource): T {
-    return this.from(super.add(n));
+  add(n: BigWrapperSource<T>): T {
+    return this.from(this.inner.add(n instanceof BigWrapper ? n.inner : n));
   }
 
   /**
    * sub
    * @param n
    */
-  sub(n: BigSource): T {
-    return this.from(super.sub(n));
+  sub(n: BigWrapperSource<T>): T {
+    return this.from(this.inner.sub(n instanceof BigWrapper ? n.inner : n));
   }
 
   /**
    * mul
    * @param n
    */
-  mul(n: BigSource): T {
-    return this.from(super.mul(n));
+  mul(n: BigWrapperSource<T>): T {
+    return this.from(this.inner.mul(n instanceof BigWrapper ? n.inner : n));
   }
 
   /**
    * div
    * @param n
    */
-  div(n: BigSource): T {
-    return this.from(super.div(n));
+  div(n: BigWrapperSource<T>): T {
+    return this.from(this.inner.div(n instanceof BigWrapper ? n.inner : n));
   }
 
   /**
    * plus
    * @param n
    */
-  plus(n: BigSource): T {
-    return this.from(super.plus(n));
+  plus(n: BigWrapperSource<T>): T {
+    return this.from(this.inner.plus(n instanceof BigWrapper ? n.inner : n));
   }
 
   /**
    * minus
    * @param n
    */
-  minus(n: BigSource): T {
-    return this.from(super.minus(n));
+  minus(n: BigWrapperSource<T>): T {
+    return this.from(this.inner.minus(n instanceof BigWrapper ? n.inner : n));
   }
 
   /**
    * times
    * @param n
    */
-  times(n: BigSource): T {
-    return this.from(super.times(n));
+  times(n: BigWrapperSource<T>): T {
+    return this.from(this.inner.times(n instanceof BigWrapper ? n.inner : n));
   }
 
   /**
@@ -64,129 +78,143 @@ export abstract class BigWrapper<T extends Big> extends Big {
    * @param exp exponent
    */
   pow(exp: number): T {
-    return this.from(super.pow(exp));
+    return this.from(this.inner.pow(exp));
   }
 
   /**
    * sqrt
    */
   sqrt(): T {
-    return this.from(super.sqrt());
+    return this.from(this.inner.sqrt());
   }
 
   /**
    * mod
    * @param n
    */
-  mod(n: BigSource): T {
-    return this.from(super.mod(n));
+  mod(n: BigWrapperSource<T>): T {
+    return this.from(this.inner.mod(n instanceof BigWrapper ? n.inner : n));
   }
 
   /**
    * abs
    */
   abs(): T {
-    return this.from(super.abs());
+    return this.from(this.inner.abs());
   }
 
   /**
    * neg
    */
   neg(): T {
-    return this.from(super.neg());
+    return this.from(this.inner.neg());
   }
 
   /**
    * gt
    * @param n
    */
-  gt(n: BigSource): boolean {
-    return super.gt(n);
+  gt(n: BigWrapperSource<T>): boolean {
+    return this.inner.gt(n instanceof BigWrapper ? n.inner : n);
   }
 
   /**
    * gte
    * @param n
    */
-  gte(n: BigSource): boolean {
-    return super.gte(n);
+  gte(n: BigWrapperSource<T>): boolean {
+    return this.inner.gte(n instanceof BigWrapper ? n.inner : n);
   }
 
   /**
    * lt
    * @param n
    */
-  lt(n: BigSource): boolean {
-    return super.lt(n);
+  lt(n: BigWrapperSource<T>): boolean {
+    return this.inner.lt(n instanceof BigWrapper ? n.inner : n);
   }
 
   /**
    * lte
    * @param n
    */
-  lte(n: BigSource): boolean {
-    return super.lte(n);
+  lte(n: BigWrapperSource<T>): boolean {
+    return this.inner.lte(n instanceof BigWrapper ? n.inner : n);
   }
 
   /**
    * eq
    * @param n
    */
-  eq(n: BigSource): boolean {
-    return super.eq(n);
+  eq(n: BigWrapperSource<T>): boolean {
+    return this.inner.eq(n instanceof BigWrapper ? n.inner : n);
   }
 
   /**
    * cmp
    * @param n
    */
-  cmp(n: BigSource): Comparison {
-    return super.cmp(n);
+  cmp(n: BigWrapperSource<T>): number {
+    return this.inner.cmp(n instanceof BigWrapper ? n.inner : n);
   }
 
   /**
    * reserve significant digits
    * @param sd significant digits
-   * @param rm rounding mod, default to `Big.roundDown`
+   * @param rm rounding mod
    */
-  prec(sd: number, rm = Big.roundDown): T {
-    return this.from(super.prec(sd, rm));
+  prec(sd: number, rm?: number): T {
+    return this.from(this.inner.prec(sd, rm));
   }
 
   /**
    * reserve decimal places
    * @param dp decimal places
-   * @param rm rounding mod, default to `Big.roundDown`
+   * @param rm rounding mod
    */
-  round(dp: number, rm = Big.roundDown): T {
-    return this.from(super.round(dp, rm));
+  round(dp: number, rm?: number): T {
+    return this.from(this.inner.round(dp, rm));
   }
 
   /**
-   * convert to fixed `string`
-   * @param dp decimal places, if not provided, reserve as many decimal places as possible
-   * @param rm rounding mod, default to `Big.roundDown`
+   * convert to `number`, may cause loss of precision
    */
-  toFixed(dp?: number, rm = Big.roundDown): string {
-    return super.toFixed(dp, rm);
+  toNumber(): number {
+    return this.inner.toNumber();
   }
 
   /**
-   * convert to `string` with reserved significant digits
-   * @param sd significant digits, if not provided, reserve as many significant digits as possible
-   * @param rm rounding mod, default to `Big.roundDown`
+   * convert to `string` in fixed point or exponential notation
+   * @param sd significant digits
+   * @param rm rounding mod
    */
-  toPrecision(sd?: number, rm = Big.roundDown): string {
-    return super.toPrecision(sd, rm);
+  toPrecision(sd?: number, rm?: number): string {
+    return this.inner.toPrecision(sd, rm);
   }
 
   /**
-   * convert to `string` in exponential notation with reserved decimal places
-   * @param dp decimal places, if not provided, reserve as many decimal places as possible
-   * @param rm rounding mod, default to `Big.roundDown`
+   * convert to `string` in exponential notation
+   * @param dp decimal places
+   * @param rm rounding mod
    */
-  toExponential(dp?: number, rm = Big.roundDown): string {
-    return super.toExponential(dp, rm);
+  toExponential(dp?: number, rm?: number): string {
+    return this.inner.toExponential(dp, rm);
+  }
+
+  /**
+   * convert to `string` in fixed point notation
+   * @param dp decimal places
+   * @param rm rounding mod
+   */
+  toFixed(dp?: number, rm?: number): string {
+    return this.inner.toFixed(dp, rm);
+  }
+
+  /**
+   * convert to `string` in fixed point or exponential notation
+   */
+  toString(): string {
+    return this.inner.toString();
   }
 
   // --------------------------- enhancement ------------------------
@@ -196,7 +224,7 @@ export abstract class BigWrapper<T extends Big> extends Big {
    * @param n
    */
   shift(n: number): T {
-    return this.mul(this.from(10).pow(n));
+    return this.from(10).pow(n).mul(this);
   }
 
   // --------------------------- abstract ---------------------------
@@ -204,7 +232,6 @@ export abstract class BigWrapper<T extends Big> extends Big {
   /**
    * construct a `T` instance
    * @param n
-   * @protected
    */
-  protected abstract from(n: BigSource): T;
+  protected abstract from(n: BigWrapperSource<T>): T;
 }
