@@ -22,23 +22,16 @@ interface WalletSelectorEnhancement {
   getAccountIds(): string[];
 
   /**
-   * Is login access key active.
-   * If the key is FullAccess, when key exists on chain, it is active.
-   * If the key is FunctionCall, when key exists on chain and allowance is greater than min allowance (default 0.01 NEAR), it is active.
+   * Is login access key active
+   * If the key is FullAccess, when key exists on chain, it is active
+   * If the key is FunctionCall, when key exists on chain and allowance is greater than min allowance (default 0.01 NEAR), it is active
    * @param accountId Account id
-   * @param requiredMinAllowance required min allowance
+   * @param requiredMinAllowance Required min allowance
    */
   isLoginAccessKeyActive(accountId?: string, requiredMinAllowance?: string): Promise<boolean>;
 
   /**
    * View a contract method
-   * @param options View options
-   * @param options.contractId Contract id
-   * @param options.methodName Method name
-   * @param options.args `Uint8Array` or serializable types. Default `{}`
-   * @param options.stringify Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format.
-   * @param options.parse Deserialize returned value from bytes. Default in JSON format.
-   * @param options.blockQuery Could view contract method in the past block
    */
   view<Value, Args = EmptyObject>({
     contractId,
@@ -51,22 +44,16 @@ interface WalletSelectorEnhancement {
 
   /**
    * Send multiple transactions and return success value of last transaction
-   * @param transaction Multiple transaction
-   * @param options Send options
-   * @param options.walletId Wallet id, e.g. `near-wallet`
-   * @param options.callbackUrl Callback when use web wallet
-   * @param options.throwReceiptErrorsIfAny If receipts in outcomes have any error, throw them.
-   * @param options.parse Deserialize returned value from bytes. Default in JSON format.
+   * @param transaction Multiple transactions
+   * @param options Options
    */
   send<Value>(transaction: MultiTransaction, options?: SendOptions<Value>): Promise<Value | undefined>;
 
   /**
-   * Sign and send multiple transaction with local key in `this.keystore`.
+   * Sign and send multiple transaction with local key in `this.keystore`
    * @param signerId Signer id
-   * @param transaction Multiple transaction
-   * @param options Send options
-   * @param options.throwReceiptErrorsIfAny If receipts in outcomes have any error, throw them.
-   * @param options.parse Deserialize returned value from bytes. Default in JSON format.
+   * @param transaction Multiple transactions
+   * @param options Options
    */
   sendWithLocalKey<Value>(
     signerId: string,
@@ -88,13 +75,35 @@ export type MultiSendWalletSelectorParamsWithSelector = { selector: WalletSelect
 export type MultiSendWalletSelectorConfig = MultiSendWalletSelectorParams | MultiSendWalletSelectorParamsWithSelector;
 
 export interface SendOptions<Value> {
+  /**
+   * Wallet id
+   */
   walletId?: string;
+
+  /**
+   * Callback URL
+   */
   callbackUrl?: string;
+
+  /**
+   * If receipts in outcomes have any error, throw them
+   */
   throwReceiptErrorsIfAny?: boolean;
+
+  /**
+   * Deserialize returned value from bytes. Default in JSON format
+   */
   parse?: Parser<Value>;
 }
 
 export interface SendWithLocalKeyOptions<Value> {
+  /**
+   * If receipts in outcomes have any error, throw them
+   */
   throwReceiptErrorsIfAny?: boolean;
+
+  /**
+   * Deserialize returned value from bytes. Default in JSON format
+   */
   parse?: Parser<Value>;
 }

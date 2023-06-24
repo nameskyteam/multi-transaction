@@ -35,13 +35,6 @@ export class MultiSendAccount extends Account {
 
   /**
    * View a contract method
-   * @param options View options
-   * @param options.contractId Contract id
-   * @param options.methodName Method name
-   * @param options.args `Uint8Array` or serializable types. Default `{}`
-   * @param options.stringify Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format.
-   * @param options.parse Deserialize returned value from bytes. Default in JSON format.
-   * @param options.blockQuery Could view contract method in the past block
    */
   async view<Value, Args = EmptyObject>({
     contractId,
@@ -63,10 +56,8 @@ export class MultiSendAccount extends Account {
 
   /**
    * Send multiple transactions and return success value of last transaction
-   * @param transaction Multiple transaction
-   * @param options Send options
-   * @param options.throwReceiptErrorsIfAny If receipts in outcomes have any error, throw them.
-   * @param options.parse Deserialize returned value from bytes. Default in JSON format.
+   * @param transaction Multiple transactions
+   * @param options Options
    */
   async send<Value>(transaction: MultiTransaction, options?: SendOptions<Value>): Promise<Value> {
     const outcomes = await this.signAndSendTransactions({
@@ -90,6 +81,13 @@ interface SignAndSendTransactionsOptions {
 }
 
 interface SendOptions<Value> {
+  /**
+   * If receipts in outcomes have any error, throw them
+   */
   throwReceiptErrorsIfAny?: boolean;
+
+  /**
+   * Deserialize returned value from bytes. Default in JSON format
+   */
   parse?: Parser<Value>;
 }

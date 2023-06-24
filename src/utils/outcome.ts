@@ -6,8 +6,8 @@ import { Buffer } from 'buffer';
 
 /**
  * Parse success value from outcome.
- * @param outcome transaction outcome
- * @param parse Deserialize return value from bytes. Default will deserialize return value in JSON format
+ * @param outcome Transaction outcome
+ * @param parse Deserialize returned value from bytes. Default in JSON format
  */
 export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parse: Parser<Value> = parseJson): Value {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
@@ -23,7 +23,7 @@ export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parse: 
 
 /**
  * If receipts in outcomes have any error, throw them
- * @param outcomes outcomes
+ * @param outcomes Transaction outcomes
  */
 export function throwReceiptErrorsIfAny(...outcomes: FinalExecutionOutcome[]) {
   throwReceiptErrors(getReceiptErrors(...outcomes));
