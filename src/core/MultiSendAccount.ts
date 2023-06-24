@@ -5,15 +5,13 @@ import {
   NearApiJsTransactionLike,
   parseNearApiJsTransactions,
   parseOutcomeValue,
+  stringifyJson,
   throwReceiptErrorsIfAny,
 } from '../utils';
-import { stringifyJsonOrBytes, parseJson } from '../utils';
+import { stringifyOrSkip, parseJson } from '../utils';
 import { Action } from 'near-api-js/lib/transaction';
 import { MultiTransaction } from './MultiTransaction';
 
-/**
- * Account that support {@link `MultiTransaction`}
- */
 export class MultiSendAccount extends Account {
   constructor(connection: Connection, accountId = '') {
     super(connection, accountId);
@@ -40,24 +38,24 @@ export class MultiSendAccount extends Account {
    * @param options View options
    * @param options.contractId Contract id
    * @param options.methodName Method name
-   * @param options.args `Uint8Array` or other type args, default `{}`
-   * @param options.stringify Serialize args to bytes. Default will skip `Uint8Array` or serialize other type args in JSON format
-   * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
+   * @param options.args `Uint8Array` or serializable types. Default `{}`
+   * @param options.stringify Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format.
+   * @param options.parse Deserialize returned value from bytes. Default in JSON format.
    * @param options.blockQuery Could view contract method in the past block
    */
   async view<Value, Args = EmptyObject>({
     contractId,
     methodName,
     args,
-    stringify = stringifyJsonOrBytes,
+    stringify = stringifyJson,
     parse = parseJson,
     blockQuery,
   }: ViewFunctionOptions<Value, Args>): Promise<Value> {
     return super.viewFunctionV2({
       contractId,
       methodName,
-      args: args ?? {},
-      stringify,
+      args: stringifyOrSkip(args ?? ({} as Args), stringify),
+      stringify: (args) => args,
       parse,
       blockQuery,
     });
@@ -68,7 +66,7 @@ export class MultiSendAccount extends Account {
    * @param transaction Multiple transaction
    * @param options Send options
    * @param options.throwReceiptErrorsIfAny If receipts in outcomes have any error, throw them.
-   * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
+   * @param options.parse Deserialize returned value from bytes. Default in JSON format.
    */
   async send<Value>(transaction: MultiTransaction, options?: SendOptions<Value>): Promise<Value> {
     const outcomes = await this.signAndSendTransactions({

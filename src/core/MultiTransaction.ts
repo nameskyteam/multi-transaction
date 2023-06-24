@@ -24,8 +24,8 @@ import {
 } from '../types';
 import { ActionFactory } from './ActionFactory';
 import { Transaction, AccessKey, Action } from '../types';
-import { Amount, Gas } from '../utils';
-import { stringifyJsonOrBytes } from '../utils';
+import { Amount, Gas, stringifyJson } from '../utils';
+import { stringifyOrSkip } from '../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
 
 /**
@@ -201,22 +201,22 @@ export class MultiTransaction {
    * Add `FunctionCall` Action
    * @param options FunctionCall options
    * @param options.methodName Method name
-   * @param options.args `Uint8Array` or other type args, default `{}`
+   * @param options.args `Uint8Array` or serializable types. Default `{}`
    * @param options.attachedDeposit Attached yocto NEAR amount. Default 0 yocto NEAR
    * @param options.gas Prepaid gas. Default 30 Tera
-   * @param options.stringify Serialize args to bytes. Default will skip `Uint8Array` or serialize other type args in JSON format
+   * @param options.stringify Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format.
    */
   functionCall<Args = EmptyObject>({
     methodName,
     args,
     attachedDeposit = Amount.ZERO,
     gas = Gas.DEFAULT,
-    stringify = stringifyJsonOrBytes,
+    stringify = stringifyJson,
   }: FunctionCallOptions<Args>): MultiTransaction {
     return this.addActions(
       ActionFactory.functionCall({
         methodName,
-        args: stringify(args ?? ({} as Args)),
+        args: stringifyOrSkip(args ?? ({} as Args), stringify),
         attachedDeposit,
         gas,
       })

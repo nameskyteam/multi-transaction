@@ -1,7 +1,7 @@
 import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/providers';
 import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
 import { ValueParser } from '../types';
-import { parseJson } from './serialize';
+import { parseJson } from './serde';
 import { Buffer } from 'buffer';
 
 /**

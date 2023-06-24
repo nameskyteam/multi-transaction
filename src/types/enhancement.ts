@@ -35,9 +35,9 @@ interface WalletSelectorEnhancement {
    * @param options View options
    * @param options.contractId Contract id
    * @param options.methodName Method name
-   * @param options.args `Uint8Array` or other type args, default `{}`
-   * @param options.stringify Serialize args to bytes. Default will skip `Uint8Array` or serialize other type args in JSON format
-   * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
+   * @param options.args `Uint8Array` or serializable types. Default `{}`
+   * @param options.stringify Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format.
+   * @param options.parse Deserialize returned value from bytes. Default in JSON format.
    * @param options.blockQuery Could view contract method in the past block
    */
   view<Value, Args = EmptyObject>({
@@ -56,20 +56,17 @@ interface WalletSelectorEnhancement {
    * @param options.walletId Wallet id, e.g. `near-wallet`
    * @param options.callbackUrl Callback when use web wallet
    * @param options.throwReceiptErrorsIfAny If receipts in outcomes have any error, throw them.
-   * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
+   * @param options.parse Deserialize returned value from bytes. Default in JSON format.
    */
   send<Value>(transaction: MultiTransaction, options?: SendOptions<Value>): Promise<Value | undefined>;
 
   /**
    * Sign and send multiple transaction with local key in `this.keystore`.
-   * Note: login key may not in `this.keystore` in the following cases
-   * 1. Default keystore prefix `near-api-js:keystore:` is not be used.
-   * 2. User doesn't use [NearWallet](https://wallet.near.org) or [MyNearWallet](https://mynearwallet.com).
    * @param signerId Signer id
    * @param transaction Multiple transaction
    * @param options Send options
    * @param options.throwReceiptErrorsIfAny If receipts in outcomes have any error, throw them.
-   * @param options.parse Deserialize return value from bytes. Default will deserialize return value in JSON format
+   * @param options.parse Deserialize returned value from bytes. Default in JSON format.
    */
   sendWithLocalKey<Value>(
     signerId: string,
@@ -78,9 +75,6 @@ interface WalletSelectorEnhancement {
   ): Promise<Value>;
 }
 
-/**
- * Wallet selector that support {@link `MultiTransaction`}
- */
 export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
 
 export interface WalletSelectorParamsExtra {

@@ -3,7 +3,7 @@ import { Buffer } from 'buffer';
 
 export interface FunctionCallOptions<Args> {
   methodName: string;
-  args?: Args;
+  args?: Args | Uint8Array;
   attachedDeposit?: string;
   gas?: string;
   stringify?: ArgsStringifier<Args>;
@@ -12,7 +12,7 @@ export interface FunctionCallOptions<Args> {
 export interface ViewFunctionOptions<Value, Args> {
   contractId: string;
   methodName: string;
-  args?: Args;
+  args?: Args | Uint8Array;
   stringify?: ArgsStringifier<Args>;
   parse?: ValueParser<Value>;
   blockQuery?: BlockQuery;
