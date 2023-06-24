@@ -1,6 +1,6 @@
 import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/providers';
 import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
-import { ValueParser } from '../types';
+import { Parser } from '../types';
 import { parseJson } from './serde';
 import { Buffer } from 'buffer';
 
@@ -9,7 +9,7 @@ import { Buffer } from 'buffer';
  * @param outcome transaction outcome
  * @param parse Deserialize return value from bytes. Default will deserialize return value in JSON format
  */
-export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parse: ValueParser<Value> = parseJson): Value {
+export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parse: Parser<Value> = parseJson): Value {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
   if (successValue) {
     const valueRaw = Buffer.from(successValue, 'base64');

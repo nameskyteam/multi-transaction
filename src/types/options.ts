@@ -6,15 +6,15 @@ export interface FunctionCallOptions<Args> {
   args?: Args | Uint8Array;
   attachedDeposit?: string;
   gas?: string;
-  stringify?: ArgsStringifier<Args>;
+  stringify?: Stringifier<Args>;
 }
 
 export interface ViewFunctionOptions<Value, Args> {
   contractId: string;
   methodName: string;
   args?: Args | Uint8Array;
-  stringify?: ArgsStringifier<Args>;
-  parse?: ValueParser<Value>;
+  stringify?: Stringifier<Args>;
+  parse?: Parser<Value>;
   blockQuery?: BlockQuery;
 }
 
@@ -24,9 +24,9 @@ export type AttachedDepositOptions = Pick<FunctionCallOptions<unknown>, 'attache
 
 export type GasOptions = Pick<FunctionCallOptions<unknown>, 'gas'>;
 
-export type ArgsStringifier<Args> = (args: Args) => Buffer;
+export type Stringifier<T> = (data: T) => Buffer;
 
-export type ValueParser<Value> = (response: Uint8Array) => Value;
+export type Parser<T> = (data: Uint8Array) => T;
 
 export type BlockQuery = BlockReference;
 

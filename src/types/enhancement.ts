@@ -1,7 +1,7 @@
 import { Modify } from '@near-wallet-selector/core/lib/utils.types';
 import { WalletSelector } from '@near-wallet-selector/core';
 import { Account, Near } from 'near-api-js';
-import { EmptyObject, ValueParser, ViewFunctionOptions } from '../types';
+import { EmptyObject, Parser, ViewFunctionOptions } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/lib/wallet-selector.types';
@@ -91,10 +91,10 @@ export interface SendOptions<Value> {
   walletId?: string;
   callbackUrl?: string;
   throwReceiptErrorsIfAny?: boolean;
-  parse?: ValueParser<Value>;
+  parse?: Parser<Value>;
 }
 
 export interface SendWithLocalKeyOptions<Value> {
   throwReceiptErrorsIfAny?: boolean;
-  parse?: ValueParser<Value>;
+  parse?: Parser<Value>;
 }

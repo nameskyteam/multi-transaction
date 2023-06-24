@@ -1,5 +1,5 @@
 import { Account, Connection } from 'near-api-js';
-import { ViewFunctionOptions, ValueParser, EmptyObject } from '../types';
+import { ViewFunctionOptions, Parser, EmptyObject } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   NearApiJsTransactionLike,
@@ -91,5 +91,5 @@ interface SignAndSendTransactionsOptions {
 
 interface SendOptions<Value> {
   throwReceiptErrorsIfAny?: boolean;
-  parse?: ValueParser<Value>;
+  parse?: Parser<Value>;
 }
