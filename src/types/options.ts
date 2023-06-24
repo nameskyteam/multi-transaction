@@ -19,15 +19,12 @@ export interface ViewFunctionOptions<Value, Args> {
 }
 
 export type ArgsOptions<Args> = Pick<FunctionCallOptions<Args>, 'args'>;
-
 export type AttachedDepositOptions = Pick<FunctionCallOptions<unknown>, 'attachedDeposit'>;
-
 export type GasOptions = Pick<FunctionCallOptions<unknown>, 'gas'>;
-
-export type Stringifier<T> = (data: T) => Buffer;
-
-export type Parser<T> = (data: Uint8Array) => T;
 
 export type BlockQuery = BlockReference;
 
 export type EmptyObject = Record<string, never>;
+
+export type Stringifier<T> = (data: T) => Buffer;
+export type Parser<T> = (data: Uint8Array) => T;
