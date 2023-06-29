@@ -70,17 +70,7 @@ export class MultiSendAccount extends Account {
   }
 }
 
-interface SignAndSendTransactionOptions {
-  receiverId: string;
-  actions: Action[];
-  returnError?: boolean;
-}
-
-interface SignAndSendTransactionsOptions {
-  transactions: NearApiJsTransactionLike[];
-}
-
-interface SendOptions<Value> {
+export interface SendOptions<Value> {
   /**
    * If receipts in outcomes have any error, throw them
    */
@@ -90,4 +80,14 @@ interface SendOptions<Value> {
    * Deserialize returned value from bytes. Default in JSON format
    */
   parse?: Parser<Value>;
+}
+
+export interface SignAndSendTransactionOptions {
+  receiverId: string;
+  actions: Action[];
+  returnError?: boolean;
+}
+
+export interface SignAndSendTransactionsOptions {
+  transactions: NearApiJsTransactionLike[];
 }

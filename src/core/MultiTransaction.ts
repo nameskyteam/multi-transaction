@@ -138,8 +138,8 @@ export class MultiTransaction {
     return this.transactions;
   }
 
-  extend(other: MultiTransaction) {
-    this.addTransactions(...other.toTransactions());
+  extend(other: MultiTransaction): MultiTransaction {
+    return this.addTransactions(...other.toTransactions());
   }
 
   // -------------------------------------------- Action ---------------------------------------------------

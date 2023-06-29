@@ -1,4 +1,4 @@
 export * from './MultiTransaction';
 export * from './ActionFactory';
-export * from './MultiSendAccount';
+export { MultiSendAccount } from './MultiSendAccount';
 export * from './MultiSendWalletSelector';

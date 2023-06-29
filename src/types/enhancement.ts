@@ -6,6 +6,8 @@ import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/lib/wallet-selector.types';
 
+export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
+
 interface WalletSelectorEnhancement {
   near: Near;
   keyStore: BrowserLocalStorageKeyStore;
@@ -62,18 +64,6 @@ interface WalletSelectorEnhancement {
   ): Promise<Value>;
 }
 
-export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
-
-export interface WalletSelectorParamsExtra {
-  keyStorePrefix?: string;
-}
-
-export type MultiSendWalletSelectorParams = WalletSelectorParams & WalletSelectorParamsExtra;
-
-export type MultiSendWalletSelectorParamsWithSelector = { selector: WalletSelector } & WalletSelectorParamsExtra;
-
-export type MultiSendWalletSelectorConfig = MultiSendWalletSelectorParams | MultiSendWalletSelectorParamsWithSelector;
-
 export interface SendOptions<Value> {
   /**
    * Wallet id
@@ -106,4 +96,14 @@ export interface SendWithLocalKeyOptions<Value> {
    * Deserialize returned value from bytes. Default in JSON format
    */
   parse?: Parser<Value>;
+}
+
+export type MultiSendWalletSelectorConfig = MultiSendWalletSelectorParams | MultiSendWalletSelectorParamsWithSelector;
+
+type MultiSendWalletSelectorParams = WalletSelectorParams & WalletSelectorParamsExtra;
+
+type MultiSendWalletSelectorParamsWithSelector = { selector: WalletSelector } & WalletSelectorParamsExtra;
+
+interface WalletSelectorParamsExtra {
+  keyStorePrefix?: string;
 }
