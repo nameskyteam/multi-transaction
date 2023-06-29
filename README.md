@@ -175,35 +175,3 @@ async function exampleConstructComplexTransactions(near: Near) {
   await account.send(multiTransaction);
 }
 ```
-
-### Manual Convert Transactions
-Maybe you don't want to use `MultiSendAccount` or `MultiSendWalletSelector`, you can convert transactions manually
-
-```typescript
-import { MultiTransaction, parseNearApiJsTransactions, parseNearWalletSelectorTransactions } from "multi-transaction";
-
-// Backend
-async function exampleManualConvertToNearApiJsTransactions(near: Near, multiTransaction: MultiTransaction) {
-  const account = await near.account('alice.near');
-  const transactions = parseNearApiJsTransactions(multiTransaction);
-
-  for (const transaction of transactions) {
-    // Won't call as `account.signAndSendTransaction` because it is a protected method.
-    await account['signAndSendTransaction'](transaction);
-  }
-}
-
-// Frontend
-async function exampleManualConvertToNearWalletSelectorTransactions(selector: WalletSelector, multiTransaction: MultiTransaction) {
-  const wallet = await selector.wallet();
-  const transactions = parseNearWalletSelectorTransactions(multiTransaction);
-
-  if (transactions.length === 1) {
-    // `signAndSendTransactions` doesn't use login key, so if transaction is not multiple, we suggest to use 
-    // `signAndSendTransaction` instead.
-    await wallet.signAndSendTransaction(transactions[0]);
-  } else {
-    await wallet.signAndSendTransactions({ transactions });
-  }
-}
-```
