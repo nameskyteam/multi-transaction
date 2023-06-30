@@ -24,9 +24,10 @@ import {
 } from '../types';
 import { ActionFactory } from './ActionFactory';
 import { Transaction, AccessKey, Action } from '../types';
-import { Amount, Gas, stringifyJson } from '../utils';
+import { Amount, Gas } from '../utils';
 import { stringifyOrSkip } from '../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
+import { stringifyJson } from '../serde';
 
 /**
  * Helper class for creating transaction(s) with builder pattern

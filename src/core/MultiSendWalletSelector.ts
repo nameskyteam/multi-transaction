@@ -13,8 +13,9 @@ import {
   parseOutcomeValue,
   throwReceiptErrorsIfAny,
 } from '../utils';
-import { parseJson, stringifyJson, stringifyOrSkip } from '../utils';
+import { stringifyOrSkip } from '../utils';
 import { SendOptions, SendWithLocalKeyOptions } from '../types/enhancement';
+import { parseJson, stringifyJson } from '../serde';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 

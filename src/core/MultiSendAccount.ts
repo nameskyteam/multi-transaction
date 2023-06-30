@@ -5,12 +5,12 @@ import {
   NearApiJsTransactionLike,
   parseNearApiJsTransactions,
   parseOutcomeValue,
-  stringifyJson,
+  stringifyOrSkip,
   throwReceiptErrorsIfAny,
 } from '../utils';
-import { stringifyOrSkip, parseJson } from '../utils';
 import { Action } from 'near-api-js/lib/transaction';
 import { MultiTransaction } from './MultiTransaction';
+import { parseJson, stringifyJson } from '../serde';
 
 export class MultiSendAccount extends Account {
   constructor(connection: Connection, accountId = '') {

@@ -1,8 +1,8 @@
 import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/providers';
 import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
 import { Parser } from '../types';
-import { parseJson } from './serde';
 import { Buffer } from 'buffer';
+import { parseJson } from '../serde';
 
 /**
  * Parse success value from outcome.
