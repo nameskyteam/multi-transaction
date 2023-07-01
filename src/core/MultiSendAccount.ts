@@ -39,14 +39,14 @@ export class MultiSendAccount extends Account {
   }
 
   /**
-   * @override
+   * View a contract method
    */
-  async viewFunction<Value, Args = EmptyObject>({
+  async view<Value, Args = EmptyObject>({
     contractId,
     methodName,
     args,
-    stringify = 'json',
-    parse = 'json',
+    stringify,
+    parse,
     blockQuery,
   }: ViewFunctionOptions<Value, Args>): Promise<Value> {
     return super.viewFunction({
@@ -55,27 +55,6 @@ export class MultiSendAccount extends Account {
       args: args ?? {},
       stringify: (args: Args) => stringifyOrSkip(args, stringify),
       parse: getParser(parse),
-      blockQuery,
-    });
-  }
-
-  /**
-   * View a contract method
-   */
-  async view<Value, Args = EmptyObject>({
-    contractId,
-    methodName,
-    args,
-    stringify = 'json',
-    parse = 'json',
-    blockQuery,
-  }: ViewFunctionOptions<Value, Args>): Promise<Value> {
-    return this.viewFunction({
-      contractId,
-      methodName,
-      args,
-      stringify,
-      parse,
       blockQuery,
     });
   }

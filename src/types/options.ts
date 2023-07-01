@@ -8,7 +8,7 @@ export interface FunctionCallOptions<Args> {
   methodName: string;
 
   /**
-   * serializable types or `Uint8Array`. Default `{}`
+   * Serializable types or `Uint8Array`. Default `{}`
    */
   args?: Args | Uint8Array;
 
@@ -40,7 +40,7 @@ export interface ViewFunctionOptions<Value, Args> {
   methodName: string;
 
   /**
-   * serializable types or `Uint8Array`. Default `{}`
+   * Serializable types or `Uint8Array`. Default `{}`
    */
   args?: Args | Uint8Array;
 

@@ -205,7 +205,7 @@ export class MultiTransaction {
     args,
     attachedDeposit = Amount.ZERO,
     gas = Gas.DEFAULT,
-    stringify = 'json',
+    stringify,
   }: FunctionCallOptions<Args>): MultiTransaction {
     return this.addActions(
       ActionFactory.functionCall({

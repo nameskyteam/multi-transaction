@@ -24,17 +24,23 @@ export interface Borsh<T> {
 
 /**
  * Serialize data, if data type is `Uint8Array`, skip serialize.
+ * @param data data to serialize
+ * @param stringify Stringify options. Default in JSON format
  */
-export function stringifyOrSkip<T>(data: T | Uint8Array, stringify: Stringify): Buffer {
+export function stringifyOrSkip<T>(data: T | Uint8Array, stringify?: Stringify): Buffer {
   const isUint8Array =
     (data as Uint8Array).byteLength && (data as Uint8Array).byteLength === (data as Uint8Array).length;
   return isUint8Array ? Buffer.from(data as Uint8Array) : getStringifier(stringify)(data as T);
 }
 
-export function getStringifier(stringify: Stringify): Stringifier {
+/**
+ * Get a serialize function.
+ * @param stringify Stringify options. Default in JSON format
+ */
+export function getStringifier(stringify?: Stringify): Stringifier {
   if (typeof stringify === 'function') {
     return stringify;
-  } else if (stringify === 'json') {
+  } else if (!stringify || stringify === 'json') {
     return stringifyJson;
   } else if (stringify.method === 'borsh') {
     return (data) => stringifyBorsh(stringify.schema, data);
@@ -43,10 +49,14 @@ export function getStringifier(stringify: Stringify): Stringifier {
   }
 }
 
-export function getParser<T>(parse: Parse<T>): Parser<T> {
+/**
+ * Get a deserialize function.
+ * @param parse Parse options. Default in JSON format
+ */
+export function getParser<T>(parse?: Parse<T>): Parser<T> {
   if (typeof parse === 'function') {
     return parse;
-  } else if (parse === 'json') {
+  } else if (!parse || parse === 'json') {
     return parseJson;
   } else if (parse.method === 'borsh') {
     return (data) => parseBorsh(parse.schema, data, parse.dataClass);
