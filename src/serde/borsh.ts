@@ -17,7 +17,7 @@ export function parseBorsh<T>(schema: BorshSchema, data: Uint8Array, dataClass: 
 }
 
 /**
- * Schema that defines the data structure.
+ * Schema that defines the `class` structure.
  */
 export class BorshSchema extends Map<AssignableClass<unknown>, StructSchema | EnumSchema> {
   constructor() {

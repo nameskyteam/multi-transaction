@@ -12,12 +12,12 @@ export interface Borsh<T> {
   method: 'borsh';
 
   /**
-   * borsh schema
+   * Borsh schema
    */
   schema: BorshSchema;
 
   /**
-   * required when parse data from borsh bytes
+   * Required when parse data from borsh bytes
    */
   dataClass: AssignableClass<T>;
 }
