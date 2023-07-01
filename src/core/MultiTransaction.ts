@@ -24,9 +24,9 @@ import {
 } from '../types';
 import { ActionFactory } from './ActionFactory';
 import { Transaction, AccessKey, Action } from '../types';
-import { Amount, Gas, stringifyJson } from '../utils';
-import { stringifyOrSkip } from '../utils';
+import { Amount, Gas } from '../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
+import { stringifyOrSkip } from '../serde';
 
 /**
  * Helper class for creating transaction(s) with builder pattern
@@ -202,15 +202,15 @@ export class MultiTransaction {
    */
   functionCall<Args = EmptyObject>({
     methodName,
-    args,
+    args = {} as Args,
     attachedDeposit = Amount.ZERO,
     gas = Gas.DEFAULT,
-    stringify = stringifyJson,
+    stringify,
   }: FunctionCallOptions<Args>): MultiTransaction {
     return this.addActions(
       ActionFactory.functionCall({
         methodName,
-        args: stringifyOrSkip(args ?? ({} as Args), stringify),
+        args: stringifyOrSkip(args, stringify),
         attachedDeposit,
         gas,
       })

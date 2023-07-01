@@ -13,8 +13,8 @@ import {
   parseOutcomeValue,
   throwReceiptErrorsIfAny,
 } from '../utils';
-import { parseJson, stringifyJson, stringifyOrSkip } from '../utils';
 import { SendOptions, SendWithLocalKeyOptions } from '../types/enhancement';
+import { getParser, stringifyOrSkip } from '../serde';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 
@@ -98,17 +98,17 @@ export async function setupMultiSendWalletSelector(
       async view<Value, Args = EmptyObject>({
         contractId,
         methodName,
-        args,
-        stringify = stringifyJson,
-        parse = parseJson,
+        args = {} as Args,
+        stringify,
+        parse,
         blockQuery,
       }: ViewFunctionOptions<Value, Args>): Promise<Value> {
-        return this.viewer.viewFunctionV2({
+        return this.viewer.viewFunction({
           contractId,
           methodName,
-          args: stringifyOrSkip(args ?? ({} as Args), stringify),
-          stringify: (args) => args,
-          parse,
+          args,
+          stringify: (args: Args) => stringifyOrSkip(args, stringify),
+          parse: getParser(parse),
           blockQuery,
         });
       },

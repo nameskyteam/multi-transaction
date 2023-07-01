@@ -1,26 +1,31 @@
 import { Account, Connection } from 'near-api-js';
-import { ViewFunctionOptions, Parser, EmptyObject } from '../types';
+import { ViewFunctionOptions, EmptyObject } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   NearApiJsTransactionLike,
   parseNearApiJsTransactions,
   parseOutcomeValue,
-  stringifyJson,
   throwReceiptErrorsIfAny,
 } from '../utils';
-import { stringifyOrSkip, parseJson } from '../utils';
 import { Action } from 'near-api-js/lib/transaction';
 import { MultiTransaction } from './MultiTransaction';
+import { getParser, Parse, stringifyOrSkip } from '../serde';
 
 export class MultiSendAccount extends Account {
   constructor(connection: Connection, accountId = '') {
     super(connection, accountId);
   }
 
+  /**
+   * @override
+   */
   async signAndSendTransaction(options: SignAndSendTransactionOptions): Promise<FinalExecutionOutcome> {
     return super.signAndSendTransaction(options);
   }
 
+  /**
+   * @override
+   */
   async signAndSendTransactions(options: SignAndSendTransactionsOptions): Promise<FinalExecutionOutcome[]> {
     const outcomes: FinalExecutionOutcome[] = [];
     if (options.transactions.length === 0) {
@@ -39,17 +44,17 @@ export class MultiSendAccount extends Account {
   async view<Value, Args = EmptyObject>({
     contractId,
     methodName,
-    args,
-    stringify = stringifyJson,
-    parse = parseJson,
+    args = {} as Args,
+    stringify,
+    parse,
     blockQuery,
   }: ViewFunctionOptions<Value, Args>): Promise<Value> {
-    return super.viewFunctionV2({
+    return super.viewFunction({
       contractId,
       methodName,
-      args: stringifyOrSkip(args ?? ({} as Args), stringify),
-      stringify: (args) => args,
-      parse,
+      args,
+      stringify: (args: Args) => stringifyOrSkip(args, stringify),
+      parse: getParser(parse),
       blockQuery,
     });
   }
@@ -79,7 +84,7 @@ export interface SendOptions<Value> {
   /**
    * Deserialize returned value from bytes. Default in JSON format
    */
-  parse?: Parser<Value>;
+  parse?: Parse<Value>;
 }
 
 export interface SignAndSendTransactionOptions {
