@@ -3,7 +3,7 @@ import { parseJson, stringifyJson } from './json';
 import { BorshSchema, parseBorsh, stringifyBorsh } from './borsh';
 import { AssignableClass, unreachable } from '../utils';
 
-export type Stringify<T> = Stringifier<T> | 'json' | Omit<Borsh<T>, 'dataClass'>;
+export type Stringify<T> = Stringifier<T> | 'json' | Omit<Borsh<unknown>, 'dataClass'>;
 export type Stringifier<T> = (data: T) => Buffer;
 export type Parse<T> = Parser<T> | 'json' | Borsh<T>;
 export type Parser<T> = (data: Uint8Array) => T;
