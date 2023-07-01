@@ -1,5 +1,5 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
-import { Buffer } from 'buffer';
+import { ParseOptions, StringifyOptions } from '../serde';
 
 export interface FunctionCallOptions<Args> {
   /**
@@ -25,7 +25,7 @@ export interface FunctionCallOptions<Args> {
   /**
    * Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format
    */
-  stringify?: Stringifier<Args>;
+  stringify?: StringifyOptions;
 }
 
 export interface ViewFunctionOptions<Value, Args> {
@@ -47,12 +47,12 @@ export interface ViewFunctionOptions<Value, Args> {
   /**
    * Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format
    */
-  stringify?: Stringifier<Args>;
+  stringify?: StringifyOptions;
 
   /**
    * Deserialize returned value from bytes. Default in JSON format
    */
-  parse?: Parser<Value>;
+  parse?: ParseOptions<Value>;
 
   /**
    * View contract method in the past block
@@ -60,13 +60,9 @@ export interface ViewFunctionOptions<Value, Args> {
   blockQuery?: BlockQuery;
 }
 
+export type BlockQuery = BlockReference;
+export type EmptyObject = Record<string, never>;
+
 export type ArgsOptions<Args> = Pick<FunctionCallOptions<Args>, 'args'>;
 export type AttachedDepositOptions = Pick<FunctionCallOptions<unknown>, 'attachedDeposit'>;
 export type GasOptions = Pick<FunctionCallOptions<unknown>, 'gas'>;
-
-export type BlockQuery = BlockReference;
-
-export type EmptyObject = Record<string, never>;
-
-export type Stringifier<T> = (data: T) => Buffer;
-export type Parser<T> = (data: Uint8Array) => T;

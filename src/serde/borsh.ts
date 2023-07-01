@@ -44,16 +44,9 @@ export class BorshSchema extends Map<SchemaKey, SchemaValue> {
 
 export type SchemaEntry = [SchemaKey, SchemaValue];
 export type SchemaKey = AssignableClass<unknown>;
-export type SchemaValue =
-  | {
-      kind: 'struct';
-      fields: Field[];
-    }
-  | {
-      kind: 'enum';
-      field: 'enum';
-      values: Field[];
-    };
+export type SchemaValue = StructValue | EnumValue;
+type StructValue = { kind: 'struct'; fields: Field[] };
+type EnumValue = { kind: 'enum'; field: 'enum'; values: Field[] };
 
 export type Field = [FieldName, FieldType];
 export type FieldName = string;
@@ -67,16 +60,16 @@ export type FieldType =
   | 'u128'
   | 'u256'
   | 'u512'
-  | Vec
-  | Array
-  | Uint8Array
-  | Map
+  | FixedUint8Array
+  | FixedArray
+  | DynamicArray
+  | DynamicMap
   | Option;
 
-type Array = [FieldType, ArrayLength];
-type Uint8Array = [ArrayLength];
-type Vec = [FieldType];
-type Map = { kind: 'map'; key: FieldType; value: FieldType };
+type FixedUint8Array = [ArrayLength];
+type FixedArray = [FieldType, ArrayLength];
+type DynamicArray = [FieldType];
+type DynamicMap = { kind: 'map'; key: FieldType; value: FieldType };
 type Option = { kind: 'option'; type: FieldType };
 
 type ArrayLength = number;

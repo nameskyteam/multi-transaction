@@ -1,16 +1,15 @@
 import { Account, Connection } from 'near-api-js';
-import { ViewFunctionOptions, Parser, EmptyObject } from '../types';
+import { ViewFunctionOptions, EmptyObject } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   NearApiJsTransactionLike,
   parseNearApiJsTransactions,
   parseOutcomeValue,
-  stringifyOrSkip,
   throwReceiptErrorsIfAny,
 } from '../utils';
 import { Action } from 'near-api-js/lib/transaction';
 import { MultiTransaction } from './MultiTransaction';
-import { parseJson, stringifyJson } from '../serde';
+import { getParser, ParseOptions, stringifyOrSkip } from '../serde';
 
 export class MultiSendAccount extends Account {
   constructor(connection: Connection, accountId = '') {
@@ -40,16 +39,16 @@ export class MultiSendAccount extends Account {
     contractId,
     methodName,
     args,
-    stringify = stringifyJson,
-    parse = parseJson,
+    stringify = 'json',
+    parse = 'json',
     blockQuery,
   }: ViewFunctionOptions<Value, Args>): Promise<Value> {
     return super.viewFunctionV2({
       contractId,
       methodName,
-      args: stringifyOrSkip(args ?? ({} as Args), stringify),
-      stringify: (args) => args,
-      parse,
+      args: args ?? {},
+      stringify: (args) => stringifyOrSkip(args, stringify),
+      parse: getParser(parse),
       blockQuery,
     });
   }
@@ -79,7 +78,7 @@ export interface SendOptions<Value> {
   /**
    * Deserialize returned value from bytes. Default in JSON format
    */
-  parse?: Parser<Value>;
+  parse?: ParseOptions<Value>;
 }
 
 export interface SignAndSendTransactionOptions {
