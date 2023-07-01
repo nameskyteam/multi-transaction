@@ -202,7 +202,7 @@ export class MultiTransaction {
    */
   functionCall<Args = EmptyObject>({
     methodName,
-    args,
+    args = {} as Args,
     attachedDeposit = Amount.ZERO,
     gas = Gas.DEFAULT,
     stringify,
@@ -210,7 +210,7 @@ export class MultiTransaction {
     return this.addActions(
       ActionFactory.functionCall({
         methodName,
-        args: stringifyOrSkip(args ?? {}, stringify),
+        args: stringifyOrSkip(args, stringify),
         attachedDeposit,
         gas,
       })

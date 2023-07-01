@@ -44,7 +44,7 @@ export class MultiSendAccount extends Account {
   async view<Value, Args = EmptyObject>({
     contractId,
     methodName,
-    args,
+    args = {} as Args,
     stringify,
     parse,
     blockQuery,
@@ -52,7 +52,7 @@ export class MultiSendAccount extends Account {
     return super.viewFunction({
       contractId,
       methodName,
-      args: args ?? {},
+      args,
       stringify: (args: Args) => stringifyOrSkip(args, stringify),
       parse: getParser(parse),
       blockQuery,

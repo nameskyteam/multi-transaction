@@ -25,7 +25,7 @@ export interface FunctionCallOptions<Args> {
   /**
    * Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format
    */
-  stringify?: Stringify;
+  stringify?: Stringify<Args>;
 }
 
 export interface ViewFunctionOptions<Value, Args> {
@@ -47,7 +47,7 @@ export interface ViewFunctionOptions<Value, Args> {
   /**
    * Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format
    */
-  stringify?: Stringify;
+  stringify?: Stringify<Args>;
 
   /**
    * Deserialize returned value from bytes. Default in JSON format

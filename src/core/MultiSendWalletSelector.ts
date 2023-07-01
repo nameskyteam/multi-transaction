@@ -98,7 +98,7 @@ export async function setupMultiSendWalletSelector(
       async view<Value, Args = EmptyObject>({
         contractId,
         methodName,
-        args,
+        args = {} as Args,
         stringify,
         parse,
         blockQuery,
@@ -106,7 +106,7 @@ export async function setupMultiSendWalletSelector(
         return this.viewer.viewFunction({
           contractId,
           methodName,
-          args: args ?? {},
+          args,
           stringify: (args: Args) => stringifyOrSkip(args, stringify),
           parse: getParser(parse),
           blockQuery,
