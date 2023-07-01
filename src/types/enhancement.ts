@@ -5,7 +5,7 @@ import { EmptyObject, ViewFunctionOptions } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/lib/wallet-selector.types';
-import { ParseOptions } from '../serde';
+import { Parse } from '../serde';
 
 export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
 
@@ -84,7 +84,7 @@ export interface SendOptions<Value> {
   /**
    * Deserialize returned value from bytes. Default in JSON format
    */
-  parse?: ParseOptions<Value>;
+  parse?: Parse<Value>;
 }
 
 export interface SendWithLocalKeyOptions<Value> {
@@ -96,7 +96,7 @@ export interface SendWithLocalKeyOptions<Value> {
   /**
    * Deserialize returned value from bytes. Default in JSON format
    */
-  parse?: ParseOptions<Value>;
+  parse?: Parse<Value>;
 }
 
 export type MultiSendWalletSelectorConfig = MultiSendWalletSelectorParams | MultiSendWalletSelectorParamsWithSelector;

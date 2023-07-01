@@ -1,5 +1,5 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
-import { ParseOptions, StringifyOptions } from '../serde';
+import { Parse, Stringify } from '../serde';
 
 export interface FunctionCallOptions<Args> {
   /**
@@ -8,7 +8,7 @@ export interface FunctionCallOptions<Args> {
   methodName: string;
 
   /**
-   * `Uint8Array` or serializable types. Default `{}`
+   * serializable types or `Uint8Array`. Default `{}`
    */
   args?: Args | Uint8Array;
 
@@ -25,7 +25,7 @@ export interface FunctionCallOptions<Args> {
   /**
    * Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format
    */
-  stringify?: StringifyOptions;
+  stringify?: Stringify;
 }
 
 export interface ViewFunctionOptions<Value, Args> {
@@ -40,19 +40,19 @@ export interface ViewFunctionOptions<Value, Args> {
   methodName: string;
 
   /**
-   * `Uint8Array` or serializable types. Default `{}`
+   * serializable types or `Uint8Array`. Default `{}`
    */
   args?: Args | Uint8Array;
 
   /**
    * Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format
    */
-  stringify?: StringifyOptions;
+  stringify?: Stringify;
 
   /**
    * Deserialize returned value from bytes. Default in JSON format
    */
-  parse?: ParseOptions<Value>;
+  parse?: Parse<Value>;
 
   /**
    * View contract method in the past block
@@ -60,8 +60,8 @@ export interface ViewFunctionOptions<Value, Args> {
   blockQuery?: BlockQuery;
 }
 
-export type BlockQuery = BlockReference;
 export type EmptyObject = Record<string, never>;
+export type BlockQuery = BlockReference;
 
 export type ArgsOptions<Args> = Pick<FunctionCallOptions<Args>, 'args'>;
 export type AttachedDepositOptions = Pick<FunctionCallOptions<unknown>, 'attachedDeposit'>;
