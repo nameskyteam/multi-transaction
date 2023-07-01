@@ -19,38 +19,31 @@ export function parseBorsh<T>(schema: BorshSchema, data: Uint8Array, dataClass: 
 /**
  * Schema that defines the data structure.
  */
-export class BorshSchema extends Map<SchemaKey, SchemaValue> {
-  private constructor() {
+export class BorshSchema extends Map<AssignableClass<unknown>, StructSchema | EnumSchema> {
+  constructor() {
     super();
   }
 
-  static new() {
-    return new BorshSchema();
-  }
-
-  static from(entries: SchemaEntry[]) {
+  static from(entries: [AssignableClass<unknown>, StructSchema | EnumSchema][]) {
     const iter = entries[Symbol.iterator]();
-    const schema = BorshSchema.new();
+    const schema = new BorshSchema();
     schema.extend(iter);
     return schema;
   }
 
-  extend(entries: IterableIterator<SchemaEntry>) {
+  extend(entries: IterableIterator<[AssignableClass<unknown>, StructSchema | EnumSchema]>) {
     for (const [key, value] of entries) {
       this.set(key, value);
     }
   }
 }
 
-export type SchemaEntry = [SchemaKey, SchemaValue];
-export type SchemaKey = AssignableClass<unknown>;
-export type SchemaValue = StructValue | EnumValue;
-type StructValue = { kind: 'struct'; fields: Field[] };
-type EnumValue = { kind: 'enum'; field: 'enum'; values: Field[] };
+type StructSchema = { kind: 'struct'; fields: Field[] };
+type EnumSchema = { kind: 'enum'; field: 'enum'; values: Field[] };
 
-export type Field = [FieldName, FieldType];
+export type Field = [FieldName, BorshType];
 export type FieldName = string;
-export type FieldType =
+export type BorshType =
   | AssignableClass<unknown>
   | 'string'
   | 'u8'
@@ -67,9 +60,9 @@ export type FieldType =
   | Option;
 
 type FixedUint8Array = [ArrayLength];
-type FixedArray = [FieldType, ArrayLength];
-type DynamicArray = [FieldType];
-type DynamicMap = { kind: 'map'; key: FieldType; value: FieldType };
-type Option = { kind: 'option'; type: FieldType };
+type FixedArray = [BorshType, ArrayLength];
+type DynamicArray = [BorshType];
+type DynamicMap = { kind: 'map'; key: BorshType; value: BorshType };
+type Option = { kind: 'option'; type: BorshType };
 
 type ArrayLength = number;
