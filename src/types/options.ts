@@ -63,9 +63,5 @@ export interface ViewFunctionOptions<Value, Args> {
 export type EmptyObject = Record<string, never>;
 export type BlockQuery = BlockReference;
 
-export type ArgsOptions<Args> = Pick<FunctionCallOptions<Args>, 'args'>;
-export type AttachedDepositOptions = Pick<FunctionCallOptions<unknown>, 'attachedDeposit'>;
-export type GasOptions = Pick<FunctionCallOptions<unknown>, 'gas'>;
-
 export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type Needed<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
