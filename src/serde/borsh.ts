@@ -12,7 +12,8 @@ export function stringifyBorsh<T>(schema: BorshSchema, data: T, borshType?: Bors
   if (borshType) {
     const { __BorshWrapper__, __schema__ } = getBorshWrapper<T>(borshType);
     __schema__.extend(schema.entries());
-    return Buffer.from(borsh.serialize(__schema__, new __BorshWrapper__({ __wrapped__: data })));
+    console.log(__schema__);
+    return Buffer.from(borsh.serialize(__schema__, new __BorshWrapper__({ __wrap__: data })));
   } else {
     return Buffer.from(borsh.serialize(schema, data));
   }
