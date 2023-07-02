@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 import { parseJson, stringifyJson } from './json';
-import { BorshSchema, BorshTypeDescription, parseBorsh, stringifyBorsh } from './borsh';
+import { BorshSchema, BorshType, parseBorsh, stringifyBorsh } from './borsh';
 import { AssignableClass, unreachable } from '../utils';
 import { Optional } from '../types';
 
@@ -12,7 +12,7 @@ export type Parser<T> = (data: Uint8Array) => T;
 export interface Borsh<T> {
   method: 'borsh';
   schema: BorshSchema;
-  dataType: AssignableClass<T> | Exclude<BorshTypeDescription, AssignableClass<unknown>>;
+  dataType: AssignableClass<T> | Exclude<BorshType, AssignableClass<unknown>>;
 }
 
 /**

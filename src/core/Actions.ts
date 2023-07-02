@@ -18,7 +18,7 @@ import {
   TransferAction,
 } from '../types';
 
-export class ActionFactory {
+export class Actions {
   private constructor() {}
 
   static createAccount(): CreateAccountAction {

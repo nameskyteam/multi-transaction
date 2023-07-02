@@ -6,11 +6,11 @@ import { AssignableClass, AssignableStruct } from '../utils';
  * Serialize data in borsh format.
  * @param schema Borsh schema
  * @param data Data to serialize
- * @param dataType Description of generics `T`. If data is primitive type, this param is required
+ * @param borshType Description of generics `T`
  */
-export function stringifyBorsh<T>(schema: BorshSchema, data: T, dataType?: BorshTypeDescription): Buffer {
-  if (dataType) {
-    const { __BorshWrapper__, __schema__ } = getBorshWrapper<T>(dataType);
+export function stringifyBorsh<T>(schema: BorshSchema, data: T, borshType?: BorshType): Buffer {
+  if (borshType) {
+    const { __BorshWrapper__, __schema__ } = getBorshWrapper<T>(borshType);
     __schema__.extend(schema.entries());
     return Buffer.from(borsh.serialize(__schema__, new __BorshWrapper__({ __wrapped__: data })));
   } else {
@@ -22,17 +22,17 @@ export function stringifyBorsh<T>(schema: BorshSchema, data: T, dataType?: Borsh
  * Deserialize data in borsh format.
  * @param schema Borsh schema
  * @param data Data to deserialize
- * @param dataType Description of generics `T`
+ * @param borshType Description of generics `T`
  */
 export function parseBorsh<T>(
   schema: BorshSchema,
   data: Uint8Array,
-  dataType: AssignableClass<T> | Exclude<BorshTypeDescription, AssignableClass<unknown>>
+  borshType: AssignableClass<T> | Exclude<BorshType, AssignableClass<unknown>>
 ): T {
-  const { __BorshWrapper__, __schema__ } = getBorshWrapper<T>(dataType);
+  const { __BorshWrapper__, __schema__ } = getBorshWrapper<T>(borshType);
   __schema__.extend(schema.entries());
-  if (typeof dataType === 'function') {
-    return borsh.deserialize(__schema__, dataType, Buffer.from(data));
+  if (typeof borshType === 'function') {
+    return borsh.deserialize(__schema__, borshType, Buffer.from(data));
   } else {
     return borsh.deserialize(__schema__, __BorshWrapper__, Buffer.from(data)).__wrap__;
   }
@@ -40,13 +40,13 @@ export function parseBorsh<T>(
 
 /**
  * Get an assignable wrapper `class` and a schema that contains its description.
- * @param dataType Description of generics `T`
+ * @param borshType Description of generics `T`
  */
-function getBorshWrapper<T>(dataType: BorshTypeDescription) {
+function getBorshWrapper<T>(borshType: BorshType) {
   class __BorshWrapper__ extends AssignableStruct {
     declare __wrap__: T;
   }
-  const __schema__ = BorshSchema.from([[__BorshWrapper__, { kind: 'struct', fields: [['__wrap__', dataType]] }]]);
+  const __schema__ = BorshSchema.from([[__BorshWrapper__, { kind: 'struct', fields: [['__wrap__', borshType]] }]]);
   return { __BorshWrapper__, __schema__ };
 }
 
@@ -76,18 +76,18 @@ export class BorshSchema extends Map<AssignableClass<unknown>, StructSchema | En
   }
 }
 
-export type StructSchema = { kind: 'struct'; fields: [FieldName, BorshTypeDescription][] };
-export type EnumSchema = { kind: 'enum'; field: 'enum'; values: [FieldName, BorshTypeDescription][] };
+export type StructSchema = { kind: 'struct'; fields: [FieldName, BorshType][] };
+export type EnumSchema = { kind: 'enum'; field: 'enum'; values: [FieldName, BorshType][] };
 export type FieldName = string;
 
 /**
  * Helper class for create description of borsh serialization types
  */
-export class BorshTypeDescriptionFactory {
+export class BorshTypes {
   private constructor() {}
 
-  static AssignAbleClass<T>(classType: AssignableClass<T>): AssignableClass<T> {
-    return classType;
+  static AssignAbleClass<T>(cls: AssignableClass<T>): AssignableClass<T> {
+    return cls;
   }
 
   static string(): 'string' {
@@ -126,27 +126,27 @@ export class BorshTypeDescriptionFactory {
     return [length];
   }
 
-  static FixedArray(valueType: BorshTypeDescription, length: number): FixedArray {
-    return [valueType, length];
+  static FixedArray(borshType: BorshType, length: number): FixedArray {
+    return [borshType, length];
   }
 
-  static DynamicArray(valueType: BorshTypeDescription): DynamicArray {
-    return [valueType];
+  static DynamicArray(borshType: BorshType): DynamicArray {
+    return [borshType];
   }
 
-  static DynamicMap(keyType: BorshTypeDescription, valueType: BorshTypeDescription): DynamicMap {
-    return { kind: 'map', key: keyType, value: valueType };
+  static DynamicMap(keyBorshType: BorshType, valueBorshType: BorshType): DynamicMap {
+    return { kind: 'map', key: keyBorshType, value: valueBorshType };
   }
 
-  static Option(valueType: BorshTypeDescription): Option {
-    return { kind: 'option', type: valueType };
+  static Option(borshType: BorshType): Option {
+    return { kind: 'option', type: borshType };
   }
 }
 
 /**
  * Description of borsh serialization types
  */
-export type BorshTypeDescription =
+export type BorshType =
   | AssignableClass<unknown>
   | 'string'
   | 'u8'
@@ -162,8 +162,8 @@ export type BorshTypeDescription =
   | DynamicMap
   | Option;
 export type FixedUint8Array = [ArrayLength];
-export type FixedArray = [BorshTypeDescription, ArrayLength];
-export type DynamicArray = [BorshTypeDescription];
-export type DynamicMap = { kind: 'map'; key: BorshTypeDescription; value: BorshTypeDescription };
-export type Option = { kind: 'option'; type: BorshTypeDescription };
+export type FixedArray = [BorshType, ArrayLength];
+export type DynamicArray = [BorshType];
+export type DynamicMap = { kind: 'map'; key: BorshType; value: BorshType };
+export type Option = { kind: 'option'; type: BorshType };
 export type ArrayLength = number;

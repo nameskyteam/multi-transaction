@@ -22,7 +22,7 @@ import {
   NftRevokeAllOptions,
   EmptyObject,
 } from '../types';
-import { ActionFactory } from './ActionFactory';
+import { Actions } from './Actions';
 import { Transaction, AccessKey, Action } from '../types';
 import { Amount, Gas } from '../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
@@ -147,7 +147,7 @@ export class MultiTransaction {
    * Add `CreateAccount` Action
    */
   createAccount(): MultiTransaction {
-    return this.addActions(ActionFactory.createAccount());
+    return this.addActions(Actions.createAccount());
   }
 
   /**
@@ -155,7 +155,7 @@ export class MultiTransaction {
    * @param beneficiaryId beneficiary account id
    */
   deleteAccount(beneficiaryId: string): MultiTransaction {
-    return this.addActions(ActionFactory.deleteAccount({ beneficiaryId }));
+    return this.addActions(Actions.deleteAccount({ beneficiaryId }));
   }
 
   /**
@@ -165,7 +165,7 @@ export class MultiTransaction {
    */
   addKey(publicKey: string, accessKey: AccessKey): MultiTransaction {
     return this.addActions(
-      ActionFactory.addKey({
+      Actions.addKey({
         publicKey: PublicKey.fromString(publicKey).toString(),
         accessKey,
       })
@@ -177,7 +177,7 @@ export class MultiTransaction {
    * @param publicKey Public key
    */
   deleteKey(publicKey: string): MultiTransaction {
-    return this.addActions(ActionFactory.deleteKey({ publicKey: PublicKey.fromString(publicKey).toString() }));
+    return this.addActions(Actions.deleteKey({ publicKey: PublicKey.fromString(publicKey).toString() }));
   }
 
   /**
@@ -185,7 +185,7 @@ export class MultiTransaction {
    * @param code Wasm code
    */
   deployContract(code: Uint8Array): MultiTransaction {
-    return this.addActions(ActionFactory.deployContract({ code }));
+    return this.addActions(Actions.deployContract({ code }));
   }
 
   /**
@@ -194,7 +194,7 @@ export class MultiTransaction {
    * @param publicKey Staking public key
    */
   stake(amount: string, publicKey: string): MultiTransaction {
-    return this.addActions(ActionFactory.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() }));
+    return this.addActions(Actions.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() }));
   }
 
   /**
@@ -208,7 +208,7 @@ export class MultiTransaction {
     stringify,
   }: FunctionCallOptions<Args>): MultiTransaction {
     return this.addActions(
-      ActionFactory.functionCall({
+      Actions.functionCall({
         methodName,
         args: stringifyOrSkip(args, stringify),
         attachedDeposit,
@@ -222,7 +222,7 @@ export class MultiTransaction {
    * @param amount Transfer amount
    */
   transfer(amount: string): MultiTransaction {
-    return this.addActions(ActionFactory.transfer({ amount }));
+    return this.addActions(Actions.transfer({ amount }));
   }
 
   // --------------------------------------------- NEP145 --------------------------------------------------
