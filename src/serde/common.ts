@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 import { parseJson, stringifyJson } from './json';
-import { BorshSchema, BorshType, parseBorsh, stringifyBorsh } from './borsh';
+import { BorshSchema, BorshTypeDescription, parseBorsh, stringifyBorsh } from './borsh';
 import { AssignableClass, unreachable } from '../utils';
 import { Optional } from '../types';
 
@@ -12,12 +12,12 @@ export type Parser<T> = (data: Uint8Array) => T;
 export interface Borsh<T> {
   method: 'borsh';
   schema: BorshSchema;
-  dataType: AssignableClass<T> | Exclude<BorshType, AssignableClass<unknown>>;
+  dataType: AssignableClass<T> | Exclude<BorshTypeDescription, AssignableClass<unknown>>;
 }
 
 /**
  * Serialize data, if data type is `Uint8Array`, skip serialize.
- * @param data data to serialize
+ * @param data Data to serialize
  * @param stringify Stringify options. Default in JSON format
  */
 export function stringifyOrSkip<T>(data: T | Uint8Array, stringify?: Stringify<T>): Buffer {
