@@ -1,25 +1,18 @@
 import { Buffer } from 'buffer';
 import { parseJson, stringifyJson } from './json';
-import { BorshSchema, parseBorsh, stringifyBorsh } from './borsh';
+import { BorshSchema, BorshType, parseBorsh, stringifyBorsh } from './borsh';
 import { AssignableClass, unreachable } from '../utils';
+import { Optional } from '../types';
 
-export type Stringify<T> = Stringifier<T> | 'json' | Omit<Borsh<unknown>, 'dataClass'>;
+export type Stringify<T> = Stringifier<T> | 'json' | Optional<Borsh<T>, 'dataType'>;
 export type Stringifier<T> = (data: T) => Buffer;
 export type Parse<T> = Parser<T> | 'json' | Borsh<T>;
 export type Parser<T> = (data: Uint8Array) => T;
 
 export interface Borsh<T> {
   method: 'borsh';
-
-  /**
-   * Borsh schema
-   */
   schema: BorshSchema;
-
-  /**
-   * Required when parse data from borsh bytes
-   */
-  dataClass: AssignableClass<T>;
+  dataType: AssignableClass<T> | Exclude<BorshType, AssignableClass<unknown>>;
 }
 
 /**
@@ -43,7 +36,7 @@ export function getStringifier<T>(stringify?: Stringify<T>): Stringifier<T> {
   } else if (!stringify || stringify === 'json') {
     return stringifyJson;
   } else if (stringify.method === 'borsh') {
-    return (data) => stringifyBorsh(stringify.schema, data);
+    return (data) => stringifyBorsh(stringify.schema, data, stringify.dataType);
   } else {
     unreachable();
   }
@@ -59,7 +52,7 @@ export function getParser<T>(parse?: Parse<T>): Parser<T> {
   } else if (!parse || parse === 'json') {
     return parseJson;
   } else if (parse.method === 'borsh') {
-    return (data) => parseBorsh(parse.schema, data, parse.dataClass);
+    return (data) => parseBorsh(parse.schema, data, parse.dataType);
   } else {
     unreachable();
   }
