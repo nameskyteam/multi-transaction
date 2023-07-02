@@ -10,9 +10,9 @@ import { AssignableClass, AssignableStruct } from '../utils';
  */
 export function stringifyBorsh<T>(schema: BorshSchema, data: T, borshType?: BorshType): Buffer {
   if (borshType) {
-    const { __BorshWrapper__, __schema__ } = getBorshWrapper<T>(borshType);
-    __schema__.extend(schema.entries());
-    return Buffer.from(borsh.serialize(__schema__, new __BorshWrapper__({ __wrap__: data })));
+    const { BorshWrapper, schema: schemaWithBorshWrapper } = getBorshWrapper<T>(borshType);
+    schemaWithBorshWrapper.extend(schema.entries());
+    return Buffer.from(borsh.serialize(schemaWithBorshWrapper, new BorshWrapper({ inner: data })));
   } else {
     return Buffer.from(borsh.serialize(schema, data));
   }
@@ -29,12 +29,12 @@ export function parseBorsh<T>(
   data: Uint8Array,
   borshType: AssignableClass<T> | Exclude<BorshType, AssignableClass<unknown>>
 ): T {
-  const { __BorshWrapper__, __schema__ } = getBorshWrapper<T>(borshType);
-  __schema__.extend(schema.entries());
+  const { BorshWrapper, schema: schemaWithBorshWrapper } = getBorshWrapper<T>(borshType);
+  schemaWithBorshWrapper.extend(schema.entries());
   if (typeof borshType === 'function') {
-    return borsh.deserialize(__schema__, borshType, Buffer.from(data));
+    return borsh.deserialize(schemaWithBorshWrapper, borshType, Buffer.from(data));
   } else {
-    return borsh.deserialize(__schema__, __BorshWrapper__, Buffer.from(data)).__wrap__;
+    return borsh.deserialize(schemaWithBorshWrapper, BorshWrapper, Buffer.from(data)).inner;
   }
 }
 
@@ -43,11 +43,11 @@ export function parseBorsh<T>(
  * @param borshType Description of generics `T`
  */
 function getBorshWrapper<T>(borshType: BorshType) {
-  class __BorshWrapper__ extends AssignableStruct {
-    declare __wrap__: T;
+  class BorshWrapper extends AssignableStruct {
+    declare inner: T;
   }
-  const __schema__ = BorshSchema.from([[__BorshWrapper__, { kind: 'struct', fields: [['__wrap__', borshType]] }]]);
-  return { __BorshWrapper__, __schema__ };
+  const schema = BorshSchema.from([[BorshWrapper, { kind: 'struct', fields: [['inner', borshType]] }]]);
+  return { BorshWrapper, schema };
 }
 
 /**
@@ -76,9 +76,8 @@ export class BorshSchema extends Map<AssignableClass<unknown>, StructSchema | En
   }
 }
 
-export type StructSchema = { kind: 'struct'; fields: [FieldName, BorshType][] };
-export type EnumSchema = { kind: 'enum'; field: 'enum'; values: [FieldName, BorshType][] };
-export type FieldName = string;
+export type StructSchema = { kind: 'struct'; fields: [string, BorshType][] };
+export type EnumSchema = { kind: 'enum'; field: 'enum'; values: [string, BorshType][] };
 
 /**
  * Helper class for create description of borsh serialization types
@@ -122,23 +121,23 @@ export class BorshTypes {
     return 'u512';
   }
 
-  static FixedUint8Array(length: number): FixedUint8Array {
+  static u8array(length: number): u8array {
     return [length];
   }
 
-  static FixedArray(borshType: BorshType, length: number): FixedArray {
+  static array(borshType: BorshType, length: number): array {
     return [borshType, length];
   }
 
-  static DynamicArray(borshType: BorshType): DynamicArray {
+  static vec(borshType: BorshType): vec {
     return [borshType];
   }
 
-  static DynamicMap(keyBorshType: BorshType, valueBorshType: BorshType): DynamicMap {
+  static map(keyBorshType: BorshType, valueBorshType: BorshType): map {
     return { kind: 'map', key: keyBorshType, value: valueBorshType };
   }
 
-  static Option(borshType: BorshType): Option {
+  static option(borshType: BorshType): option {
     return { kind: 'option', type: borshType };
   }
 }
@@ -156,14 +155,13 @@ export type BorshType =
   | 'u128'
   | 'u256'
   | 'u512'
-  | FixedUint8Array
-  | FixedArray
-  | DynamicArray
-  | DynamicMap
-  | Option;
-export type FixedUint8Array = [ArrayLength];
-export type FixedArray = [BorshType, ArrayLength];
-export type DynamicArray = [BorshType];
-export type DynamicMap = { kind: 'map'; key: BorshType; value: BorshType };
-export type Option = { kind: 'option'; type: BorshType };
-export type ArrayLength = number;
+  | u8array
+  | array
+  | vec
+  | map
+  | option;
+export type u8array = [number];
+export type array = [BorshType, number];
+export type vec = [BorshType];
+export type map = { kind: 'map'; key: BorshType; value: BorshType };
+export type option = { kind: 'option'; type: BorshType };
