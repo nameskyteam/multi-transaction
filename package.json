@@ -17,12 +17,14 @@
   "dependencies": {
     "@near-wallet-selector/core": "^7.9.0",
     "big.js": "^6.2.1",
+    "bn.js": "^5.2.1",
     "borsh": "^0.7.0",
     "buffer": "^6.0.3",
     "near-api-js": "^1.1.0"
   },
   "devDependencies": {
     "@types/big.js": "^6.1.6",
+    "@types/bn.js": "^5.1.1",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",
     "eslint": "^8.23.1",

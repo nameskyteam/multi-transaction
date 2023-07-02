@@ -8,9 +8,17 @@ export type AssignableClass<T> = new (props: any) => T;
 /**
  * Struct like assignable `class`
  */
-export abstract class AssignableStruct extends Assignable {}
+export abstract class AssignableStruct extends Assignable {
+  constructor(props: any) {
+    super(props);
+  }
+}
 
 /**
  * Enum like assignable `class`
  */
-export abstract class AssignableEnum extends Enum {}
+export abstract class AssignableEnum extends Enum {
+  constructor(props: any) {
+    super(props);
+  }
+}

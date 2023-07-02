@@ -3,6 +3,7 @@ import * as nearApiJs from 'near-api-js';
 import { Transaction } from '../types';
 import { MultiTransaction } from '../core';
 import * as nearWalletSelector from '@near-wallet-selector/core';
+import BN from 'bn.js';
 
 export function parseNearApiJsTransactions(multiTransaction: MultiTransaction): NearApiJsTransactionLike[] {
   return multiTransaction.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));
@@ -41,15 +42,15 @@ function parseNearApiJsAction(action: Action): NearApiJsActionLike {
     }
     case 'Stake': {
       const { amount, publicKey } = action.params;
-      return nearApiJs.transactions.stake(amount, nearApiJs.utils.PublicKey.fromString(publicKey));
+      return nearApiJs.transactions.stake(new BN(amount), nearApiJs.utils.PublicKey.fromString(publicKey));
     }
     case 'FunctionCall': {
       const { methodName, args, gas, attachedDeposit } = action.params;
-      return nearApiJs.transactions.functionCall(methodName, args, gas, attachedDeposit);
+      return nearApiJs.transactions.functionCall(methodName, args, new BN(gas), new BN(attachedDeposit));
     }
     case 'Transfer': {
       const { amount } = action.params;
-      return nearApiJs.transactions.transfer(amount);
+      return nearApiJs.transactions.transfer(new BN(amount));
     }
   }
 }
@@ -60,7 +61,11 @@ function parseNearApiJsAccessKey(accessKey: AccessKey): nearApiJs.transactions.A
     return nearApiJs.transactions.fullAccessKey();
   } else {
     const { receiverId, methodNames, allowance } = permission;
-    return nearApiJs.transactions.functionCallAccessKey(receiverId, methodNames, allowance);
+    return nearApiJs.transactions.functionCallAccessKey(
+      receiverId,
+      methodNames,
+      allowance ? new BN(allowance) : undefined
+    );
   }
 }
 
