@@ -1,6 +1,11 @@
 import { FtTransferArgs, FtTransferCallArgs } from './args';
-import { GasOptions, ArgsOptions } from '../options';
 
-export interface FtTransferOptions extends Required<ArgsOptions<FtTransferArgs>>, GasOptions {}
+export interface FtTransferOptions {
+  args: FtTransferArgs;
+  gas?: string;
+}
 
-export interface FtTransferCallOptions extends Required<ArgsOptions<FtTransferCallArgs>>, GasOptions {}
+export interface FtTransferCallOptions {
+  args: FtTransferCallArgs;
+  gas?: string;
+}

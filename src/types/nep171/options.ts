@@ -1,12 +1,27 @@
 import { NftTransferArgs, NftTransferCallArgs, NftApproveArgs, NftRevokeArgs, NftRevokeAllArgs } from './args';
-import { AttachedDepositOptions, GasOptions, ArgsOptions } from '../options';
 
-export interface NftTransferOptions extends Required<ArgsOptions<NftTransferArgs>>, GasOptions {}
+export interface NftTransferOptions {
+  args: NftTransferArgs;
+  gas?: string;
+}
 
-export interface NftTransferCallOptions extends Required<ArgsOptions<NftTransferCallArgs>>, GasOptions {}
+export interface NftTransferCallOptions {
+  args: NftTransferCallArgs;
+  gas?: string;
+}
 
-export interface NftApproveOptions extends Required<ArgsOptions<NftApproveArgs>>, AttachedDepositOptions, GasOptions {}
+export interface NftApproveOptions {
+  args: NftApproveArgs;
+  attachedDeposit?: string;
+  gas?: string;
+}
 
-export interface NftRevokeOptions extends Required<ArgsOptions<NftRevokeArgs>>, GasOptions {}
+export interface NftRevokeOptions {
+  args: NftRevokeArgs;
+  gas?: string;
+}
 
-export interface NftRevokeAllOptions extends Required<ArgsOptions<NftRevokeAllArgs>>, GasOptions {}
+export interface NftRevokeAllOptions {
+  args: NftRevokeAllArgs;
+  gas?: string;
+}

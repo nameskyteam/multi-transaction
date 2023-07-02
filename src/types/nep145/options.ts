@@ -1,11 +1,17 @@
 import { StorageDepositArgs, StorageUnregisterArgs, StorageWithdrawArgs } from './args';
-import { ArgsOptions, AttachedDepositOptions, GasOptions } from '../options';
 
-export interface StorageDepositOptions
-  extends ArgsOptions<StorageDepositArgs>,
-    Required<AttachedDepositOptions>,
-    GasOptions {}
+export interface StorageDepositOptions {
+  args?: StorageDepositArgs;
+  attachedDeposit: string;
+  gas?: string;
+}
 
-export interface StorageWithdrawOptions extends ArgsOptions<StorageWithdrawArgs>, GasOptions {}
+export interface StorageWithdrawOptions {
+  args?: StorageWithdrawArgs;
+  gas?: string;
+}
 
-export interface StorageUnregisterOptions extends ArgsOptions<StorageUnregisterArgs>, GasOptions {}
+export interface StorageUnregisterOptions {
+  args?: StorageUnregisterArgs;
+  gas?: string;
+}
