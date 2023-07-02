@@ -85,7 +85,7 @@ export type EnumSchema = { kind: 'enum'; field: 'enum'; values: [string, BorshTy
 export class BorshTypes {
   private constructor() {}
 
-  static AssignAbleClass<T>(cls: AssignableClass<T>): AssignableClass<T> {
+  static AssignableClass<T>(cls: AssignableClass<T>): AssignableClass<T> {
     return cls;
   }
 
