@@ -92,6 +92,40 @@ export interface BorshOptions {
 }
 
 /**
+ * Fixed size Array
+ * @param type
+ * @param length
+ */
+export function array(type: BorshType, length: number): ArrayType {
+  return BORSH.fixedArray(type, length);
+}
+
+/**
+ * Vec
+ * @param type
+ */
+export function vec(type: BorshType): VecType {
+  return BORSH.vec(type);
+}
+
+/**
+ * Map
+ * @param keyType
+ * @param valueType
+ */
+export function map(keyType: BorshType, valueType: BorshType): MapType {
+  unimplemented();
+}
+
+/**
+ * Option
+ * @param type
+ */
+export function option(type: BorshType): OptionType {
+  return BORSH.option(type);
+}
+
+/**
  * Type Mapping
  * * `Class<T>` -> `class`
  * * `string` -> `string`
@@ -127,19 +161,3 @@ export type ArrayType = BORSH.FixedArrayKind;
 export type VecType = BORSH.VecKind;
 export type MapType = never;
 export type OptionType = BORSH.OptionKind;
-
-export function array(type: BorshType, length: number): ArrayType {
-  return BORSH.fixedArray(type, length);
-}
-
-export function vec(type: BorshType): VecType {
-  return BORSH.vec(type);
-}
-
-export function map(keyType: BorshType, valueType: BorshType): MapType {
-  unimplemented();
-}
-
-export function option(type: BorshType): OptionType {
-  return BORSH.option(type);
-}
