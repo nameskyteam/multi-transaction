@@ -91,23 +91,36 @@ export interface BorshOptions {
   index?: number;
 }
 
+/**
+ * Type Mapping
+ * * `Class<T>` -> `class`
+ * * `string` -> `string`
+ * * `u8`, `u16`, `u32` -> `number`
+ * * `u64`, `u128`, `u256`, `u512` -> `bigint`
+ * * `f32`, `f64` -> `number`
+ * * `bool` -> `boolean`
+ * * `ArrayType` -> `Buffer` or `T[]`, fixed size
+ * * `VecType` -> `Buffer` or `T[]`
+ * * `MapType` -> TODO unimplemented
+ * * `OptionType` -> `T | undefined`
+ */
 export type BorshType =
-  | Class<unknown> // `class`
-  | 'string' // `string`
+  | Class<unknown>
+  | 'string'
   | 'u8'
   | 'u16'
-  | 'u32' // `number`
+  | 'u32'
   | 'u64'
   | 'u128'
   | 'u256'
-  | 'u512' // `bigint`
+  | 'u512'
   | 'f32'
-  | 'f64' // `number`
-  | 'bool' // 'boolean'
-  | ArrayType // `Buffer` or `T[]`, fixed size
-  | VecType // `Buffer` or `T[]`
-  | MapType // TODO unimplemented
-  | OptionType; // `T | undefined`
+  | 'f64'
+  | 'bool'
+  | ArrayType
+  | VecType
+  | MapType
+  | OptionType;
 
 export type Class<T> = BORSH.Constructor<T>;
 export type ArrayType = BORSH.FixedArrayKind;
