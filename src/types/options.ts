@@ -62,6 +62,3 @@ export interface ViewFunctionOptions<Value, Args> {
 
 export type EmptyObject = Record<string, never>;
 export type BlockQuery = BlockReference;
-
-export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-export type Needed<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
