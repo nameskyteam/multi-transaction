@@ -15,10 +15,10 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@dao-xyz/borsh": "^5.1.5",
     "@near-wallet-selector/core": "^7.9.0",
     "big.js": "^6.2.1",
     "bn.js": "^5.2.1",
-    "borsh": "^0.7.0",
     "buffer": "^6.0.3",
     "near-api-js": "^1.1.0"
   },

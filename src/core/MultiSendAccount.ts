@@ -45,8 +45,8 @@ export class MultiSendAccount extends Account {
     contractId,
     methodName,
     args = {} as Args,
-    stringify,
-    parse,
+    stringify = 'json',
+    parse = 'json',
     blockQuery,
   }: ViewFunctionOptions<Value, Args>): Promise<Value> {
     return super.viewFunction({

@@ -1,167 +1,132 @@
 import { Buffer } from 'buffer';
-import * as borsh from 'borsh';
-import { AssignableClass, AssignableStruct } from '../utils';
+import { unimplemented } from '../utils';
+import * as BORSH from '@dao-xyz/borsh';
 
 /**
  * Serialize data in borsh format.
- * @param schema Borsh schema
  * @param data Data to serialize
- * @param borshType Description of generics `T`
  */
-export function stringifyBorsh<T>(schema: BorshSchema, data: T, borshType?: BorshType): Buffer {
-  if (borshType) {
-    const { BorshWrapper, schema: schemaWithBorshWrapper } = getBorshWrapper<T>(borshType);
-    schemaWithBorshWrapper.extend(schema.entries());
-    return Buffer.from(borsh.serialize(schemaWithBorshWrapper, new BorshWrapper({ inner: data })));
-  } else {
-    return Buffer.from(borsh.serialize(schema, data));
-  }
+export function stringifyBorsh<T>(data: T): Buffer {
+  return Buffer.from(BORSH.serialize(data));
 }
 
 /**
  * Deserialize data in borsh format.
- * @param schema Borsh schema
  * @param data Data to deserialize
- * @param borshType Description of generics `T`
+ * @param dataType Class of generics `T`
  */
-export function parseBorsh<T>(
-  schema: BorshSchema,
-  data: Uint8Array,
-  borshType: AssignableClass<T> | Exclude<BorshType, AssignableClass<unknown>>
-): T {
-  const { BorshWrapper, schema: schemaWithBorshWrapper } = getBorshWrapper<T>(borshType);
-  schemaWithBorshWrapper.extend(schema.entries());
-  if (typeof borshType === 'function') {
-    return borsh.deserialize(schemaWithBorshWrapper, borshType, Buffer.from(data));
-  } else {
-    return borsh.deserialize(schemaWithBorshWrapper, BorshWrapper, Buffer.from(data)).inner;
-  }
+export function parseBorsh<T>(data: Uint8Array, dataType: Class<T>): T {
+  return BORSH.deserialize(data, dataType);
 }
 
 /**
- * Get an assignable wrapper `class` and a schema that contains its description.
- * @param borshType Description of generics `T`
+ * Wrap a non-custom type value so that we can directly do borsh serialization.
+ * @example
+ * const data = ['Hello', 'World']
+ * const wrappedData = wrap(data, vec('string'))
+ * const bytes = stringifyBorsh(wrappedData)
+ * @param value Value to wrap
+ * @param type Non-custom type
  */
-function getBorshWrapper<T>(borshType: BorshType) {
-  class BorshWrapper extends AssignableStruct {
-    declare inner: T;
-  }
-  const schema = BorshSchema.from([[BorshWrapper, { kind: 'struct', fields: [['inner', borshType]] }]]);
-  return { BorshWrapper, schema };
-}
+export function wrap<T>(value: T, type: Exclude<BorshType, Class<unknown>>) {
+  class BorshWrapper {
+    @borsh({ type })
+    readonly value: T;
 
-/**
- * Schema that contains `class` description.
- */
-export class BorshSchema extends Map<AssignableClass<unknown>, StructSchema | EnumSchema> {
-  private constructor() {
-    super();
-  }
+    constructor(value: T) {
+      this.value = value;
+    }
 
-  static new(): BorshSchema {
-    return new BorshSchema();
-  }
-
-  static from(entries: [AssignableClass<unknown>, StructSchema | EnumSchema][]) {
-    const iter = entries[Symbol.iterator]();
-    const schema = BorshSchema.new();
-    schema.extend(iter);
-    return schema;
-  }
-
-  extend(entries: IterableIterator<[AssignableClass<unknown>, StructSchema | EnumSchema]>) {
-    for (const [key, value] of entries) {
-      this.set(key, value);
+    unwrap(): T {
+      return this.value;
     }
   }
-}
 
-export type StructSchema = { kind: 'struct'; fields: [string, BorshType][] };
-export type EnumSchema = { kind: 'enum'; field: 'enum'; values: [string, BorshType][] };
-
-/**
- * Helper class for create description of borsh serialization types
- */
-export class BorshTypes {
-  private constructor() {}
-
-  static AssignableClass<T>(cls: AssignableClass<T>): AssignableClass<T> {
-    return cls;
-  }
-
-  static string(): 'string' {
-    return 'string';
-  }
-
-  static u8(): 'u8' {
-    return 'u8';
-  }
-
-  static u16(): 'u16' {
-    return 'u16';
-  }
-
-  static u32(): 'u32' {
-    return 'u32';
-  }
-
-  static u64(): 'u64' {
-    return 'u64';
-  }
-
-  static u128(): 'u128' {
-    return 'u128';
-  }
-
-  static u256(): 'u256' {
-    return 'u256';
-  }
-
-  static u512(): 'u512' {
-    return 'u512';
-  }
-
-  static u8array(length: number): u8array {
-    return [length];
-  }
-
-  static array(borshType: BorshType, length: number): array {
-    return [borshType, length];
-  }
-
-  static vec(borshType: BorshType): vec {
-    return [borshType];
-  }
-
-  static map(keyBorshType: BorshType, valueBorshType: BorshType): map {
-    return { kind: 'map', key: keyBorshType, value: valueBorshType };
-  }
-
-  static option(borshType: BorshType): option {
-    return { kind: 'option', type: borshType };
-  }
+  return new BorshWrapper(value);
 }
 
 /**
- * Description of borsh serialization types
+ * Get a non-custom type wrapper class so that we can directly do borsh deserialization.
+ * @example
+ * const VecStringWrapper = wrapper<string[]>(vec('string'))
+ * const wrappedData = parseBorsh(bytes, VecStringWrapper)
+ * const data = wrappedData.unwrap()
+ * @param type Non-custom type
  */
+export function wrapper<T>(type: Exclude<BorshType, Class<unknown>>) {
+  class BorshWrapper {
+    @borsh({ type })
+    readonly value: T;
+
+    constructor(value: T) {
+      this.value = value;
+    }
+
+    unwrap(): T {
+      return this.value;
+    }
+  }
+
+  return BorshWrapper;
+}
+
+/**
+ * Class decorator for borsh serialization. Used for distinguishing classes that extend from the same class.
+ * @param index Class index
+ */
+export function variant(index: string | number | number[]): ClassDecorator {
+  return BORSH.variant(index);
+}
+
+/**
+ * Property decorator for borsh serialization.
+ * @param options Borsh options
+ */
+export function borsh(options: BorshOptions): PropertyDecorator {
+  return BORSH.field(options);
+}
+
+export interface BorshOptions {
+  type: BorshType;
+  index?: number;
+}
+
 export type BorshType =
-  | AssignableClass<unknown>
-  | 'string'
+  | Class<unknown> // `class`
+  | 'string' // `string`
   | 'u8'
   | 'u16'
-  | 'u32'
+  | 'u32' // `number`
   | 'u64'
   | 'u128'
   | 'u256'
-  | 'u512'
-  | u8array
-  | array
-  | vec
-  | map
-  | option;
-export type u8array = [number];
-export type array = [BorshType, number];
-export type vec = [BorshType];
-export type map = { kind: 'map'; key: BorshType; value: BorshType };
-export type option = { kind: 'option'; type: BorshType };
+  | 'u512' // `bigint`
+  | 'f32'
+  | 'f64' // `number`
+  | 'bool' // 'boolean'
+  | ArrayType // `Buffer` or `T[]`, fixed size
+  | VecType // `Buffer` or `T[]`
+  | MapType // TODO unimplemented
+  | OptionType; // `T | undefined`
+
+export type Class<T> = BORSH.Constructor<T>;
+export type ArrayType = BORSH.FixedArrayKind;
+export type VecType = BORSH.VecKind;
+export type MapType = never;
+export type OptionType = BORSH.OptionKind;
+
+export function array(type: BorshType, length: number): ArrayType {
+  return BORSH.fixedArray(type, length);
+}
+
+export function vec(type: BorshType): VecType {
+  return BORSH.vec(type);
+}
+
+export function map(keyType: BorshType, valueType: BorshType): MapType {
+  unimplemented();
+}
+
+export function option(type: BorshType): OptionType {
+  return BORSH.option(type);
+}

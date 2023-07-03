@@ -8,7 +8,7 @@ import { getParser, Parse } from '../serde';
  * @param outcome Transaction outcome
  * @param parse Parse options. Default in JSON format
  */
-export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parse?: Parse<Value>): Value {
+export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parse: Parse<Value> = 'json'): Value {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
   if (successValue) {
     const valueRaw = Buffer.from(successValue, 'base64');
