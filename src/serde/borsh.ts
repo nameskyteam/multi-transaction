@@ -81,8 +81,8 @@ export function variant(index: string | number | number[]): ClassDecorator {
  * Property decorator for borsh serialization.
  * @param options Borsh options
  */
-export function borsh({ type, index }: BorshOptions): PropertyDecorator {
-  return BORSH.field({ type: transformBorshType(type), index });
+export function borsh(options: BorshOptions): PropertyDecorator {
+  return BORSH.field({ type: transformBorshType(options.type), index: options.index });
 }
 
 export interface BorshOptions {
@@ -98,7 +98,11 @@ export interface BorshOptions {
 export function array(type: BorshType, length: number): BorshArray;
 export function array(type: 'u8', length: number): BorshArrayU8;
 export function array(type: BorshType, length: number): BorshArray | BorshArrayU8 {
-  return new BorshArray(type, length);
+  if (type === 'u8') {
+    return new BorshArrayU8(length);
+  } else {
+    return new BorshArray(type, length);
+  }
 }
 
 /**
@@ -108,7 +112,11 @@ export function array(type: BorshType, length: number): BorshArray | BorshArrayU
 export function vec(type: BorshType): BorshVec;
 export function vec(type: 'u8'): BorshVecU8;
 export function vec(type: BorshType): BorshVec | BorshVecU8 {
-  return new BorshVec(type);
+  if (type === 'u8') {
+    return new BorshVecU8();
+  } else {
+    return new BorshVec(type);
+  }
 }
 
 /**
