@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
-import { parseJson, stringifyJson } from './json';
-import { Constructor, parseBorsh, stringifyBorsh } from './borsh';
+import { jsonParser, jsonStringifier } from './json';
+import { Constructor, borshParser, borshStringifier } from './borsh';
 import { unreachable } from '../utils';
 
 export type Stringify<T> = Stringifier<T> | 'json' | 'borsh';
@@ -9,8 +9,15 @@ export type Parse<T> = Parser<T> | 'json' | Borsh<T>;
 export type Parser<T> = (data: Uint8Array) => T;
 
 export interface Borsh<T> {
+  /**
+   * Borsh
+   */
   method: 'borsh';
-  dataType: Constructor<T>;
+
+  /**
+   * Custom type
+   */
+  type: Constructor<T>;
 }
 
 /**
@@ -32,9 +39,9 @@ export function getStringifier<T>(stringify: Stringify<T>): Stringifier<T> {
   if (typeof stringify === 'function') {
     return stringify;
   } else if (!stringify || stringify === 'json') {
-    return stringifyJson;
+    return jsonStringifier;
   } else if (stringify === 'borsh') {
-    return stringifyBorsh;
+    return borshStringifier;
   } else {
     unreachable();
   }
@@ -48,9 +55,9 @@ export function getParser<T>(parse: Parse<T>): Parser<T> {
   if (typeof parse === 'function') {
     return parse;
   } else if (!parse || parse === 'json') {
-    return parseJson;
+    return jsonParser;
   } else if (parse.method === 'borsh') {
-    return (data) => parseBorsh(data, parse.dataType);
+    return (data) => borshParser(data, parse.type);
   } else {
     unreachable();
   }

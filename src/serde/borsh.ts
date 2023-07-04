@@ -5,17 +5,17 @@ import * as BORSH from '@dao-xyz/borsh';
  * Serialize data in borsh format.
  * @param data Data to serialize
  */
-export function stringifyBorsh<T>(data: T): Buffer {
+export function borshStringifier<T>(data: T): Buffer {
   return Buffer.from(BORSH.serialize(data));
 }
 
 /**
  * Deserialize data in borsh format.
  * @param data Data to deserialize
- * @param dataType Class of generics `T`
+ * @param type Class of generics `T`
  */
-export function parseBorsh<T>(data: Uint8Array, dataType: Constructor<T>): T {
-  return BORSH.deserialize(data, dataType);
+export function borshParser<T>(data: Uint8Array, type: Constructor<T>): T {
+  return BORSH.deserialize(data, type);
 }
 
 /**
@@ -27,16 +27,16 @@ export function parseBorsh<T>(data: Uint8Array, dataType: Constructor<T>): T {
  * @param value Value to wrap
  * @param type Non-custom type
  */
-export function wrap<T extends Exclude<BorshType, Constructor<unknown>>>(value: BorshMapping<T>, type: T) {
+export function wrap<T extends CommonBorshType>(value: FromCommonBorshType<T>, type: T) {
   class BorshWrapper {
     @borsh({ type })
-    readonly value: BorshMapping<T>;
+    readonly value: FromCommonBorshType<T>;
 
-    constructor(value: BorshMapping<T>) {
+    constructor(value: FromCommonBorshType<T>) {
       this.value = value;
     }
 
-    unwrap(): BorshMapping<T> {
+    unwrap(): FromCommonBorshType<T> {
       return this.value;
     }
   }
@@ -52,16 +52,16 @@ export function wrap<T extends Exclude<BorshType, Constructor<unknown>>>(value: 
  * const data: string[] = wrappedData.unwrap()
  * @param type Non-custom type
  */
-export function wrapper<T extends Exclude<BorshType, Constructor<unknown>>>(type: T) {
+export function wrapper<T extends CommonBorshType>(type: T) {
   class BorshWrapper {
     @borsh({ type })
-    readonly value: BorshMapping<T>;
+    readonly value: FromCommonBorshType<T>;
 
-    constructor(value: BorshMapping<T>) {
+    constructor(value: FromCommonBorshType<T>) {
       this.value = value;
     }
 
-    unwrap(): BorshMapping<T> {
+    unwrap(): FromCommonBorshType<T> {
       return this.value;
     }
   }
@@ -81,8 +81,8 @@ export function variant(index: string | number | number[]): ClassDecorator {
  * Property decorator for borsh serialization.
  * @param options Borsh options
  */
-export function borsh(options: BorshOptions): PropertyDecorator {
-  return BORSH.field(options);
+export function borsh({ type, index }: BorshOptions): PropertyDecorator {
+  return BORSH.field({ type: transformBorshType(type), index });
 }
 
 export interface BorshOptions {
@@ -91,24 +91,24 @@ export interface BorshOptions {
 }
 
 /**
- * Fixed size Array
+ * Array
  * @param type
  * @param length
  */
-export function array(type: 'u8', length: number): BorshArrayU8;
 export function array(type: BorshType, length: number): BorshArray;
-export function array(type: BorshType, length: number): BorshArrayU8 | BorshArray {
-  return BorshArray.from(BORSH.fixedArray(type, length));
+export function array(type: 'u8', length: number): BorshArrayU8;
+export function array(type: BorshType, length: number): BorshArray | BorshArrayU8 {
+  return new BorshArray(type, length);
 }
 
 /**
  * Vec
  * @param type
  */
-export function vec(type: 'u8'): BorshVecU8;
 export function vec(type: BorshType): BorshVec;
-export function vec(type: BorshType): BorshVecU8 | BorshVec {
-  return BorshVec.from(BORSH.vec(type));
+export function vec(type: 'u8'): BorshVecU8;
+export function vec(type: BorshType): BorshVec | BorshVecU8 {
+  return new BorshVec(type);
 }
 
 /**
@@ -116,7 +116,7 @@ export function vec(type: BorshType): BorshVecU8 | BorshVec {
  * @param type
  */
 export function option(type: BorshType): BorshOption {
-  return BorshOption.from(BORSH.option(type));
+  return new BorshOption(type);
 }
 
 /**
@@ -127,12 +127,15 @@ export function option(type: BorshType): BorshOption {
  * * `u64`, `u128`, `u256`, `u512` -> `bigint`
  * * `f32`, `f64` -> `number`
  * * `bool` -> `boolean`
- * * `BorshArray` -> `Buffer` or `T[]`, fixed size
- * * `BorshVec` -> `Buffer` or `T[]`
- * * `BorshOption` -> `T | undefined`
+ * * `BorshArrayU8` -> `Buffer`
+ * * `BorshArray` -> `any[]`
+ * * `BorshVecU8` -> `Buffer`
+ * * `BorshVec` -> `any[]`
+ * * `BorshOption` -> `any`
  */
-export type BorshType =
-  | Constructor<unknown>
+export type BorshType = Constructor<unknown> | CommonBorshType;
+
+export type CommonBorshType =
   | 'string'
   | 'u8'
   | 'u16'
@@ -144,89 +147,90 @@ export type BorshType =
   | 'f32'
   | 'f64'
   | 'bool'
-  | BorshArrayU8
   | BorshArray
-  | BorshVecU8
+  | BorshArrayU8
   | BorshVec
+  | BorshVecU8
   | BorshOption;
 
-export type Constructor<T> = BORSH.Constructor<T>;
+export type Constructor<T> = new (...args: any[]) => T;
 
-export class BorshArray extends BORSH.FixedArrayKind {
+export class BorshArray {
   __array__: PhantomData;
+  value: BorshType;
+  length: number;
 
-  constructor(props: BORSH.FixedArrayKind) {
-    super(props.elementType, props.length);
-  }
-
-  static from(props: BORSH.FixedArrayKind): BorshArray {
-    return new BorshArray(props);
+  constructor(value: BorshType, length: number) {
+    this.value = value;
+    this.length = length;
   }
 }
 
-export class BorshArrayU8 extends BORSH.FixedArrayKind {
+export class BorshArrayU8 {
   __array_u8__: PhantomData;
-  elementType: 'u8';
+  value = 'u8' as const;
+  length: number;
 
-  private constructor(props: BORSH.FixedArrayKind) {
-    super(props.elementType, props.length);
-    this.elementType = 'u8';
-  }
-
-  static from(props: BORSH.FixedArrayKind): BorshArray {
-    return new BorshArray(props);
+  constructor(length: number) {
+    this.length = length;
   }
 }
 
-export class BorshVec extends BORSH.VecKind {
+export class BorshVec {
   __vec__: PhantomData;
+  value: BorshType;
 
-  constructor(props: BORSH.VecKind) {
-    super(props.elementType, props.sizeEncoding);
-  }
-
-  static from(props: BORSH.VecKind): BorshVec {
-    return new BorshVec(props);
+  constructor(value: BorshType) {
+    this.value = value;
   }
 }
 
-export class BorshVecU8 extends BORSH.VecKind {
+export class BorshVecU8 {
   __vec_u8__: PhantomData;
-  elementType: 'u8';
+  value = 'u8' as const;
+}
 
-  constructor(props: BORSH.VecKind) {
-    super(props.elementType, props.sizeEncoding);
-    this.elementType = 'u8';
+export class BorshOption {
+  __option__: PhantomData;
+  value: BorshType;
+
+  constructor(value: BorshType) {
+    this.value = value;
   }
 }
 
-export class BorshOption extends BORSH.OptionKind {
-  __option__: PhantomData = undefined;
+export type MapBorshType<T, A, Z> = T extends A ? Z : never;
 
-  constructor(props: BORSH.OptionKind) {
-    super(props.elementType);
-  }
+export type FromCommonBorshType<T> =
+  | FromString<T>
+  | FromU8<T>
+  | FromU16<T>
+  | FromU32<T>
+  | FromU64<T>
+  | FromU128<T>
+  | FromU256<T>
+  | FromU512<T>
+  | FromBool<T>
+  | FromArray<T>
+  | FromArrayU8<T>
+  | FromVec<T>
+  | FromVecU8<T>
+  | FromOption<T>;
 
-  static from(props: BORSH.OptionKind): BorshOption {
-    return new BorshOption(props);
-  }
-}
-
-export type BorshMapping<T extends BorshType> =
-  | MappingNumber<T>
-  | MappingString<T>
-  | MappingBigInt<T>
-  | MappingBoolean<T>
-  | MappingBuffer<T>
-  | MappingArray<T>
-  | MappingUndefined<T>;
-export type MappingString<T extends BorshType> = T extends 'string' ? string : never;
-export type MappingNumber<T extends BorshType> = T extends 'u8' | 'u16' | 'u32' | 'f32' | 'f64' ? number : never;
-export type MappingBigInt<T extends BorshType> = T extends 'u64' | 'u128' | 'u256' | 'u512' ? bigint : never;
-export type MappingBoolean<T extends BorshType> = T extends 'bool' ? boolean : never;
-export type MappingBuffer<T extends BorshType> = T extends BorshArrayU8 | BorshVecU8 ? Buffer : never;
-export type MappingArray<T extends BorshType> = T extends BorshArray | BorshVec ? Array<any> : never;
-export type MappingUndefined<T extends BorshType> = T extends BorshOption ? any | undefined : never;
+export type FromString<T> = MapBorshType<T, 'string', string>;
+export type FromU8<T> = MapBorshType<T, 'u8', number>;
+export type FromU16<T> = MapBorshType<T, 'u16', number>;
+export type FromU32<T> = MapBorshType<T, 'u32', number>;
+export type FromU64<T> = MapBorshType<T, 'u64', bigint>;
+export type FromU128<T> = MapBorshType<T, 'u128', bigint>;
+export type FromU256<T> = MapBorshType<T, 'u256', bigint>;
+export type FromU512<T> = MapBorshType<T, 'u512', bigint>;
+export type FromBool<T> = MapBorshType<T, 'bool', boolean>;
+export type FromArray<T> = MapBorshType<T, BorshArray, any[]>;
+export type FromArrayU8<T> = MapBorshType<T, BorshArrayU8, Buffer>;
+export type FromVec<T> = MapBorshType<T, BorshVec, any[]>;
+export type FromVecU8<T> = MapBorshType<T, BorshVecU8, Buffer>;
+export type FromOption<T> = MapBorshType<T, BorshOption, any>;
 
 /**
  * Allow a type to have a required field that is actually `undefined`.
@@ -246,3 +250,19 @@ export type MappingUndefined<T extends BorshType> = T extends BorshOption ? any 
  * const alice: Person = { name: 'alice' } // error TS2741: Property '__person__' is missing
  */
 export type PhantomData = undefined;
+
+function transformBorshType(type: BorshType): BORSH.FieldType {
+  if (type instanceof BorshArray) {
+    return BORSH.fixedArray(transformBorshType(type.value), type.length);
+  } else if (type instanceof BorshArrayU8) {
+    return BORSH.fixedArray(type.value, type.length);
+  } else if (type instanceof BorshVec) {
+    return BORSH.vec(transformBorshType(type.value));
+  } else if (type instanceof BorshVecU8) {
+    return BORSH.vec(type.value);
+  } else if (type instanceof BorshOption) {
+    return BORSH.option(transformBorshType(type.value));
+  } else {
+    return type;
+  }
+}
