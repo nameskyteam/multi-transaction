@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 import { parseJson, stringifyJson } from './json';
-import { Class, parseBorsh, stringifyBorsh } from './borsh';
+import { Constructor, parseBorsh, stringifyBorsh } from './borsh';
 import { unreachable } from '../utils';
 
 export type Stringify<T> = Stringifier<T> | 'json' | 'borsh';
@@ -10,7 +10,7 @@ export type Parser<T> = (data: Uint8Array) => T;
 
 export interface Borsh<T> {
   method: 'borsh';
-  dataType: Class<T>;
+  dataType: Constructor<T>;
 }
 
 /**
