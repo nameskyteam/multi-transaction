@@ -32,13 +32,15 @@ export function borshParser<T>(data: Uint8Array, type: BorshWrapperClass<T>): T;
 export function borshParser<T>(data: Uint8Array, type: Class<T> | BorshWrapperClass<T>): T;
 export function borshParser<T>(data: Uint8Array, type: Class<T> | BorshWrapperClass<T>): T {
   const res = BORSH.deserialize(data, type);
-  const fields: BORSH.Field[] = type.prototype[1500].fields;
-  if (fields.length === 1 && fields[0].key === '__value__' && '__value__' in res && 'unwrap' in res) {
+  const fields: BORSH.Field[] = type.prototype[PROTOTYPE_SCHEMA_OFFSET].fields;
+  if (fields.length === 1 && fields[0].key === '__inner__' && 'unwrap' in res) {
     return res.unwrap();
   } else {
     return res;
   }
 }
+
+const PROTOTYPE_SCHEMA_OFFSET = 1500;
 
 /**
  * Class decorator for borsh. Used for distinguishing between classes that extend from the same class.
