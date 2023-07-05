@@ -6,18 +6,21 @@ export type BigWrapperSource<T extends BigWrapper<T>> = BigWrapper<T> | Big | st
  * Abstract class wrap the `Big`
  */
 export abstract class BigWrapper<T extends BigWrapper<T>> {
-  value: Big;
+  __value__: Big;
 
   protected constructor(n: BigWrapperSource<T>) {
     if (n instanceof BigWrapper) {
-      this.value = n.value;
+      this.__value__ = n.__value__;
     } else {
-      this.value = Big(n);
+      this.__value__ = Big(n);
     }
   }
 
+  /**
+   * Return `Big`
+   */
   unwrap(): Big {
-    return this.value;
+    return this.__value__;
   }
 
   // --------------------------- override ---------------------------
@@ -27,7 +30,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   add(n: BigWrapperSource<T>): T {
-    return this.from(this.value.add(n instanceof BigWrapper ? n.value : n));
+    return this.from(this.__value__.add(n instanceof BigWrapper ? n.__value__ : n));
   }
 
   /**
@@ -35,7 +38,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   sub(n: BigWrapperSource<T>): T {
-    return this.from(this.value.sub(n instanceof BigWrapper ? n.value : n));
+    return this.from(this.__value__.sub(n instanceof BigWrapper ? n.__value__ : n));
   }
 
   /**
@@ -43,7 +46,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   mul(n: BigWrapperSource<T>): T {
-    return this.from(this.value.mul(n instanceof BigWrapper ? n.value : n));
+    return this.from(this.__value__.mul(n instanceof BigWrapper ? n.__value__ : n));
   }
 
   /**
@@ -51,7 +54,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   div(n: BigWrapperSource<T>): T {
-    return this.from(this.value.div(n instanceof BigWrapper ? n.value : n));
+    return this.from(this.__value__.div(n instanceof BigWrapper ? n.__value__ : n));
   }
 
   /**
@@ -59,7 +62,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   plus(n: BigWrapperSource<T>): T {
-    return this.from(this.value.plus(n instanceof BigWrapper ? n.value : n));
+    return this.from(this.__value__.plus(n instanceof BigWrapper ? n.__value__ : n));
   }
 
   /**
@@ -67,7 +70,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   minus(n: BigWrapperSource<T>): T {
-    return this.from(this.value.minus(n instanceof BigWrapper ? n.value : n));
+    return this.from(this.__value__.minus(n instanceof BigWrapper ? n.__value__ : n));
   }
 
   /**
@@ -75,7 +78,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   times(n: BigWrapperSource<T>): T {
-    return this.from(this.value.times(n instanceof BigWrapper ? n.value : n));
+    return this.from(this.__value__.times(n instanceof BigWrapper ? n.__value__ : n));
   }
 
   /**
@@ -83,14 +86,14 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param exp exponent
    */
   pow(exp: number): T {
-    return this.from(this.value.pow(exp));
+    return this.from(this.__value__.pow(exp));
   }
 
   /**
    * sqrt
    */
   sqrt(): T {
-    return this.from(this.value.sqrt());
+    return this.from(this.__value__.sqrt());
   }
 
   /**
@@ -98,21 +101,21 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   mod(n: BigWrapperSource<T>): T {
-    return this.from(this.value.mod(n instanceof BigWrapper ? n.value : n));
+    return this.from(this.__value__.mod(n instanceof BigWrapper ? n.__value__ : n));
   }
 
   /**
    * abs
    */
   abs(): T {
-    return this.from(this.value.abs());
+    return this.from(this.__value__.abs());
   }
 
   /**
    * neg
    */
   neg(): T {
-    return this.from(this.value.neg());
+    return this.from(this.__value__.neg());
   }
 
   /**
@@ -120,7 +123,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   gt(n: BigWrapperSource<T>): boolean {
-    return this.value.gt(n instanceof BigWrapper ? n.value : n);
+    return this.__value__.gt(n instanceof BigWrapper ? n.__value__ : n);
   }
 
   /**
@@ -128,7 +131,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   gte(n: BigWrapperSource<T>): boolean {
-    return this.value.gte(n instanceof BigWrapper ? n.value : n);
+    return this.__value__.gte(n instanceof BigWrapper ? n.__value__ : n);
   }
 
   /**
@@ -136,7 +139,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   lt(n: BigWrapperSource<T>): boolean {
-    return this.value.lt(n instanceof BigWrapper ? n.value : n);
+    return this.__value__.lt(n instanceof BigWrapper ? n.__value__ : n);
   }
 
   /**
@@ -144,7 +147,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   lte(n: BigWrapperSource<T>): boolean {
-    return this.value.lte(n instanceof BigWrapper ? n.value : n);
+    return this.__value__.lte(n instanceof BigWrapper ? n.__value__ : n);
   }
 
   /**
@@ -152,7 +155,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   eq(n: BigWrapperSource<T>): boolean {
-    return this.value.eq(n instanceof BigWrapper ? n.value : n);
+    return this.__value__.eq(n instanceof BigWrapper ? n.__value__ : n);
   }
 
   /**
@@ -160,7 +163,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param n
    */
   cmp(n: BigWrapperSource<T>): number {
-    return this.value.cmp(n instanceof BigWrapper ? n.value : n);
+    return this.__value__.cmp(n instanceof BigWrapper ? n.__value__ : n);
   }
 
   /**
@@ -169,7 +172,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param rm rounding mod
    */
   prec(sd: number, rm?: number): T {
-    return this.from(this.value.prec(sd, rm));
+    return this.from(this.__value__.prec(sd, rm));
   }
 
   /**
@@ -178,14 +181,14 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param rm rounding mod
    */
   round(dp: number, rm?: number): T {
-    return this.from(this.value.round(dp, rm));
+    return this.from(this.__value__.round(dp, rm));
   }
 
   /**
    * convert to `number`, may cause loss of precision
    */
   toNumber(): number {
-    return this.value.toNumber();
+    return this.__value__.toNumber();
   }
 
   /**
@@ -194,7 +197,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param rm rounding mod
    */
   toPrecision(sd?: number, rm?: number): string {
-    return this.value.toPrecision(sd, rm);
+    return this.__value__.toPrecision(sd, rm);
   }
 
   /**
@@ -203,7 +206,7 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param rm rounding mod
    */
   toExponential(dp?: number, rm?: number): string {
-    return this.value.toExponential(dp, rm);
+    return this.__value__.toExponential(dp, rm);
   }
 
   /**
@@ -212,14 +215,14 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
    * @param rm rounding mod
    */
   toFixed(dp?: number, rm?: number): string {
-    return this.value.toFixed(dp, rm);
+    return this.__value__.toFixed(dp, rm);
   }
 
   /**
    * convert to `string` in fixed point or exponential notation
    */
   toString(): string {
-    return this.value.toString();
+    return this.__value__.toString();
   }
 
   // --------------------------- enhancement ------------------------
