@@ -63,10 +63,12 @@ export function wrap<T>(data: T[], type: BorshArray | BorshVec): Wrapper<T[]>;
 /**
  * Wrap `T | undefined` to serialize in borsh.
  * @example
- * const ms = ['Hello', 'World'] // Some
+ *  // Serialize Some
+ * const ms = ['Hello', 'World']
  * const buffer = borshStringifier(wrap<string[]>(ms, option(vec('string'))))
  * @example
- * const ms = undefined // None
+ * // Serialize None
+ * const ms = undefined
  * const buffer = borshStringifier(wrap<string[]>(ms, option(vec('string'))))
  * @param data Data to wrap
  * @param type BorshType

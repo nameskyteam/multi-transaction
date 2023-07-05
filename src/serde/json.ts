@@ -10,6 +10,6 @@ export function jsonStringifier<T>(data: T): Buffer {
 /**
  * Deserialize data in JSON format.
  */
-export function jsonParser<T>(data: Uint8Array): T {
-  return JSON.parse(Buffer.from(data).toString());
+export function jsonParser<T>(buffer: Uint8Array): T {
+  return JSON.parse(Buffer.from(buffer).toString());
 }

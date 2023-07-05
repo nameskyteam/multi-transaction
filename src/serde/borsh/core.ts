@@ -7,6 +7,21 @@ import { BorshArray, BorshArrayU8, BorshOption, BorshType, BorshVec, BorshVecU8 
 /**
  * Serialize data in borsh format.
  * @param data Data to serialize
+ * @example
+ * // Serialize custom type
+ * class Person {
+ *  \@borshField({ type: 'string' })
+ *   name: string
+ *   constructor(name: string) {
+ *     this.name = name
+ *   }
+ * }
+ * const alice = new Person('alice')
+ * const buffer = borshStringifier(alice)
+ * @example
+ * // Serialize primitive type
+ * const alice = 'alice'
+ * const buffer = borshStringifier(wrap(alice, 'string'))
  */
 export function borshStringifier<T>(data: T): Buffer {
   return Buffer.from(BORSH.serialize(data));
@@ -14,24 +29,24 @@ export function borshStringifier<T>(data: T): Buffer {
 
 /**
  * Deserialize data in borsh format.
- * @param data Data to deserialize
+ * @param buffer Data to deserialize
  * @param type Class of generics `T`
  */
-export function borshParser<T>(data: Uint8Array, type: Class<T>): T;
+export function borshParser<T>(buffer: Uint8Array, type: Class<T>): T;
 /**
  * Deserialize data in borsh format.
- * @param data Data to deserialize
+ * @param buffer Data to deserialize
  * @param type `BorshWrapper` which wraps the generics `T`
  */
-export function borshParser<T>(data: Uint8Array, type: WrapperClass<T>): T;
+export function borshParser<T>(buffer: Uint8Array, type: WrapperClass<T>): T;
 /**
  * Deserialize data in borsh format.
- * @param data Data to deserialize
+ * @param buffer Data to deserialize
  * @param type Class of generics `T` or `Wrapper` class which wraps the generics `T`
  */
-export function borshParser<T>(data: Uint8Array, type: Class<T> | WrapperClass<T>): T;
-export function borshParser<T>(data: Uint8Array, type: Class<T> | WrapperClass<T>): T {
-  const res = BORSH.deserialize(data, type);
+export function borshParser<T>(buffer: Uint8Array, type: Class<T> | WrapperClass<T>): T;
+export function borshParser<T>(buffer: Uint8Array, type: Class<T> | WrapperClass<T>): T {
+  const res = BORSH.deserialize(buffer, type);
   const fields: BORSH.Field[] = type.prototype[PROTOTYPE_SCHEMA_OFFSET].fields;
   if (fields.length === 1 && fields[0].key === '__inner__' && 'unwrap' in res) {
     return res.unwrap();
