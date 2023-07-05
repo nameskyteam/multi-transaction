@@ -34,7 +34,7 @@ export type BorshType =
   | BorshOption;
 
 /**
- * BorshType. Mapping JavaScript type is `Buffer`. Fixed size.
+ * BorshType. The mapped JavaScript type is `Buffer`. Fixed size.
  */
 export class BorshArrayU8 {
   __array_u8__: PhantomData;
@@ -47,7 +47,7 @@ export class BorshArrayU8 {
 }
 
 /**
- * BorshType. Mapping JavaScript type is `T[]`. Fixed size.
+ * BorshType. The mapped JavaScript type is `T[]`. Fixed size.
  */
 export class BorshArray {
   __array__: PhantomData;
@@ -61,7 +61,7 @@ export class BorshArray {
 }
 
 /**
- * BorshType. Mapping JavaScript type is `Buffer`.
+ * BorshType. The mapped JavaScript type is `Buffer`.
  */
 export class BorshVecU8 {
   __vec_u8__: PhantomData;
@@ -69,7 +69,7 @@ export class BorshVecU8 {
 }
 
 /**
- * BorshType. Mapping JavaScript type is `T[]`.
+ * BorshType. The mapped JavaScript type is `T[]`.
  */
 export class BorshVec {
   __vec__: PhantomData;
@@ -81,7 +81,7 @@ export class BorshVec {
 }
 
 /**
- * BorshType. Mapping JavaScript type is `T | undefined`.
+ * BorshType. The mapped JavaScript type is `T | undefined`.
  */
 export class BorshOption {
   __option__: PhantomData;

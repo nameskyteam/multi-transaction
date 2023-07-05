@@ -1,7 +1,7 @@
 import { Class } from '../../types';
 import { Buffer } from 'buffer';
 import * as BORSH from '@dao-xyz/borsh';
-import { BorshWrapperClass } from './primitive-wrapper';
+import { WrapperClass } from './wrapper';
 import { BorshArray, BorshArrayU8, BorshOption, BorshType, BorshVec, BorshVecU8 } from './mapping';
 
 /**
@@ -23,14 +23,14 @@ export function borshParser<T>(data: Uint8Array, type: Class<T>): T;
  * @param data Data to deserialize
  * @param type `BorshWrapper` which wraps the generics `T`
  */
-export function borshParser<T>(data: Uint8Array, type: BorshWrapperClass<T>): T;
+export function borshParser<T>(data: Uint8Array, type: WrapperClass<T>): T;
 /**
  * Deserialize data in borsh format.
  * @param data Data to deserialize
- * @param type Class of generics `T` or `BorshWrapper` class which wraps the generics `T`
+ * @param type Class of generics `T` or `Wrapper` class which wraps the generics `T`
  */
-export function borshParser<T>(data: Uint8Array, type: Class<T> | BorshWrapperClass<T>): T;
-export function borshParser<T>(data: Uint8Array, type: Class<T> | BorshWrapperClass<T>): T {
+export function borshParser<T>(data: Uint8Array, type: Class<T> | WrapperClass<T>): T;
+export function borshParser<T>(data: Uint8Array, type: Class<T> | WrapperClass<T>): T {
   const res = BORSH.deserialize(data, type);
   const fields: BORSH.Field[] = type.prototype[PROTOTYPE_SCHEMA_OFFSET].fields;
   if (fields.length === 1 && fields[0].key === '__inner__' && 'unwrap' in res) {
@@ -40,6 +40,9 @@ export function borshParser<T>(data: Uint8Array, type: Class<T> | BorshWrapperCl
   }
 }
 
+/**
+ * Defined in borsh-ts
+ */
 const PROTOTYPE_SCHEMA_OFFSET = 1500;
 
 /**

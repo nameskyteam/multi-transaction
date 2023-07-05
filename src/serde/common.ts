@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 import { jsonParser, jsonStringifier } from './json';
-import { borshParser, borshStringifier, BorshWrapperClass } from './borsh';
+import { borshParser, borshStringifier, WrapperClass } from './borsh';
 import { unreachable } from '../utils';
 import { Class } from '../types';
 
@@ -11,7 +11,7 @@ export type Parser<T> = (data: Uint8Array) => T;
 
 export interface ParseBorsh<T> {
   method: 'borsh';
-  type: Class<T> | BorshWrapperClass<T>;
+  type: Class<T> | WrapperClass<T>;
 }
 
 /**
