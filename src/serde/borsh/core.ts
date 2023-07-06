@@ -58,11 +58,6 @@ export function borshParser<T>(buffer: Uint8Array, type: Class<T>): T;
  * @param type `Wrapper` class which wraps the generics `T`
  */
 export function borshParser<T>(buffer: Uint8Array, type: WrapperClass<T>): T;
-/**
- * Deserialize data in borsh format.
- * @param buffer Data to deserialize
- * @param type Class of generics `T` or `Wrapper` class which wraps the generics `T`
- */
 export function borshParser<T>(buffer: Uint8Array, type: Class<T> | WrapperClass<T>): T;
 export function borshParser<T>(buffer: Uint8Array, type: Class<T> | WrapperClass<T>): T {
   const res = BORSH.deserialize(buffer, type);

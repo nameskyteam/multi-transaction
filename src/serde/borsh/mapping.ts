@@ -104,7 +104,6 @@ export function array(type: 'u8', length: number): BorshArrayU8;
  * @param length Array length
  */
 export function array(type: BorshType, length: number): BorshArray;
-export function array(type: BorshType, length: number): BorshArrayU8 | BorshArray;
 export function array(type: BorshType, length: number): BorshArrayU8 | BorshArray {
   if (type === 'u8') {
     return new BorshArrayU8(length);
@@ -123,7 +122,6 @@ export function vec(type: 'u8'): BorshVecU8;
  * @param type BorshType
  */
 export function vec(type: BorshType): BorshVec;
-export function vec(type: BorshType): BorshVecU8 | BorshVec;
 export function vec(type: BorshType): BorshVecU8 | BorshVec {
   if (type === 'u8') {
     return new BorshVecU8();

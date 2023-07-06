@@ -74,7 +74,6 @@ export function wrap<T>(data: T[], type: BorshArray | BorshVec): Wrapper<T[]>;
  * @param type BorshType
  */
 export function wrap<T>(data: T | undefined, type: BorshOption): Wrapper<T | undefined>;
-export function wrap<T>(data: T, type: Exclude<BorshType, Class<unknown>>): Wrapper<T>;
 export function wrap<T>(data: T, type: Exclude<BorshType, Class<unknown>>): Wrapper<T> {
   const Wrapper = unwrap<T>(type);
   return new Wrapper(data);
