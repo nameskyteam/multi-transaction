@@ -51,10 +51,10 @@ export class BorshArrayU8 {
  */
 export class BorshArray {
   __array__: PhantomData;
-  value: BorshType;
+  value: Exclude<BorshType, 'u8'>;
   length: number;
 
-  constructor(value: BorshType, length: number) {
+  constructor(value: Exclude<BorshType, 'u8'>, length: number) {
     this.value = value;
     this.length = length;
   }
@@ -73,9 +73,9 @@ export class BorshVecU8 {
  */
 export class BorshVec {
   __vec__: PhantomData;
-  value: BorshType;
+  value: Exclude<BorshType, 'u8'>;
 
-  constructor(value: BorshType) {
+  constructor(value: Exclude<BorshType, 'u8'>) {
     this.value = value;
   }
 }

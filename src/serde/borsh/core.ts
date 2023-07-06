@@ -6,22 +6,25 @@ import { BorshArray, BorshArrayU8, BorshOption, BorshType, BorshVec, BorshVecU8 
 
 /**
  * Serialize data in borsh format.
- * @param data Data to serialize
  * @example
  * // Serialize custom type
  * class Person {
  *  \@borshField({ type: 'string' })
  *   name: string
- *   constructor(name: string) {
+ *  \@borshField({ type: 'u8' })
+ *   age: number
+ *   constructor(name: string, age: number) {
  *     this.name = name
+ *     this.age = age
  *   }
  * }
- * const alice = new Person('alice')
+ * const alice = new Person('alice', 18)
  * const buffer = borshStringifier(alice)
  * @example
  * // Serialize primitive type
- * const alice = 'alice'
- * const buffer = borshStringifier(wrap(alice, 'string'))
+ * const s = 'Hello World'
+ * const buffer = borshStringifier(wrap(s, 'string'))
+ * @param data Data to serialize
  */
 export function borshStringifier<T>(data: T): Buffer {
   return Buffer.from(BORSH.serialize(data));
@@ -29,14 +32,30 @@ export function borshStringifier<T>(data: T): Buffer {
 
 /**
  * Deserialize data in borsh format.
+ * @example
+ * // Deserialize custom type
+ * class Person {
+ *  \@borshField({ type: 'string' })
+ *   name: string
+ *  \@borshField({ type: 'u8' })
+ *   age: number
+ *   constructor(name: string, age: number) {
+ *     this.name = name
+ *     this.age = age
+ *   }
+ * }
+ * const person = borshParser(buffer, Person)
  * @param buffer Data to deserialize
  * @param type Class of generics `T`
  */
 export function borshParser<T>(buffer: Uint8Array, type: Class<T>): T;
 /**
  * Deserialize data in borsh format.
+ * @example
+ * // Deserialize primitive type
+ * const s = borshParser(buffer, unwrap('string'))
  * @param buffer Data to deserialize
- * @param type `BorshWrapper` which wraps the generics `T`
+ * @param type `Wrapper` class which wraps the generics `T`
  */
 export function borshParser<T>(buffer: Uint8Array, type: WrapperClass<T>): T;
 /**
