@@ -85,7 +85,7 @@ export function variant(index: string | number | number[]): ClassDecorator {
 /**
  * Property decorator for borsh.
  */
-export function borshField({ type, index }: BorshFieldOptions): PropertyDecorator {
+export function borsh({ type, index }: BorshFieldOptions): PropertyDecorator {
   return BORSH.field({ type: transformBorshType(type), index });
 }
 
