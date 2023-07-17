@@ -38,82 +38,71 @@ export class MultiTransaction {
     this.transactions = [];
   }
 
-  /**
-   * New 'MultiTransaction' object without transaction
-   */
   static new(): MultiTransaction {
     return new MultiTransaction();
   }
 
   /**
-   * New 'MultiTransaction' object with single transaction
    * @param receiverId transaction receiver id
    * @param signerId transaction signer id
    */
-  static createTransaction(receiverId: string, signerId?: string): MultiTransaction {
-    return MultiTransaction.new().createTransaction(receiverId, signerId);
+  static batch(receiverId: string, signerId?: string): MultiTransaction {
+    return MultiTransaction.new().batch(receiverId, signerId);
   }
 
   /**
-   * current index
+   * current transaction index
    * @private
    */
-  private currentIndex(): number {
+  private currentTransactionIndex(): number {
     return this.transactions.length - 1;
   }
 
   /**
-   * If it has multiple transactions.
+   * If it contains multiple transactions.
    */
   isMultiple(): boolean {
-    return this.currentIndex() > 0;
+    return this.currentTransactionIndex() > 0;
   }
 
   /**
-   * If it has only one transaction.
+   * If it contains only one transaction.
    */
   isSingle(): boolean {
-    return this.currentIndex() === 0;
+    return this.currentTransactionIndex() === 0;
   }
 
   /**
-   * If it has no transaction.
+   * If it contains no transaction.
    */
   isEmpty(): boolean {
-    return this.currentIndex() < 0;
+    return this.currentTransactionIndex() < 0;
   }
 
   /**
-   * Count transaction
+   * Count transactions
    */
   transactionCount(): number {
     return this.transactions.length;
   }
 
   /**
-   * Count action of transaction
+   * Count actions of transaction
    * @param transactionIndex
    */
-  actionCount(transactionIndex: number): number {
-    if (transactionIndex > this.currentIndex()) {
-      throw Error(`Wrong transaction index`);
+  actionCount(transactionIndex?: number): number {
+    transactionIndex = transactionIndex ?? this.currentTransactionIndex();
+    if (transactionIndex > this.currentTransactionIndex()) {
+      throw Error(`Transaction index out of bound.`);
     }
     return this.transactions[transactionIndex].actions.length;
   }
 
   /**
-   * Count action of current transaction
-   */
-  currentActionCount(): number {
-    return this.actionCount(this.currentIndex());
-  }
-
-  /**
-   * Create a new transaction follow the previous transaction
    * @param receiverId transaction receiver id
    * @param signerId transaction signer id
    */
-  createTransaction(receiverId: string, signerId?: string): MultiTransaction {
+  batch(receiverId: string, signerId?: string): MultiTransaction {
     return this.addTransactions({ signerId, receiverId, actions: [] });
   }
 
@@ -126,7 +115,7 @@ export class MultiTransaction {
     if (this.isEmpty()) {
       throw Error(`Transaction not found, consider calling method '.createTransaction(/* args */)' first`);
     }
-    this.transactions[this.currentIndex()].actions.push(...actions);
+    this.transactions[this.currentTransactionIndex()].actions.push(...actions);
     return this;
   }
 

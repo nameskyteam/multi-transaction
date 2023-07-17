@@ -51,7 +51,7 @@ async function exampleCallChangeFunction(near: Near) {
   const account = new MultiSendAccount(near.connection, 'alice.near');
   
   const multiTransaction = MultiTransaction
-    .createTransaction('wrap.near')
+    .batch('wrap.near')
     .functionCall({
       methodName: 'ft_transfer',
       args: {
@@ -75,9 +75,6 @@ const useWalletSelector = () => {
   const [selector, setSelector] = useState();
   
   useEffect(() => {
-    if (selector) {
-      return;
-    }
     setupMultiSendWalletSelector({
       network: 'mainnet',
       modules: [
@@ -124,7 +121,7 @@ const ExampleCallChangeFunction = () => {
   
   const sendWnear = async () => {
     const multiTransaction = MultiTransaction
-      .createTransaction('wrap.near')
+      .batch('wrap.near')
       .ft_transfer({
         args: {
           receiver_id: 'bob.near',
@@ -152,12 +149,12 @@ async function exampleConstructComplexTransactions(near: Near) {
   
   const multiTransaction = MultiTransaction
     // 1st transaction for creating account
-    .createTransaction('honey.alice.near')
+    .batch('honey.alice.near')
     .createAccount()
     .transfer(Amount.parseYoctoNear('0.1'))
     .addKey('ed25519:<data>', { permission: 'FullAccess' })
     // 2nd transaction for sending USDT.e
-    .createTransaction('dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near')
+    .batch('dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near')
     .storage_deposit({
       args: {
         account_id: 'honey.alice.near'
