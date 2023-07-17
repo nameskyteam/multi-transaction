@@ -84,7 +84,7 @@ const tx = MultiTransaction
     methodName: 'ft_transfer',
     args: {
       receiver_id: 'mike.near',
-      amount: Amount.parseYoctoNear('9.99')
+      amount: Amount.parseYoctoNear('8.88')
     },
     attachedDeposit: Amount.ONE_YOCTO,
     gas: Gas.tera(10)
@@ -187,11 +187,13 @@ const Example = () => {
     
     const tx = MultiTransaction
       .batch('wrap.near')
-      .ft_transfer({
+      .functionCall({
+        methodName: 'ft_transfer',
         args: {
           receiver_id: 'bob.near',
           amount: Amount.parseYoctoNear('8.88')
         },
+        attachedDeposit: Amount.ONE_YOCTO,
         gas: Gas.tera(10)
       });
     
