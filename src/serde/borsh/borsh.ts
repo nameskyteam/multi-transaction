@@ -55,7 +55,7 @@ export function borshParser<T>(buffer: Uint8Array, type: Class<T>): T;
  * // Deserialize primitive type
  * const s = borshParser(buffer, unwrap('string'))
  * @param buffer Data to deserialize
- * @param type `Wrapper` class which wraps the generics `T`
+ * @param type `Wrapper` class that wraps the generics `T`
  */
 export function borshParser<T>(buffer: Uint8Array, type: WrapperClass<T>): T;
 export function borshParser<T>(buffer: Uint8Array, type: Class<T> | WrapperClass<T>): T;

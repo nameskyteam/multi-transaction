@@ -1,7 +1,54 @@
 import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/providers';
 import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
 import { Buffer } from 'buffer';
-import { getParser, Parse } from '../serde';
+import { getParser, Parse, WrapperClass } from '../serde';
+import { Class } from '../types';
+
+export function getParseableFinalExecutionOutcome(outcome: FinalExecutionOutcome): ParseableFinalExecutionOutcome {
+  return {
+    ...outcome,
+
+    parse<T>(parse?: Parse<T>): T {
+      return parseOutcomeValue(outcome, parse);
+    },
+
+    json<T>(): T {
+      return parseOutcomeValue(outcome);
+    },
+
+    borsh<T>(type: Class<T> | WrapperClass<T>): T {
+      return parseOutcomeValue(outcome, {
+        method: 'borsh',
+        type,
+      });
+    },
+  };
+}
+
+export interface ParseableFinalExecutionOutcome extends FinalExecutionOutcome {
+  /**
+   * Parse success value
+   * @param parse Parse options. Default in JSON format
+   */
+  parse<T>(parse?: Parse<T>): T;
+
+  /**
+   * Parse success value in JSON format
+   */
+  json<T>(): T;
+
+  /**
+   * Parse success value in borsh format
+   * @param type Class of generics `T`
+   */
+  borsh<T>(type: Class<T>): T;
+  /**
+   * Parse success value in borsh format
+   * @param type `Wrapper` class that wraps the generics `T`
+   */
+  borsh<T>(type: WrapperClass<T>): T;
+  borsh<T>(type: Class<T> | WrapperClass<T>): T;
+}
 
 /**
  * Parse success value from outcome.
@@ -20,16 +67,15 @@ export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parse: 
   }
 }
 
-/**
- * If receipts in outcomes have any error, throw them
- * @param outcomes Transaction outcomes
- */
 export function throwReceiptErrorsIfAny(...outcomes: FinalExecutionOutcome[]) {
-  throwReceiptErrors(getReceiptErrors(...outcomes));
+  const errors = getReceiptErrors(...outcomes);
+  if (errors.length !== 0) {
+    throw Error(JSON.stringify(errors));
+  }
 }
 
-function getReceiptErrors(...outcomes: FinalExecutionOutcome[]): ErrorMessage[] {
-  const errors: ErrorMessage[] = [];
+function getReceiptErrors(...outcomes: FinalExecutionOutcome[]): ReceiptErrorMessage[] {
+  const errors: ReceiptErrorMessage[] = [];
   outcomes.forEach((outcome) => {
     outcome.receipts_outcome.forEach((receipt) => {
       const status = receipt.outcome.status;
@@ -43,13 +89,7 @@ function getReceiptErrors(...outcomes: FinalExecutionOutcome[]): ErrorMessage[] 
   return errors;
 }
 
-function throwReceiptErrors(errors: ErrorMessage[]) {
-  if (errors.length !== 0) {
-    throw Error(JSON.stringify(errors));
-  }
-}
-
-interface ErrorMessage {
+export interface ReceiptErrorMessage {
   index: number;
   kind: {
     ExecutionError: string;

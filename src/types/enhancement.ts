@@ -6,6 +6,7 @@ import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/lib/wallet-selector.types';
 import { Parse } from '../serde';
+import { ParseableFinalExecutionOutcome } from '../utils';
 
 export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
 
@@ -53,7 +54,17 @@ interface WalletSelectorEnhancement {
   send<Value>(transaction: MultiTransaction, options?: SendOptions<Value>): Promise<Value | undefined>;
 
   /**
-   * Sign and send multiple transaction with local key in `this.keystore`
+   * Send multiple transactions
+   * @param transaction Multiple transactions
+   * @param options Options
+   */
+  sendRaw(
+    transaction: MultiTransaction,
+    options?: Omit<SendOptions<unknown>, 'parse'>
+  ): Promise<ParseableFinalExecutionOutcome[] | undefined>;
+
+  /**
+   * Sign and send multiple transactions with local key in `this.keystore` and return success value of last transaction
    * @param signerId Signer id
    * @param transaction Multiple transactions
    * @param options Options
@@ -63,6 +74,18 @@ interface WalletSelectorEnhancement {
     transaction: MultiTransaction,
     options?: SendWithLocalKeyOptions<Value>
   ): Promise<Value>;
+
+  /**
+   * Sign and send multiple transactions with local key in `this.keystore`
+   * @param signerId Signer id
+   * @param transaction Multiple transactions
+   * @param options Options
+   */
+  sendWithLocalKeyRaw(
+    signerId: string,
+    transaction: MultiTransaction,
+    options?: Omit<SendWithLocalKeyOptions<unknown>, 'parse'>
+  ): Promise<ParseableFinalExecutionOutcome[]>;
 }
 
 export interface SendOptions<Value> {

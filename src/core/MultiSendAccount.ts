@@ -2,9 +2,10 @@ import { Account, Connection } from 'near-api-js';
 import { ViewFunctionOptions, EmptyObject } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
+  getParseableFinalExecutionOutcome,
   NearApiJsTransactionLike,
+  ParseableFinalExecutionOutcome,
   parseNearApiJsTransactions,
-  parseOutcomeValue,
   throwReceiptErrorsIfAny,
 } from '../utils';
 import { Action } from 'near-api-js/lib/transaction';
@@ -65,13 +66,22 @@ export class MultiSendAccount extends Account {
    * @param options Options
    */
   async send<Value>(transaction: MultiTransaction, options?: SendOptions<Value>): Promise<Value> {
+    const outcomes = await this.sendRaw(transaction, options);
+    const outcome = outcomes[outcomes.length - 1];
+    return outcome.parse(options?.parse);
+  }
+
+  async sendRaw(
+    transaction: MultiTransaction,
+    options?: Omit<SendOptions<unknown>, 'parse'>
+  ): Promise<ParseableFinalExecutionOutcome[]> {
     const outcomes = await this.signAndSendTransactions({
       transactions: parseNearApiJsTransactions(transaction),
     });
     if (options?.throwReceiptErrorsIfAny) {
       throwReceiptErrorsIfAny(...outcomes);
     }
-    return parseOutcomeValue<Value>(outcomes[outcomes.length - 1], options?.parse);
+    return outcomes.map((outcome) => getParseableFinalExecutionOutcome(outcome));
   }
 }
 
