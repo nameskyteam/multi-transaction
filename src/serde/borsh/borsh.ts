@@ -9,9 +9,9 @@ import { BorshArray, BorshArrayU8, BorshOption, BorshType, BorshVec, BorshVecU8 
  * @example
  * // Serialize custom type
  * class Person {
- *  \@borshField({ type: 'string' })
+ *  \@borsh({ type: 'string' })
  *   name: string
- *  \@borshField({ type: 'u8' })
+ *  \@borsh({ type: 'u8' })
  *   age: number
  *   constructor(name: string, age: number) {
  *     this.name = name
@@ -23,7 +23,7 @@ import { BorshArray, BorshArrayU8, BorshOption, BorshType, BorshVec, BorshVecU8 
  * @example
  * // Serialize primitive type
  * const s = 'Hello World'
- * const buffer = borshStringifier(wrap(s, 'string'))
+ * const buffer = borshStringifier(borshWrap(s, 'string'))
  * @param data Data to serialize
  */
 export function borshStringifier<T>(data: T): Buffer {
@@ -35,9 +35,9 @@ export function borshStringifier<T>(data: T): Buffer {
  * @example
  * // Deserialize custom type
  * class Person {
- *  \@borshField({ type: 'string' })
+ *  \@borsh({ type: 'string' })
  *   name: string
- *  \@borshField({ type: 'u8' })
+ *  \@borsh({ type: 'u8' })
  *   age: number
  *   constructor(name: string, age: number) {
  *     this.name = name
@@ -53,7 +53,7 @@ export function borshParser<T>(buffer: Uint8Array, type: Class<T>): T;
  * Deserialize data in borsh format.
  * @example
  * // Deserialize primitive type
- * const s = borshParser(buffer, unwrap('string'))
+ * const s = borshParser(buffer, borshUnwrap('string'))
  * @param buffer Data to deserialize
  * @param type `Wrapper` class that wraps the generics `T`
  */
@@ -85,11 +85,11 @@ export function variant(index: string | number | number[]): ClassDecorator {
 /**
  * Property decorator for borsh.
  */
-export function borsh({ type, index }: BorshFieldOptions): PropertyDecorator {
+export function borsh({ type, index }: BorshOptions): PropertyDecorator {
   return BORSH.field({ type: transformBorshType(type), index });
 }
 
-export interface BorshFieldOptions {
+export interface BorshOptions {
   type: BorshType;
   index?: number;
 }
