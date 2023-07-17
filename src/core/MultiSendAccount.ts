@@ -90,6 +90,10 @@ export class MultiSendAccount extends Account {
 
     return outcomes.map((outcome) => buildParseableFinalExecutionOutcome(outcome));
   }
+
+  static from(account: Account) {
+    return new MultiSendAccount(account.connection, account.accountId);
+  }
 }
 
 export interface SendOptions<Value> {

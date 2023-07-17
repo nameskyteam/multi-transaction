@@ -59,20 +59,6 @@ export class MultiTransaction {
   }
 
   /**
-   * If it contains multiple transactions.
-   */
-  isMultiple(): boolean {
-    return this.currentTransactionIndex() > 0;
-  }
-
-  /**
-   * If it contains only one transaction.
-   */
-  isSingle(): boolean {
-    return this.currentTransactionIndex() === 0;
-  }
-
-  /**
    * If it contains no transaction.
    */
   isEmpty(): boolean {
@@ -113,7 +99,7 @@ export class MultiTransaction {
 
   private addActions(...actions: Action[]): MultiTransaction {
     if (this.isEmpty()) {
-      throw Error(`Transaction not found, consider calling method '.createTransaction(/* args */)' first`);
+      throw Error(`Transaction not found, consider calling method '.batch(...)' first.`);
     }
     this.transactions[this.currentTransactionIndex()].actions.push(...actions);
     return this;
