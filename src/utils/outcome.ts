@@ -4,7 +4,7 @@ import { Buffer } from 'buffer';
 import { getParser, Parse, WrapperClass } from '../serde';
 import { Class } from '../types';
 
-export function getParseableFinalExecutionOutcome(outcome: FinalExecutionOutcome): ParseableFinalExecutionOutcome {
+export function buildParseableFinalExecutionOutcome(outcome: FinalExecutionOutcome): ParseableFinalExecutionOutcome {
   return {
     ...outcome,
 
@@ -27,23 +27,23 @@ export function getParseableFinalExecutionOutcome(outcome: FinalExecutionOutcome
 
 export interface ParseableFinalExecutionOutcome extends FinalExecutionOutcome {
   /**
-   * Parse success value
+   * Parse success value.
    * @param parse Parse options. Default in JSON format
    */
   parse<T>(parse?: Parse<T>): T;
 
   /**
-   * Parse success value in JSON format
+   * Parse success value in JSON format.
    */
   json<T>(): T;
 
   /**
-   * Parse success value in borsh format
+   * Parse success value in borsh format.
    * @param type Class of generics `T`
    */
   borsh<T>(type: Class<T>): T;
   /**
-   * Parse success value in borsh format
+   * Parse success value in borsh format.
    * @param type `Wrapper` class that wraps the generics `T`
    */
   borsh<T>(type: WrapperClass<T>): T;

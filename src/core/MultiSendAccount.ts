@@ -2,7 +2,7 @@ import { Account, Connection } from 'near-api-js';
 import { ViewFunctionOptions, EmptyObject } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
-  getParseableFinalExecutionOutcome,
+  buildParseableFinalExecutionOutcome,
   NearApiJsTransactionLike,
   ParseableFinalExecutionOutcome,
   parseNearApiJsTransactions,
@@ -71,6 +71,11 @@ export class MultiSendAccount extends Account {
     return outcome.parse(options?.parse);
   }
 
+  /**
+   * Send multiple transactions
+   * @param transaction Multiple transactions
+   * @param options Options
+   */
   async sendRaw(
     transaction: MultiTransaction,
     options?: Omit<SendOptions<unknown>, 'parse'>
@@ -78,10 +83,12 @@ export class MultiSendAccount extends Account {
     const outcomes = await this.signAndSendTransactions({
       transactions: parseNearApiJsTransactions(transaction),
     });
+
     if (options?.throwReceiptErrorsIfAny) {
       throwReceiptErrorsIfAny(...outcomes);
     }
-    return outcomes.map((outcome) => getParseableFinalExecutionOutcome(outcome));
+
+    return outcomes.map((outcome) => buildParseableFinalExecutionOutcome(outcome));
   }
 }
 

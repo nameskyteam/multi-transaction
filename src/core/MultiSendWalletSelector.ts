@@ -8,11 +8,10 @@ import { ViewFunctionOptions } from '../types';
 import { MultiTransaction } from './MultiTransaction';
 import {
   Amount,
-  getParseableFinalExecutionOutcome,
+  buildParseableFinalExecutionOutcome,
   ParseableFinalExecutionOutcome,
   parseNearApiJsTransactions,
   parseNearWalletSelectorTransactions,
-  parseOutcomeValue,
   throwReceiptErrorsIfAny,
 } from '../utils';
 import { SendOptions, SendWithLocalKeyOptions } from '../types/enhancement';
@@ -158,7 +157,7 @@ export async function setupMultiSendWalletSelector(
           throwReceiptErrorsIfAny(...outcomes);
         }
 
-        return outcomes.map((outcome) => getParseableFinalExecutionOutcome(outcome));
+        return outcomes.map((outcome) => buildParseableFinalExecutionOutcome(outcome));
       },
 
       async sendWithLocalKey<Value>(
@@ -193,7 +192,7 @@ export async function setupMultiSendWalletSelector(
           throwReceiptErrorsIfAny(...outcomes);
         }
 
-        return outcomes.map((outcome) => getParseableFinalExecutionOutcome(outcome));
+        return outcomes.map((outcome) => buildParseableFinalExecutionOutcome(outcome));
       },
     };
   }
