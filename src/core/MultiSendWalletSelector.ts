@@ -2,7 +2,7 @@ import { setupWalletSelector, WalletSelector } from '@near-wallet-selector/core'
 import { keyStores, Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
-import { MultiSendWalletSelector } from '../types';
+import { EmptyArgs, MultiSendWalletSelector } from '../types';
 import { MultiSendWalletSelectorConfig } from '../types';
 import { ViewFunctionOptions } from '../types';
 import { MultiTransaction } from './MultiTransaction';
@@ -96,7 +96,7 @@ export async function setupMultiSendWalletSelector(
         return remainingAllowance.gte(requiredMinAllowance);
       },
 
-      async view<Value, Args>({
+      async view<Value, Args = EmptyArgs>({
         contractId,
         methodName,
         args,

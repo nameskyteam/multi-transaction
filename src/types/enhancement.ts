@@ -1,6 +1,6 @@
 import { WalletSelector } from '@near-wallet-selector/core';
 import { Account, Near } from 'near-api-js';
-import { MultiSender, Viewer, ViewFunctionOptions } from '../types';
+import { EmptyArgs, MultiSender, Viewer, ViewFunctionOptions } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-selector.types';
@@ -37,7 +37,7 @@ interface WalletSelectorEnhancement extends Viewer, MultiSender {
   /**
    * View a contract method
    */
-  view<Value, Args>(options: ViewFunctionOptions<Value, Args>): Promise<Value>;
+  view<Value, Args = EmptyArgs>(options: ViewFunctionOptions<Value, Args>): Promise<Value>;
 
   /**
    * Send multiple transactions and return success value of last transaction

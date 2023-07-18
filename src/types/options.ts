@@ -60,4 +60,6 @@ export interface ViewFunctionOptions<Value, Args> {
   blockQuery?: BlockQuery;
 }
 
+export interface EmptyArgs {}
+
 export type BlockQuery = BlockReference;

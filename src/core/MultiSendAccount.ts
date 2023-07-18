@@ -1,5 +1,5 @@
 import { Account, Connection } from 'near-api-js';
-import { MultiSender, Viewer, ViewFunctionOptions } from '../types';
+import { EmptyArgs, MultiSender, Viewer, ViewFunctionOptions } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   buildParseableFinalExecutionOutcome,
@@ -40,7 +40,7 @@ export class MultiSendAccount extends Account implements Viewer, MultiSender {
   /**
    * View a contract method
    */
-  async view<Value, Args>({
+  async view<Value, Args = EmptyArgs>({
     contractId,
     methodName,
     args,
