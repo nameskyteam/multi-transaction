@@ -1,5 +1,5 @@
 import { Account, Connection } from 'near-api-js';
-import { ViewFunctionOptions } from '../types';
+import { MultiSender, ViewFunctionOptions } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   buildParseableFinalExecutionOutcome,
@@ -12,7 +12,7 @@ import { Action } from 'near-api-js/lib/transaction';
 import { MultiTransaction } from './MultiTransaction';
 import { getParser, Parse, stringifyOrSkip } from '../serde';
 
-export class MultiSendAccount extends Account {
+export class MultiSendAccount extends Account implements MultiSender {
   constructor(connection: Connection, accountId = '') {
     super(connection, accountId);
   }
@@ -42,7 +42,7 @@ export class MultiSendAccount extends Account {
   /**
    * View a contract method
    */
-  async view<Value, Args extends object>({
+  async view<Value, Args>({
     contractId,
     methodName,
     args,
@@ -53,7 +53,7 @@ export class MultiSendAccount extends Account {
     return super.viewFunction({
       contractId,
       methodName,
-      args,
+      args: args as any,
       stringify: (args: Args) => stringifyOrSkip(args, stringify),
       parse: getParser(parse),
       blockQuery,
@@ -97,13 +97,10 @@ export class MultiSendAccount extends Account {
 }
 
 export interface SendOptions<Value> {
-  /**
-   * If receipts in outcomes have any error, throw them
-   */
   throwReceiptErrorsIfAny?: boolean;
 
   /**
-   * Deserialize returned value from bytes. Default in JSON format
+   * Deserialize returned value from bytes
    */
   parse?: Parse<Value>;
 }

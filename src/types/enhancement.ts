@@ -1,7 +1,7 @@
 import { Modify } from '@near-wallet-selector/core/lib/utils.types';
 import { WalletSelector } from '@near-wallet-selector/core';
 import { Account, Near } from 'near-api-js';
-import { ViewFunctionOptions } from '../types';
+import { MultiSender, ViewFunctionOptions } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/lib/wallet-selector.types';
@@ -10,7 +10,7 @@ import { ParseableFinalExecutionOutcome } from '../utils';
 
 export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
 
-interface WalletSelectorEnhancement {
+interface WalletSelectorEnhancement extends MultiSender {
   near: Near;
   keyStore: BrowserLocalStorageKeyStore;
   viewer: Account;
@@ -37,14 +37,7 @@ interface WalletSelectorEnhancement {
   /**
    * View a contract method
    */
-  view<Value, Args extends object>({
-    contractId,
-    methodName,
-    args,
-    stringify,
-    parse,
-    blockQuery,
-  }: ViewFunctionOptions<Value, Args>): Promise<Value>;
+  view<Value, Args>(options: ViewFunctionOptions<Value, Args>): Promise<Value>;
 
   /**
    * Send multiple transactions and return success value of last transaction
@@ -89,35 +82,21 @@ interface WalletSelectorEnhancement {
 }
 
 export interface SendOptions<Value> {
-  /**
-   * Wallet id
-   */
   walletId?: string;
-
-  /**
-   * Callback URL
-   */
   callbackUrl?: string;
-
-  /**
-   * If receipts in outcomes have any error, throw them
-   */
   throwReceiptErrorsIfAny?: boolean;
 
   /**
-   * Deserialize returned value from bytes. Default in JSON format
+   * Deserialize returned value from bytes
    */
   parse?: Parse<Value>;
 }
 
 export interface SendWithLocalKeyOptions<Value> {
-  /**
-   * If receipts in outcomes have any error, throw them
-   */
   throwReceiptErrorsIfAny?: boolean;
 
   /**
-   * Deserialize returned value from bytes. Default in JSON format
+   * Deserialize returned value from bytes
    */
   parse?: Parse<Value>;
 }

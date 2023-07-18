@@ -1,34 +1,34 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 import { Parse, Stringify } from '../serde';
 
-export interface FunctionCallOptions<Args extends object> {
+export interface FunctionCallOptions<Args> {
   /**
    * Method name
    */
   methodName: string;
 
   /**
-   * `object` or `Uint8Array`. Default `{}`
+   * Method args
    */
-  args?: Args | Uint8Array;
+  args?: Args;
 
   /**
-   * Attached yocto NEAR amount. Default 0 yocto NEAR
+   * Attached yocto NEAR amount
    */
   attachedDeposit?: string;
 
   /**
-   * Prepaid gas. Default 30 Tera
+   * Prepaid gas
    */
   gas?: string;
 
   /**
-   * Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format
+   * Serialize args into bytes
    */
   stringify?: Stringify<Args>;
 }
 
-export interface ViewFunctionOptions<Value, Args extends object> {
+export interface ViewFunctionOptions<Value, Args> {
   /**
    * Contract id
    */
@@ -40,17 +40,17 @@ export interface ViewFunctionOptions<Value, Args extends object> {
   methodName: string;
 
   /**
-   * `object` or `Uint8Array`. Default `{}`
+   * Method args
    */
-  args?: Args | Uint8Array;
+  args?: Args;
 
   /**
-   * Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format
+   * Serialize args into bytes
    */
   stringify?: Stringify<Args>;
 
   /**
-   * Deserialize returned value from bytes. Default in JSON format
+   * Deserialize returned value from bytes
    */
   parse?: Parse<Value>;
 

@@ -174,9 +174,9 @@ export class MultiTransaction {
   /**
    * Add `FunctionCall` Action
    */
-  functionCall<Args extends object>({
+  functionCall<Args>({
     methodName,
-    args = {} as Args,
+    args,
     attachedDeposit = Amount.ZERO,
     gas = Gas.DEFAULT,
     stringify = 'json',
@@ -184,7 +184,7 @@ export class MultiTransaction {
     return this.addActions(
       Actions.functionCall({
         methodName,
-        args: stringifyOrSkip(args, stringify),
+        args: stringifyOrSkip(args ?? ({} as Args), stringify),
         attachedDeposit,
         gas,
       })
