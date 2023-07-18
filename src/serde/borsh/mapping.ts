@@ -1,4 +1,4 @@
-import { Class, PhantomData } from '../../types';
+import { Class } from '../../types';
 
 /**
  * Type Mapping
@@ -37,7 +37,6 @@ export type BorshType =
  * BorshType. The mapped JavaScript type is `Buffer`. Fixed size.
  */
 export class BorshArrayU8 {
-  __array_u8__: PhantomData;
   value = 'u8' as const;
   length: number;
 
@@ -50,7 +49,6 @@ export class BorshArrayU8 {
  * BorshType. The mapped JavaScript type is `T[]`. Fixed size.
  */
 export class BorshArray {
-  __array__: PhantomData;
   value: Exclude<BorshType, 'u8'>;
   length: number;
 
@@ -64,7 +62,6 @@ export class BorshArray {
  * BorshType. The mapped JavaScript type is `Buffer`.
  */
 export class BorshVecU8 {
-  __vec_u8__: PhantomData;
   value = 'u8' as const;
 }
 
@@ -72,7 +69,6 @@ export class BorshVecU8 {
  * BorshType. The mapped JavaScript type is `T[]`.
  */
 export class BorshVec {
-  __vec__: PhantomData;
   value: Exclude<BorshType, 'u8'>;
 
   constructor(value: Exclude<BorshType, 'u8'>) {
@@ -84,7 +80,6 @@ export class BorshVec {
  * BorshType. The mapped JavaScript type is `T | undefined`.
  */
 export class BorshOption {
-  __option__: PhantomData;
   value: BorshType;
 
   constructor(value: BorshType) {
