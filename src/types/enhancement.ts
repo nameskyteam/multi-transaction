@@ -1,7 +1,7 @@
 import { Modify } from '@near-wallet-selector/core/lib/utils.types';
 import { WalletSelector } from '@near-wallet-selector/core';
 import { Account, Near } from 'near-api-js';
-import { MultiSender, ViewFunctionOptions } from '../types';
+import { MultiSender, Viewer, ViewFunctionOptions } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/lib/wallet-selector.types';
@@ -10,7 +10,7 @@ import { ParseableFinalExecutionOutcome } from '../utils';
 
 export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
 
-interface WalletSelectorEnhancement extends MultiSender {
+interface WalletSelectorEnhancement extends Viewer, MultiSender {
   near: Near;
   keyStore: BrowserLocalStorageKeyStore;
   viewer: Account;

@@ -23,8 +23,6 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
     return this.__inner__;
   }
 
-  // --------------------------- override ---------------------------
-
   /**
    * add
    * @param n
@@ -225,8 +223,6 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
     return this.__inner__.toString();
   }
 
-  // --------------------------- enhancement ------------------------
-
   /**
    * decimal shift
    * @param n
@@ -234,8 +230,6 @@ export abstract class BigWrapper<T extends BigWrapper<T>> {
   shift(n: number): T {
     return this.from(10).pow(n).mul(this);
   }
-
-  // --------------------------- abstract ---------------------------
 
   /**
    * construct a `T` instance

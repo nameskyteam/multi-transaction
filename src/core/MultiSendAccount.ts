@@ -1,5 +1,5 @@
 import { Account, Connection } from 'near-api-js';
-import { MultiSender, ViewFunctionOptions } from '../types';
+import { MultiSender, Viewer, ViewFunctionOptions } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   buildParseableFinalExecutionOutcome,
@@ -12,21 +12,19 @@ import { Action } from 'near-api-js/lib/transaction';
 import { MultiTransaction } from './MultiTransaction';
 import { getParser, Parse, stringifyOrSkip } from '../serde';
 
-export class MultiSendAccount extends Account implements MultiSender {
+export class MultiSendAccount extends Account implements Viewer, MultiSender {
   constructor(connection: Connection, accountId = '') {
     super(connection, accountId);
   }
 
-  /**
-   * @override
-   */
+  static from(account: Account) {
+    return new MultiSendAccount(account.connection, account.accountId);
+  }
+
   async signAndSendTransaction(options: SignAndSendTransactionOptions): Promise<FinalExecutionOutcome> {
     return super.signAndSendTransaction(options);
   }
 
-  /**
-   * @override
-   */
   async signAndSendTransactions(options: SignAndSendTransactionsOptions): Promise<FinalExecutionOutcome[]> {
     const outcomes: FinalExecutionOutcome[] = [];
     if (options.transactions.length === 0) {
@@ -89,10 +87,6 @@ export class MultiSendAccount extends Account implements MultiSender {
     }
 
     return outcomes.map((outcome) => buildParseableFinalExecutionOutcome(outcome));
-  }
-
-  static from(account: Account) {
-    return new MultiSendAccount(account.connection, account.accountId);
   }
 }
 
