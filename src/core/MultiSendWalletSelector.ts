@@ -108,7 +108,7 @@ export async function setupMultiSendWalletSelector(
           contractId,
           methodName,
           args: args as any,
-          stringify: (args: Args) => stringifyOrSkip(args, stringify),
+          stringify: (args: Args | Uint8Array) => stringifyOrSkip(args, stringify),
           parse: getParser(parse),
           blockQuery,
         });

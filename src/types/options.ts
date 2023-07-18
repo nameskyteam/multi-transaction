@@ -10,7 +10,7 @@ export interface FunctionCallOptions<Args> {
   /**
    * Method args
    */
-  args?: Args;
+  args?: Args | Uint8Array;
 
   /**
    * Attached yocto NEAR amount
@@ -42,7 +42,7 @@ export interface ViewFunctionOptions<Value, Args> {
   /**
    * Method args
    */
-  args?: Args;
+  args?: Args | Uint8Array;
 
   /**
    * Serialize args into bytes

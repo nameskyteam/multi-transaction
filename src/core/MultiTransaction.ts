@@ -184,7 +184,7 @@ export class MultiTransaction {
     return this.addActions(
       Actions.functionCall({
         methodName,
-        args: stringifyOrSkip(args ?? ({} as Args), stringify),
+        args: stringifyOrSkip(args ?? ({} as any), stringify),
         attachedDeposit,
         gas,
       })

@@ -19,10 +19,10 @@ export interface ParseBorsh<T> {
  * @param data Data to serialize
  * @param stringify Stringify options
  */
-export function stringifyOrSkip<T>(data: T, stringify: Stringify<T>): Buffer {
+export function stringifyOrSkip<T>(data: T | Uint8Array, stringify: Stringify<T>): Buffer {
   const isUint8Array =
     (data as Uint8Array).byteLength && (data as Uint8Array).byteLength === (data as Uint8Array).length;
-  return isUint8Array ? Buffer.from(data as Uint8Array) : getStringifier(stringify)(data);
+  return isUint8Array ? Buffer.from(data as Uint8Array) : getStringifier(stringify)(data as T);
 }
 
 /**
