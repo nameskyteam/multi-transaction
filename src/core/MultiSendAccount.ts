@@ -1,5 +1,5 @@
 import { Account, Connection } from 'near-api-js';
-import { EmptyArgs, MultiSender, Viewer, ViewFunctionOptions } from '../types';
+import { EmptyArgs, MultiSend, View, ViewFunctionOptions } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   buildParseableFinalExecutionOutcome,
@@ -12,7 +12,7 @@ import { Action } from 'near-api-js/lib/transaction';
 import { MultiTransaction } from './MultiTransaction';
 import { getParser, Parse, stringifyOrSkip } from '../serde';
 
-export class MultiSendAccount extends Account implements Viewer, MultiSender {
+export class MultiSendAccount extends Account implements View, MultiSend {
   constructor(connection: Connection, accountId = '') {
     super(connection, accountId);
   }
