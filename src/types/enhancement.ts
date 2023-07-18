@@ -1,12 +1,12 @@
-import { Modify } from '@near-wallet-selector/core/lib/utils.types';
 import { WalletSelector } from '@near-wallet-selector/core';
 import { Account, Near } from 'near-api-js';
 import { MultiSender, Viewer, ViewFunctionOptions } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
-import { WalletSelectorParams } from '@near-wallet-selector/core/lib/wallet-selector.types';
+import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-selector.types';
 import { Parse } from '../serde';
 import { ParseableFinalExecutionOutcome } from '../utils';
+import { Modify } from '@near-wallet-selector/core/src/lib/utils.types';
 
 export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
 

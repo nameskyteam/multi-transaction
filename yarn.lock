@@ -174,12 +174,13 @@
     bn.js "5.2.1"
     borsh "^0.7.0"
 
-"@near-wallet-selector/core@^7.9.0":
-  version "7.9.0"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-7.9.0.tgz#33dcfa589983d5aa10f0590e181e2f1e538c044d"
-  integrity sha512-VbHNdO1yRILsgjrX3Qxg5C3oJZpC3f1PjHLY0h37FXRBTIyVEycMl+8qVaBHck5j8FIOJMfyS9d6tC+TKRp7Og==
+"@near-wallet-selector/core@^8.2.0":
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-8.2.0.tgz#5be2f5e371d84bba99edfcef2b056c03fc99d0c7"
+  integrity sha512-IHIGfT2Ce7CI5z9srC4tQkhHw/2acAIrZWIcTWLbfzN9u6eWB143hLxTe3eTD1hUVeJBXVxfZR+Ano9nKKBypw==
   dependencies:
-    rxjs "^7.8.0"
+    events "3.3.0"
+    rxjs "7.8.1"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -921,6 +922,11 @@ esutils@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.3.tgz#74d2eb4de0b8da1293711910d50775b9b710ef64"
   integrity sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==
+
+events@3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
+  integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
 
 execa@^5.0.0:
   version "5.1.1"
@@ -1681,17 +1687,17 @@ run-parallel@^1.1.9:
   dependencies:
     queue-microtask "^1.2.2"
 
+rxjs@7.8.1:
+  version "7.8.1"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.8.1.tgz#6f6f3d99ea8044291efd92e7c7fcf562c4057543"
+  integrity sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==
+  dependencies:
+    tslib "^2.1.0"
+
 rxjs@^7.5.7:
   version "7.5.7"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.7.tgz#2ec0d57fdc89ece220d2e702730ae8f1e49def39"
   integrity sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA==
-  dependencies:
-    tslib "^2.1.0"
-
-rxjs@^7.8.0:
-  version "7.8.0"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.8.0.tgz#90a938862a82888ff4c7359811a595e14e1e09a4"
-  integrity sha512-F2+gxDshqmIub1KdvZkaEfGDwLNpPvk9Fs6LD/MyQxNgMds/WH9OdDDXOmxUZpME+iSK3rQCctkL0DYyytUqMg==
   dependencies:
     tslib "^2.1.0"
 

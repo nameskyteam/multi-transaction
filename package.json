@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@dao-xyz/borsh": "^5.1.5",
-    "@near-wallet-selector/core": "^7.9.0",
+    "@near-wallet-selector/core": "^8.2.0",
     "big.js": "^6.2.1",
     "bn.js": "^5.2.1",
     "buffer": "^6.0.3",
