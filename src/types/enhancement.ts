@@ -28,7 +28,7 @@ interface WalletSelectorEnhancement extends Viewer, MultiSender {
   /**
    * Is login access key active
    * If the key is FullAccess, when key exists on chain, it is active
-   * If the key is FunctionCall, when key exists on chain and allowance is greater than min allowance (default 0.01 NEAR), it is active
+   * If the key is FunctionCall, when key exists on chain and allowance is greater than min allowance, it is active
    * @param accountId Account id
    * @param requiredMinAllowance Required min allowance
    */
