@@ -8,12 +8,12 @@ export function buildParseableFinalExecutionOutcome(outcome: FinalExecutionOutco
   return {
     ...outcome,
 
-    parse<T>(parse?: Parse<T>): T {
+    parse<T>(parse: Parse<T>): T {
       return parseOutcomeValue(outcome, parse);
     },
 
     json<T>(): T {
-      return parseOutcomeValue(outcome);
+      return parseOutcomeValue(outcome, 'json');
     },
 
     borsh<T>(type: Class<T> | WrapperClass<T>): T {
@@ -28,9 +28,9 @@ export function buildParseableFinalExecutionOutcome(outcome: FinalExecutionOutco
 export interface ParseableFinalExecutionOutcome extends FinalExecutionOutcome {
   /**
    * Parse success value.
-   * @param parse Parse options. Default in JSON format
+   * @param parse Parse options
    */
-  parse<T>(parse?: Parse<T>): T;
+  parse<T>(parse: Parse<T>): T;
 
   /**
    * Parse success value in JSON format.
@@ -53,9 +53,9 @@ export interface ParseableFinalExecutionOutcome extends FinalExecutionOutcome {
 /**
  * Parse success value from outcome.
  * @param outcome Transaction outcome
- * @param parse Parse options. Default in JSON format
+ * @param parse Parse options
  */
-export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parse: Parse<Value> = 'json'): Value {
+export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parse: Parse<Value>): Value {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
   if (successValue) {
     const valueRaw = Buffer.from(successValue, 'base64');

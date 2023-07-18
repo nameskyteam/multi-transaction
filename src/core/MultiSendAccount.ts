@@ -1,5 +1,5 @@
 import { Account, Connection } from 'near-api-js';
-import { ViewFunctionOptions, EmptyObject } from '../types';
+import { ViewFunctionOptions } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   buildParseableFinalExecutionOutcome,
@@ -42,10 +42,10 @@ export class MultiSendAccount extends Account {
   /**
    * View a contract method
    */
-  async view<Value, Args = EmptyObject>({
+  async view<Value, Args extends object>({
     contractId,
     methodName,
-    args = {} as Args,
+    args,
     stringify = 'json',
     parse = 'json',
     blockQuery,
@@ -68,7 +68,7 @@ export class MultiSendAccount extends Account {
   async send<Value>(transaction: MultiTransaction, options?: SendOptions<Value>): Promise<Value> {
     const outcomes = await this.sendRaw(transaction, options);
     const outcome = outcomes[outcomes.length - 1];
-    return outcome.parse(options?.parse);
+    return outcome.parse(options?.parse ?? 'json');
   }
 
   /**

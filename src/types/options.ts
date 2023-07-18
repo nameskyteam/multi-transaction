@@ -1,14 +1,14 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 import { Parse, Stringify } from '../serde';
 
-export interface FunctionCallOptions<Args> {
+export interface FunctionCallOptions<Args extends object> {
   /**
    * Method name
    */
   methodName: string;
 
   /**
-   * Serializable types or `Uint8Array`. Default `{}`
+   * `object` or `Uint8Array`. Default `{}`
    */
   args?: Args | Uint8Array;
 
@@ -28,7 +28,7 @@ export interface FunctionCallOptions<Args> {
   stringify?: Stringify<Args>;
 }
 
-export interface ViewFunctionOptions<Value, Args> {
+export interface ViewFunctionOptions<Value, Args extends object> {
   /**
    * Contract id
    */
@@ -40,7 +40,7 @@ export interface ViewFunctionOptions<Value, Args> {
   methodName: string;
 
   /**
-   * Serializable types or `Uint8Array`. Default `{}`
+   * `object` or `Uint8Array`. Default `{}`
    */
   args?: Args | Uint8Array;
 
@@ -60,5 +60,4 @@ export interface ViewFunctionOptions<Value, Args> {
   blockQuery?: BlockQuery;
 }
 
-export type EmptyObject = Record<string, never>;
 export type BlockQuery = BlockReference;

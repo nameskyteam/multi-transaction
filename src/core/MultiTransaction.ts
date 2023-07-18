@@ -20,7 +20,6 @@ import {
   NftApproveOptions,
   NftRevokeOptions,
   NftRevokeAllOptions,
-  EmptyObject,
 } from '../types';
 import { Actions } from './Actions';
 import { Transaction, AccessKey, Action } from '../types';
@@ -175,7 +174,7 @@ export class MultiTransaction {
   /**
    * Add `FunctionCall` Action
    */
-  functionCall<Args = EmptyObject>({
+  functionCall<Args extends object>({
     methodName,
     args = {} as Args,
     attachedDeposit = Amount.ZERO,

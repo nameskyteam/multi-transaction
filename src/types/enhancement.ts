@@ -1,7 +1,7 @@
 import { Modify } from '@near-wallet-selector/core/lib/utils.types';
 import { WalletSelector } from '@near-wallet-selector/core';
 import { Account, Near } from 'near-api-js';
-import { EmptyObject, ViewFunctionOptions } from '../types';
+import { ViewFunctionOptions } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/lib/wallet-selector.types';
@@ -37,7 +37,7 @@ interface WalletSelectorEnhancement {
   /**
    * View a contract method
    */
-  view<Value, Args = EmptyObject>({
+  view<Value, Args extends object>({
     contractId,
     methodName,
     args,
