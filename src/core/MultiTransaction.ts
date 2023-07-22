@@ -20,7 +20,7 @@ import {
   NftApproveOptions,
   NftRevokeOptions,
   NftRevokeAllOptions,
-  EmptyObject,
+  EmptyArgs,
 } from '../types';
 import { Actions } from './Actions';
 import { Transaction, AccessKey, Action } from '../types';
@@ -29,117 +29,135 @@ import { PublicKey } from 'near-api-js/lib/utils';
 import { stringifyOrSkip } from '../serde';
 
 /**
- * Helper class for creating transaction(s) with builder pattern
+ * Helper for creating transaction(s).
  */
 export class MultiTransaction {
-  transactions: Transaction[];
+  protected transactions: Transaction[];
 
-  private constructor() {
+  protected constructor() {
     this.transactions = [];
   }
 
+  /**
+   * Create an instance that contains no transaction.
+   */
   static new(): MultiTransaction {
     return new MultiTransaction();
   }
 
   /**
-   * @param receiverId transaction receiver id
-   * @param signerId transaction signer id
+   * Create a transaction.
+   * @param receiverId Transaction receiver id
+   * @param signerId Transaction signer id
    */
   static batch(receiverId: string, signerId?: string): MultiTransaction {
     return MultiTransaction.new().batch(receiverId, signerId);
   }
 
   /**
-   * current transaction index
-   * @private
+   * Create a transaction.
+   * @param receiverId Transaction receiver id
+   * @param signerId Transaction signer id
    */
-  private currentTransactionIndex(): number {
-    return this.transactions.length - 1;
+  batch(receiverId: string, signerId?: string): this {
+    return this.addTransaction({ signerId, receiverId, actions: [] });
   }
 
   /**
-   * If it contains no transaction.
+   * Extend other.
+   * @param other Other
+   */
+  extend(other: MultiTransaction): this {
+    return this.addTransactions(other.toTransactions());
+  }
+
+  /**
+   * If it contains no transaction, return `true`, else return `false`.
    */
   isEmpty(): boolean {
-    return this.currentTransactionIndex() < 0;
+    return this.transactions.length === 0;
   }
 
   /**
-   * Count transactions
+   * Count transactions.
    */
-  transactionCount(): number {
+  countTransactions(): number {
     return this.transactions.length;
   }
 
   /**
-   * Count actions of transaction
-   * @param transactionIndex
+   * Count actions of the transaction.
    */
-  actionCount(transactionIndex?: number): number {
-    transactionIndex = transactionIndex ?? this.currentTransactionIndex();
-    if (transactionIndex > this.currentTransactionIndex()) {
-      throw Error(`Transaction index out of bound.`);
-    }
-    return this.transactions[transactionIndex].actions.length;
+  countActions(): number {
+    const transaction = this.getTheTransaction();
+    return transaction.actions.length;
+  }
+
+  static fromTransactions(transactions: Transaction[]): MultiTransaction {
+    return MultiTransaction.new().addTransactions(transactions);
+  }
+
+  toTransactions(): Transaction[] {
+    return Array.from(this.transactions);
   }
 
   /**
-   * @param receiverId transaction receiver id
-   * @param signerId transaction signer id
+   * Add a transaction.
+   * @param transaction Transaction
    */
-  batch(receiverId: string, signerId?: string): MultiTransaction {
-    return this.addTransactions({ signerId, receiverId, actions: [] });
+  addTransaction(transaction: Transaction): this {
+    this.transactions.push(transaction);
+    return this;
   }
 
-  private addTransactions(...transactions: Transaction[]): MultiTransaction {
+  /**
+   * Add transactions.
+   * @param transactions Transactions
+   */
+  addTransactions(transactions: Transaction[]): this {
     this.transactions.push(...transactions);
     return this;
   }
 
-  private addActions(...actions: Action[]): MultiTransaction {
-    if (this.isEmpty()) {
-      throw Error(`Transaction not found, consider calling method '.batch(...)' first.`);
-    }
-    this.transactions[this.currentTransactionIndex()].actions.push(...actions);
+  /**
+   * Add an action to the transaction.
+   * @param action Action
+   */
+  addAction(action: Action): this {
+    const transaction = this.getTheTransaction();
+    transaction.actions.push(action);
     return this;
   }
 
-  static fromTransactions(...transactions: Transaction[]): MultiTransaction {
-    return MultiTransaction.new().addTransactions(...transactions);
-  }
-
-  toTransactions(): Transaction[] {
-    return this.transactions;
-  }
-
-  extend(other: MultiTransaction): MultiTransaction {
-    return this.addTransactions(...other.toTransactions());
-  }
-
-  // -------------------------------------------- Action ---------------------------------------------------
   /**
-   * Add `CreateAccount` Action
+   * Add actions to the transaction.
+   * @param actions Actions
    */
-  createAccount(): MultiTransaction {
-    return this.addActions(Actions.createAccount());
+  addActions(actions: Action[]): this {
+    const transaction = this.getTheTransaction();
+    transaction.actions.push(...actions);
+    return this;
   }
 
   /**
-   * Add `DeleteAccount` Action
-   * @param beneficiaryId beneficiary account id
+   * Get the transaction.
+   * @protected
    */
-  deleteAccount(beneficiaryId: string): MultiTransaction {
-    return this.addActions(Actions.deleteAccount({ beneficiaryId }));
+  protected getTheTransaction(): Transaction {
+    return this.transactions[this.transactions.length - 1];
   }
 
-  /**
-   * Add `AddKey` Action
-   * @param publicKey Public key
-   * @param accessKey Public key info
-   */
-  addKey(publicKey: string, accessKey: AccessKey): MultiTransaction {
-    return this.addActions(
+  // -------------------------------------------- Actions --------------------------------------------------
+  createAccount(): this {
+    return this.addAction(Actions.createAccount());
+  }
+
+  deleteAccount(beneficiaryId: string): this {
+    return this.addAction(Actions.deleteAccount({ beneficiaryId }));
+  }
+
+  addKey(publicKey: string, accessKey: AccessKey): this {
+    return this.addAction(
       Actions.addKey({
         publicKey: PublicKey.fromString(publicKey).toString(),
         accessKey,
@@ -147,61 +165,41 @@ export class MultiTransaction {
     );
   }
 
-  /**
-   * Add `DeleteKey` Action
-   * @param publicKey Public key
-   */
-  deleteKey(publicKey: string): MultiTransaction {
-    return this.addActions(Actions.deleteKey({ publicKey: PublicKey.fromString(publicKey).toString() }));
+  deleteKey(publicKey: string): this {
+    return this.addAction(Actions.deleteKey({ publicKey: PublicKey.fromString(publicKey).toString() }));
   }
 
-  /**
-   * Add `DeployContract` Action
-   * @param code Wasm code
-   */
-  deployContract(code: Uint8Array): MultiTransaction {
-    return this.addActions(Actions.deployContract({ code }));
+  deployContract(code: Uint8Array): this {
+    return this.addAction(Actions.deployContract({ code }));
   }
 
-  /**
-   * Add `Stake` Action
-   * @param amount Staking amount
-   * @param publicKey Staking public key
-   */
-  stake(amount: string, publicKey: string): MultiTransaction {
-    return this.addActions(Actions.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() }));
+  stake(amount: string, publicKey: string): this {
+    return this.addAction(Actions.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() }));
   }
 
-  /**
-   * Add `FunctionCall` Action
-   */
-  functionCall<Args = EmptyObject>({
+  functionCall<Args = EmptyArgs>({
     methodName,
-    args = {} as Args,
+    args,
     attachedDeposit = Amount.ZERO,
     gas = Gas.DEFAULT,
     stringify = 'json',
-  }: FunctionCallOptions<Args>): MultiTransaction {
-    return this.addActions(
+  }: FunctionCallOptions<Args>): this {
+    return this.addAction(
       Actions.functionCall({
         methodName,
-        args: stringifyOrSkip(args, stringify),
+        args: stringifyOrSkip(args ?? ({} as any), stringify),
         attachedDeposit,
         gas,
       })
     );
   }
 
-  /**
-   * Add `Transfer` Action
-   * @param amount Transfer amount
-   */
-  transfer(amount: string): MultiTransaction {
-    return this.addActions(Actions.transfer({ amount }));
+  transfer(amount: string): this {
+    return this.addAction(Actions.transfer({ amount }));
   }
 
   // --------------------------------------------- NEP145 --------------------------------------------------
-  storage_deposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
+  storage_deposit({ args, attachedDeposit, gas }: StorageDepositOptions): this {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',
       args,
@@ -210,7 +208,7 @@ export class MultiTransaction {
     });
   }
 
-  storage_withdraw({ args, gas }: StorageWithdrawOptions): MultiTransaction {
+  storage_withdraw({ args, gas }: StorageWithdrawOptions): this {
     return this.functionCall<StorageWithdrawArgs>({
       methodName: 'storage_withdraw',
       args,
@@ -219,7 +217,7 @@ export class MultiTransaction {
     });
   }
 
-  storage_unregister({ args, gas }: StorageUnregisterOptions): MultiTransaction {
+  storage_unregister({ args, gas }: StorageUnregisterOptions): this {
     return this.functionCall<StorageUnregisterArgs>({
       methodName: 'storage_unregister',
       args,
@@ -229,7 +227,7 @@ export class MultiTransaction {
   }
 
   // --------------------------------------------- NEP141 --------------------------------------------------
-  ft_transfer({ args, gas }: FtTransferOptions): MultiTransaction {
+  ft_transfer({ args, gas }: FtTransferOptions): this {
     return this.functionCall<FtTransferArgs>({
       methodName: 'ft_transfer',
       args,
@@ -238,7 +236,7 @@ export class MultiTransaction {
     });
   }
 
-  ft_transfer_call({ args, gas }: FtTransferCallOptions): MultiTransaction {
+  ft_transfer_call({ args, gas }: FtTransferCallOptions): this {
     return this.functionCall<FtTransferCallArgs>({
       methodName: 'ft_transfer_call',
       args,
@@ -248,7 +246,7 @@ export class MultiTransaction {
   }
 
   // --------------------------------------------- NEP171 --------------------------------------------------
-  nft_transfer({ args, gas }: NftTransferOptions): MultiTransaction {
+  nft_transfer({ args, gas }: NftTransferOptions): this {
     return this.functionCall<NftTransferArgs>({
       methodName: 'nft_transfer',
       args,
@@ -257,7 +255,7 @@ export class MultiTransaction {
     });
   }
 
-  nft_transfer_call({ args, gas }: NftTransferCallOptions): MultiTransaction {
+  nft_transfer_call({ args, gas }: NftTransferCallOptions): this {
     return this.functionCall<NftTransferCallArgs>({
       methodName: 'nft_transfer_call',
       args,
@@ -266,7 +264,7 @@ export class MultiTransaction {
     });
   }
 
-  nft_approve({ args, attachedDeposit, gas }: NftApproveOptions): MultiTransaction {
+  nft_approve({ args, attachedDeposit, gas }: NftApproveOptions): this {
     return this.functionCall<NftApproveArgs>({
       methodName: 'nft_approve',
       args,
@@ -275,7 +273,7 @@ export class MultiTransaction {
     });
   }
 
-  nft_revoke({ args, gas }: NftRevokeOptions): MultiTransaction {
+  nft_revoke({ args, gas }: NftRevokeOptions): this {
     return this.functionCall<NftRevokeArgs>({
       methodName: 'nft_revoke',
       args,
@@ -284,7 +282,7 @@ export class MultiTransaction {
     });
   }
 
-  nft_revoke_all({ args, gas }: NftRevokeAllOptions): MultiTransaction {
+  nft_revoke_all({ args, gas }: NftRevokeAllOptions): this {
     return this.functionCall<NftRevokeAllArgs>({
       methodName: 'nft_revoke_all',
       args,

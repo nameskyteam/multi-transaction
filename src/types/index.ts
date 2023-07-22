@@ -5,3 +5,4 @@ export * from './nep145';
 export * from './nep171';
 export { MultiSendWalletSelector, MultiSendWalletSelectorConfig } from './enhancement';
 export * from './common';
+export * from './multi-send';

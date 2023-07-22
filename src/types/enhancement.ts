@@ -1,16 +1,16 @@
-import { Modify } from '@near-wallet-selector/core/lib/utils.types';
 import { WalletSelector } from '@near-wallet-selector/core';
 import { Account, Near } from 'near-api-js';
-import { EmptyObject, ViewFunctionOptions } from '../types';
+import { EmptyArgs, MultiSend, View, ViewFunctionOptions } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
-import { WalletSelectorParams } from '@near-wallet-selector/core/lib/wallet-selector.types';
+import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-selector.types';
 import { Parse } from '../serde';
 import { ParseableFinalExecutionOutcome } from '../utils';
+import { Modify } from '@near-wallet-selector/core/src/lib/utils.types';
 
 export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
 
-interface WalletSelectorEnhancement {
+interface WalletSelectorEnhancement extends View, MultiSend {
   near: Near;
   keyStore: BrowserLocalStorageKeyStore;
   viewer: Account;
@@ -28,7 +28,7 @@ interface WalletSelectorEnhancement {
   /**
    * Is login access key active
    * If the key is FullAccess, when key exists on chain, it is active
-   * If the key is FunctionCall, when key exists on chain and allowance is greater than min allowance (default 0.01 NEAR), it is active
+   * If the key is FunctionCall, when key exists on chain and allowance is greater than min allowance, it is active
    * @param accountId Account id
    * @param requiredMinAllowance Required min allowance
    */
@@ -37,87 +37,66 @@ interface WalletSelectorEnhancement {
   /**
    * View a contract method
    */
-  view<Value, Args = EmptyObject>({
-    contractId,
-    methodName,
-    args,
-    stringify,
-    parse,
-    blockQuery,
-  }: ViewFunctionOptions<Value, Args>): Promise<Value>;
+  view<Value, Args = EmptyArgs>(options: ViewFunctionOptions<Value, Args>): Promise<Value>;
 
   /**
    * Send multiple transactions and return success value of last transaction
-   * @param transaction Multiple transactions
+   * @param mTx Multiple transactions
    * @param options Options
    */
-  send<Value>(transaction: MultiTransaction, options?: SendOptions<Value>): Promise<Value | undefined>;
+  send<Value>(mTx: MultiTransaction, options?: SendOptions<Value>): Promise<Value | undefined>;
 
   /**
    * Send multiple transactions
-   * @param transaction Multiple transactions
+   * @param mTx Multiple transactions
    * @param options Options
    */
   sendRaw(
-    transaction: MultiTransaction,
+    mTx: MultiTransaction,
     options?: Omit<SendOptions<unknown>, 'parse'>
   ): Promise<ParseableFinalExecutionOutcome[] | undefined>;
 
   /**
    * Sign and send multiple transactions with local key in `this.keystore` and return success value of last transaction
    * @param signerId Signer id
-   * @param transaction Multiple transactions
+   * @param mTx Multiple transactions
    * @param options Options
    */
   sendWithLocalKey<Value>(
     signerId: string,
-    transaction: MultiTransaction,
+    mTx: MultiTransaction,
     options?: SendWithLocalKeyOptions<Value>
   ): Promise<Value>;
 
   /**
    * Sign and send multiple transactions with local key in `this.keystore`
    * @param signerId Signer id
-   * @param transaction Multiple transactions
+   * @param mTx Multiple transactions
    * @param options Options
    */
   sendWithLocalKeyRaw(
     signerId: string,
-    transaction: MultiTransaction,
+    mTx: MultiTransaction,
     options?: Omit<SendWithLocalKeyOptions<unknown>, 'parse'>
   ): Promise<ParseableFinalExecutionOutcome[]>;
 }
 
 export interface SendOptions<Value> {
-  /**
-   * Wallet id
-   */
   walletId?: string;
-
-  /**
-   * Callback URL
-   */
   callbackUrl?: string;
+  throwReceiptErrors?: boolean;
 
   /**
-   * If receipts in outcomes have any error, throw them
-   */
-  throwReceiptErrorsIfAny?: boolean;
-
-  /**
-   * Deserialize returned value from bytes. Default in JSON format
+   * Deserialize returned value from bytes
    */
   parse?: Parse<Value>;
 }
 
 export interface SendWithLocalKeyOptions<Value> {
-  /**
-   * If receipts in outcomes have any error, throw them
-   */
-  throwReceiptErrorsIfAny?: boolean;
+  throwReceiptErrors?: boolean;
 
   /**
-   * Deserialize returned value from bytes. Default in JSON format
+   * Deserialize returned value from bytes
    */
   parse?: Parse<Value>;
 }

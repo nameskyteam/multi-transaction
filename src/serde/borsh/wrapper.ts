@@ -1,10 +1,7 @@
 import { Buffer } from 'buffer';
 import { borsh } from './borsh';
 import { BorshArray, BorshArrayU8, BorshOption, BorshType, BorshVec, BorshVecU8 } from './mapping';
-import { Class } from '../../types';
-
-export type Wrapper<T> = { __inner__: T; unwrap(): T };
-export type WrapperClass<T> = new (value: T) => Wrapper<T>;
+import { Class, Wrapper, WrapperClass } from '../../types';
 
 /**
  * Wrap `string` to serialize in borsh format.
@@ -75,8 +72,8 @@ export function borshWrap<T>(data: T[], type: BorshArray | BorshVec): Wrapper<T[
  */
 export function borshWrap<T>(data: T | undefined, type: BorshOption): Wrapper<T | undefined>;
 export function borshWrap<T>(data: T, type: Exclude<BorshType, Class<unknown>>): Wrapper<T> {
-  const Wrapper = borshUnwrap<T>(type);
-  return new Wrapper(data);
+  const BorshWrapper = borshUnwrap<T>(type);
+  return new BorshWrapper(data);
 }
 
 /**
@@ -130,15 +127,15 @@ export function borshUnwrap<T>(type: BorshArray | BorshVec): WrapperClass<T[]>;
 export function borshUnwrap<T>(type: BorshOption): WrapperClass<T | undefined>;
 export function borshUnwrap<T>(type: Exclude<BorshType, Class<unknown>>): WrapperClass<T>;
 export function borshUnwrap<T>(type: Exclude<BorshType, Class<unknown>>): WrapperClass<T> {
-  class Wrapper {
+  class BorshWrapper implements Wrapper<T> {
     @borsh({ type, index: 0 })
-    __inner__: T;
-    constructor(data: T) {
-      this.__inner__ = data;
+    private value: T;
+    constructor(value: T) {
+      this.value = value;
     }
     unwrap(): T {
-      return this.__inner__;
+      return this.value;
     }
   }
-  return Wrapper;
+  return BorshWrapper;
 }

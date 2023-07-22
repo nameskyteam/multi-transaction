@@ -1,21 +1,19 @@
 import { BigWrapper, BigWrapperSource } from './BigWrapper';
 
+export type GasSource = BigWrapperSource<Gas>;
+
 export class Gas extends BigWrapper<Gas> {
   static DEFAULT = Gas.tera(30);
 
-  private constructor(n: BigWrapperSource<Gas>) {
+  private constructor(n: GasSource) {
     super(n);
   }
 
-  /**
-   * construct a `Gas` instance
-   * @param n
-   */
-  static from(n: BigWrapperSource<Gas>): Gas {
+  static from(n: GasSource): Gas {
     return new Gas(n);
   }
 
-  protected from(n: BigWrapperSource<Gas>): Gas {
+  protected from(n: GasSource): Gas {
     return Gas.from(n);
   }
 
@@ -25,7 +23,7 @@ export class Gas extends BigWrapper<Gas> {
    * const rawGas = Gas.parse('5'); // Gas('5000000000000')
    * @param gas tera gas
    */
-  static parse(gas: BigWrapperSource<Gas>): Gas {
+  static parse(gas: GasSource): Gas {
     return Gas.from(gas).shift(12).round(0);
   }
 
@@ -35,7 +33,7 @@ export class Gas extends BigWrapper<Gas> {
    * const rawGas = Gas.tera('5'); // '5000000000000'
    * @param gas tera gas
    */
-  static tera(gas: BigWrapperSource<Gas>): string {
+  static tera(gas: GasSource): string {
     return Gas.parse(gas).toFixed();
   }
 }

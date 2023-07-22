@@ -1,8 +1,8 @@
 import { Buffer } from 'buffer';
 import { jsonParser, jsonStringifier } from './json';
-import { borshParser, borshStringifier, WrapperClass } from './borsh';
+import { borshParser, borshStringifier } from './borsh';
 import { unreachable } from '../utils';
-import { Class } from '../types';
+import { Class, WrapperClass } from '../types';
 
 export type Stringify<T> = Stringifier<T> | 'json' | 'borsh';
 export type Stringifier<T> = (data: T) => Buffer;

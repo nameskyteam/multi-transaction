@@ -8,22 +8,22 @@ export interface FunctionCallOptions<Args> {
   methodName: string;
 
   /**
-   * Serializable types or `Uint8Array`. Default `{}`
+   * Method args
    */
   args?: Args | Uint8Array;
 
   /**
-   * Attached yocto NEAR amount. Default 0 yocto NEAR
+   * Attached yocto NEAR amount
    */
   attachedDeposit?: string;
 
   /**
-   * Prepaid gas. Default 30 Tera
+   * Prepaid gas
    */
   gas?: string;
 
   /**
-   * Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format
+   * Serialize args into bytes
    */
   stringify?: Stringify<Args>;
 }
@@ -40,17 +40,17 @@ export interface ViewFunctionOptions<Value, Args> {
   methodName: string;
 
   /**
-   * Serializable types or `Uint8Array`. Default `{}`
+   * Method args
    */
   args?: Args | Uint8Array;
 
   /**
-   * Serialize args into bytes if args type is not `Uint8Array`. Default in JSON format
+   * Serialize args into bytes
    */
   stringify?: Stringify<Args>;
 
   /**
-   * Deserialize returned value from bytes. Default in JSON format
+   * Deserialize returned value from bytes
    */
   parse?: Parse<Value>;
 
@@ -60,5 +60,6 @@ export interface ViewFunctionOptions<Value, Args> {
   blockQuery?: BlockQuery;
 }
 
-export type EmptyObject = Record<string, never>;
+export interface EmptyArgs {}
+
 export type BlockQuery = BlockReference;

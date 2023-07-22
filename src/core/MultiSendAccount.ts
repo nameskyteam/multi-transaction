@@ -1,51 +1,62 @@
 import { Account, Connection } from 'near-api-js';
-import { ViewFunctionOptions, EmptyObject } from '../types';
+import { EmptyArgs, MultiSend, View, ViewFunctionOptions } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
-  buildParseableFinalExecutionOutcome,
+  getParseableFinalExecutionOutcome,
+  getParseableFinalExecutionOutcomes,
   NearApiJsTransactionLike,
   ParseableFinalExecutionOutcome,
   parseNearApiJsTransactions,
-  throwReceiptErrorsIfAny,
+  throwReceiptErrorsFromOutcomes,
 } from '../utils';
 import { Action } from 'near-api-js/lib/transaction';
 import { MultiTransaction } from './MultiTransaction';
 import { getParser, Parse, stringifyOrSkip } from '../serde';
 
-export class MultiSendAccount extends Account {
-  constructor(connection: Connection, accountId = '') {
+export class MultiSendAccount extends Account implements View, MultiSend {
+  protected constructor(connection: Connection, accountId = '') {
     super(connection, accountId);
   }
 
-  /**
-   * @override
-   */
-  async signAndSendTransaction(options: SignAndSendTransactionOptions): Promise<FinalExecutionOutcome> {
-    return super.signAndSendTransaction(options);
+  static new(connection: Connection, accountId?: string): MultiSendAccount {
+    return new MultiSendAccount(connection, accountId);
   }
 
-  /**
-   * @override
-   */
-  async signAndSendTransactions(options: SignAndSendTransactionsOptions): Promise<FinalExecutionOutcome[]> {
+  static from(account: Account): MultiSendAccount {
+    return MultiSendAccount.new(account.connection, account.accountId);
+  }
+
+  async signAndSendTransaction({
+    receiverId,
+    actions,
+    returnError,
+  }: SignAndSendTransactionOptions): Promise<ParseableFinalExecutionOutcome> {
+    const outcome = await super.signAndSendTransaction({ receiverId, actions, returnError });
+    return getParseableFinalExecutionOutcome(outcome);
+  }
+
+  async signAndSendTransactions({
+    transactions,
+    returnError,
+  }: SignAndSendTransactionsOptions): Promise<ParseableFinalExecutionOutcome[]> {
     const outcomes: FinalExecutionOutcome[] = [];
-    if (options.transactions.length === 0) {
+    if (transactions.length === 0) {
       throw Error('Transaction not found.');
     }
-    for (const transaction of options.transactions) {
-      const outcome = await this.signAndSendTransaction(transaction);
+    for (const transaction of transactions) {
+      const outcome = await this.signAndSendTransaction({ ...transaction, returnError });
       outcomes.push(outcome);
     }
-    return outcomes;
+    return getParseableFinalExecutionOutcomes(outcomes);
   }
 
   /**
    * View a contract method
    */
-  async view<Value, Args = EmptyObject>({
+  async view<Value, Args = EmptyArgs>({
     contractId,
     methodName,
-    args = {} as Args,
+    args,
     stringify = 'json',
     parse = 'json',
     blockQuery,
@@ -53,8 +64,8 @@ export class MultiSendAccount extends Account {
     return super.viewFunction({
       contractId,
       methodName,
-      args,
-      stringify: (args: Args) => stringifyOrSkip(args, stringify),
+      args: args as any,
+      stringify: (args: Args | Uint8Array) => stringifyOrSkip(args, stringify),
       parse: getParser(parse),
       blockQuery,
     });
@@ -62,48 +73,41 @@ export class MultiSendAccount extends Account {
 
   /**
    * Send multiple transactions and return success value of last transaction
-   * @param transaction Multiple transactions
+   * @param mTx Multiple transactions
    * @param options Options
    */
-  async send<Value>(transaction: MultiTransaction, options?: SendOptions<Value>): Promise<Value> {
-    const outcomes = await this.sendRaw(transaction, options);
+  async send<Value>(mTx: MultiTransaction, options?: SendOptions<Value>): Promise<Value> {
+    const outcomes = await this.sendRaw(mTx, options);
     const outcome = outcomes[outcomes.length - 1];
-    return outcome.parse(options?.parse);
+    return outcome.parse(options?.parse ?? 'json');
   }
 
   /**
    * Send multiple transactions
-   * @param transaction Multiple transactions
+   * @param mTx Multiple transactions
    * @param options Options
    */
   async sendRaw(
-    transaction: MultiTransaction,
+    mTx: MultiTransaction,
     options?: Omit<SendOptions<unknown>, 'parse'>
   ): Promise<ParseableFinalExecutionOutcome[]> {
     const outcomes = await this.signAndSendTransactions({
-      transactions: parseNearApiJsTransactions(transaction),
+      transactions: parseNearApiJsTransactions(mTx),
     });
 
-    if (options?.throwReceiptErrorsIfAny) {
-      throwReceiptErrorsIfAny(...outcomes);
+    if (options?.throwReceiptErrors) {
+      throwReceiptErrorsFromOutcomes(outcomes);
     }
 
-    return outcomes.map((outcome) => buildParseableFinalExecutionOutcome(outcome));
-  }
-
-  static from(account: Account) {
-    return new MultiSendAccount(account.connection, account.accountId);
+    return getParseableFinalExecutionOutcomes(outcomes);
   }
 }
 
 export interface SendOptions<Value> {
-  /**
-   * If receipts in outcomes have any error, throw them
-   */
-  throwReceiptErrorsIfAny?: boolean;
+  throwReceiptErrors?: boolean;
 
   /**
-   * Deserialize returned value from bytes. Default in JSON format
+   * Deserialize returned value from bytes
    */
   parse?: Parse<Value>;
 }
@@ -116,4 +120,5 @@ export interface SignAndSendTransactionOptions {
 
 export interface SignAndSendTransactionsOptions {
   transactions: NearApiJsTransactionLike[];
+  returnError?: boolean;
 }

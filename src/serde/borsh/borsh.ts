@@ -1,7 +1,6 @@
-import { Class } from '../../types';
+import { Class, WrapperClass } from '../../types';
 import { Buffer } from 'buffer';
 import * as BORSH from '@dao-xyz/borsh';
-import { WrapperClass } from './wrapper';
 import { BorshArray, BorshArrayU8, BorshOption, BorshType, BorshVec, BorshVecU8 } from './mapping';
 
 /**
@@ -61,18 +60,12 @@ export function borshParser<T>(buffer: Uint8Array, type: WrapperClass<T>): T;
 export function borshParser<T>(buffer: Uint8Array, type: Class<T> | WrapperClass<T>): T;
 export function borshParser<T>(buffer: Uint8Array, type: Class<T> | WrapperClass<T>): T {
   const res = BORSH.deserialize(buffer, type);
-  const fields: BORSH.Field[] = type.prototype[PROTOTYPE_SCHEMA_OFFSET].fields;
-  if (fields.length === 1 && fields[0].key === '__inner__' && 'unwrap' in res) {
+  if ('unwrap' in res && typeof res.unwrap === 'function') {
     return res.unwrap();
   } else {
     return res;
   }
 }
-
-/**
- * Defined in borsh-ts
- */
-const PROTOTYPE_SCHEMA_OFFSET = 1500;
 
 /**
  * Class decorator for borsh. Used for distinguishing between classes that extend from the same class.

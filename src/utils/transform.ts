@@ -5,8 +5,8 @@ import { MultiTransaction } from '../core';
 import * as nearWalletSelector from '@near-wallet-selector/core';
 import BN from 'bn.js';
 
-export function parseNearApiJsTransactions(multiTransaction: MultiTransaction): NearApiJsTransactionLike[] {
-  return multiTransaction.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));
+export function parseNearApiJsTransactions(mTx: MultiTransaction): NearApiJsTransactionLike[] {
+  return mTx.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));
 }
 
 function parseNearApiJsTransaction({ receiverId, actions }: Transaction): NearApiJsTransactionLike {
@@ -69,8 +69,8 @@ function parseNearApiJsAccessKey(accessKey: AccessKey): nearApiJs.transactions.A
   }
 }
 
-export function parseNearWalletSelectorTransactions(multiTransaction: MultiTransaction) {
-  return multiTransaction.toTransactions().map((transaction) => parseNearWalletSelectorTransaction(transaction));
+export function parseNearWalletSelectorTransactions(mTx: MultiTransaction) {
+  return mTx.toTransactions().map((transaction) => parseNearWalletSelectorTransaction(transaction));
 }
 
 function parseNearWalletSelectorTransaction({

@@ -13,19 +13,20 @@ yarn add multi-transaction
 ### Prepare
 ```typescript
 import { MultiSendAccount } from "multi-transaction";
-import { Near, keyStores } from "near-api-js";
-import path from "path";
-import os from "os";
+import { Near, keyStores, KeyPair } from "near-api-js";
 ```
 
 ```typescript
-const near = new Near({
-  networkId: 'mainnet',
-  nodeUrl: 'https://rpc.mainnet.near.org',
-  keyStore: new keyStores.UnencryptedFileSystemKeyStore(path.join(os.homedir(), '.near-credentials'))
-});
+const networkId = 'mainnet';
+const nodeUrl = 'https://rpc.mainnet.near.org';
+const accountId = 'alice.near';
+const keyPair = KeyPair.fromString('ed25519:<ALICE_PRIVATE_KEY>');
 
-const account = new MultiSendAccount(near.connection, 'alice.near');
+const keyStore = new keyStores.InMemoryKeyStore();
+await keyStore.setKey(networkId, accountId, keyPair);
+
+const near = new Near({ networkId, nodeUrl, keyStore });
+const account = MultiSendAccount.new(near.connection, accountId);
 ```
 
 ### Call a view only function
@@ -47,11 +48,11 @@ console.log(`Balance: ${ Amount.formatYoctoNear(amount) } NEAR`);
 
 ### Call a change function
 ```typescript
-import { MultiTransaction, Gas } from "multi-transaction";
+import { MultiTransaction, Gas, Amount } from "multi-transaction";
 ```
 
 ```typescript
-const tx = MultiTransaction
+const mTx = MultiTransaction
   .batch('wrap.near')
   .functionCall({
     methodName: 'ft_transfer',
@@ -63,13 +64,13 @@ const tx = MultiTransaction
     gas: Gas.tera(10)
   });
 
-await account.send(tx);
+await account.send(mTx);
 ```
 
 ### Batch transaction
 ```typescript
 // a transaction that contains two actions
-const tx = MultiTransaction
+const mTx = MultiTransaction
   .batch('wrap.near')
   .functionCall({
     methodName: 'ft_transfer',
@@ -90,13 +91,13 @@ const tx = MultiTransaction
     gas: Gas.tera(10)
   });
 
-await account.send(tx);
+await account.send(mTx);
 ```
 
 ### Multiple transactions
 ```typescript
 // two transactions, each contains one action
-const txs = MultiTransaction
+const mTx = MultiTransaction
   .batch('wrap.near')
   .functionCall({
     methodName: 'ft_transfer',
@@ -118,10 +119,10 @@ const txs = MultiTransaction
     gas: Gas.tera(10)
   });
 
-await account.send(txs);
+await account.send(mTx);
 ```
 
-## Usage ( With Wallet Selector )
+## Usage ( Frontend )
 
 ### Prepare
 ```typescript
@@ -185,7 +186,7 @@ const Example = () => {
       return
     };
     
-    const tx = MultiTransaction
+    const mTx = MultiTransaction
       .batch('wrap.near')
       .functionCall({
         methodName: 'ft_transfer',
@@ -197,7 +198,7 @@ const Example = () => {
         gas: Gas.tera(10)
       });
     
-    await selector.send(tx);
+    await selector.send(mTx);
   };
   
   return (
