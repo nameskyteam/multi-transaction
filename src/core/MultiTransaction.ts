@@ -21,12 +21,14 @@ import {
   NftRevokeOptions,
   NftRevokeAllOptions,
   EmptyArgs,
+  MultiSend,
 } from '../types';
 import { Actions } from './Actions';
 import { Transaction, AccessKey, Action } from '../types';
 import { Amount, Gas } from '../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { stringifyOrSkip } from '../serde';
+import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 
 /**
  * Helper for creating transaction(s).
@@ -145,6 +147,15 @@ export class MultiTransaction {
    */
   protected getTheTransaction(): Transaction {
     return this.transactions[this.transactions.length - 1];
+  }
+
+  // -------------------------------------------- Send mTx -------------------------------------------------
+  async send<Value>(sender: MultiSend): Promise<Value | undefined> {
+    return sender.send(this);
+  }
+
+  async sendRaw(sender: MultiSend): Promise<FinalExecutionOutcome[] | undefined> {
+    return sender.sendRaw(this);
   }
 
   // -------------------------------------------- Actions --------------------------------------------------
