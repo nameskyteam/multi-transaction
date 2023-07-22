@@ -16,7 +16,7 @@ export class Amount extends BigWrapper<Amount> {
   }
 
   protected override from(n: AmountSource): Amount {
-    return Amount.from(n);
+    return new Amount(n);
   }
 
   /**

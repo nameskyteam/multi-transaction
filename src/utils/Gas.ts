@@ -14,7 +14,7 @@ export class Gas extends BigWrapper<Gas> {
   }
 
   protected override from(n: GasSource): Gas {
-    return Gas.from(n);
+    return new Gas(n);
   }
 
   /**
