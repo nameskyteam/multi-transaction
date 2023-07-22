@@ -26,7 +26,7 @@ export class MultiSendAccount extends Account implements View, MultiSend {
     return MultiSendAccount.new(account.connection, account.accountId);
   }
 
-  async signAndSendTransaction({
+  override async signAndSendTransaction({
     receiverId,
     actions,
     returnError,
