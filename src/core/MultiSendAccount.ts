@@ -18,12 +18,12 @@ export class MultiSendAccount extends Account implements View, MultiSend {
     super(connection, accountId);
   }
 
-  static new(connection: Connection, accountId?: string): MultiSendAccount {
-    return new MultiSendAccount(connection, accountId);
+  static new(connection: Connection, accountId?: string) {
+    return new this(connection, accountId);
   }
 
-  static from(account: Account): MultiSendAccount {
-    return MultiSendAccount.new(account.connection, account.accountId);
+  static from(account: Account) {
+    return new this(account.connection, account.accountId);
   }
 
   override async signAndSendTransaction({
