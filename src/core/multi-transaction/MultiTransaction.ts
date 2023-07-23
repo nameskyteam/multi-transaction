@@ -28,7 +28,7 @@ export class MultiTransaction {
   /**
    * Create an instance that contains no transaction.
    */
-  static new() {
+  static new(): MultiTransaction {
     return new MultiTransaction();
   }
 
@@ -37,7 +37,7 @@ export class MultiTransaction {
    * @param receiverId Transaction receiver id
    * @param signerId Transaction signer id
    */
-  static batch(receiverId: string, signerId?: string) {
+  static batch(receiverId: string, signerId?: string): MultiTransaction {
     return MultiTransaction.new().batch(receiverId, signerId);
   }
 
@@ -80,7 +80,7 @@ export class MultiTransaction {
     return transaction.actions.length;
   }
 
-  static fromTransactions(transactions: Transaction[]) {
+  static fromTransactions(transactions: Transaction[]): MultiTransaction {
     return MultiTransaction.new().addTransactions(transactions);
   }
 
