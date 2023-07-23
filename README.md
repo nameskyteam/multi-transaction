@@ -96,6 +96,8 @@ await account.send(mTx);
 
 ### Multiple transactions
 ```typescript
+const USDT_DECIMALS = 6;
+
 // two transactions, each contains one action
 const mTx = MultiTransaction
   .batch('wrap.near')
@@ -113,11 +115,39 @@ const mTx = MultiTransaction
     methodName: 'ft_transfer',
     args: {
       receiver_id: 'bob.near',
-      amount: Amount.parseYoctoNear('8.88')
+      amount: Amount.parse('8.88', USDT_DECIMALS).toFixed()
     },
     attachedDeposit: Amount.ONE_YOCTO,
     gas: Gas.tera(10)
   });
+
+await account.send(mTx);
+```
+
+### Complex transactions
+```typescript
+const USDT_DECIMALS = 6;
+
+const mTx = MultiTransaction
+  // First transaction: create account for honey
+  .batch('honey.alice.near', 'alice.near')
+  .createAccount()
+  .transfer(Amount.parseYoctoNear('0.1'))
+  .addKey('ed25519:<PUBLIC_KEY>', { permission: 'FullAccess' })
+  // Second transaction: send 1000 USDT to honey
+  .batch('usdt.tether-token.near')
+  .nep145.storage_deposit({
+    args: {
+      account_id: 'honey.alice.near'
+    },
+    attachedDeposit: Amount.parseYoctoNear('0.00125')
+  })
+  .nep141.ft_transfer({
+    args: {
+      receiver_id: 'honey.alice.near',
+      amount: Amount.parse('1000', USDT_DECIMALS).toFixed()
+    }
+  })
 
 await account.send(mTx);
 ```
