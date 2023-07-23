@@ -5,24 +5,24 @@ import { Amount, Gas } from '../../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { stringifyOrSkip } from '../../serde';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
-import { Nep141Processor } from './Nep141Processor';
-import { Nep145Processor } from './Nep145Processor';
-import { Nep171Processor } from './Nep171Processor';
+import { FunctionCallProcessorNep141 } from './FunctionCallProcessorNep141';
+import { FunctionCallProcessorNep145 } from './FunctionCallProcessorNep145';
+import { FunctionCallProcessorNep171 } from './FunctionCallProcessorNep171';
 
 /**
  * Helper for creating transaction(s).
  */
 export class MultiTransaction {
   private transactions: Transaction[];
-  nep141: Nep141Processor;
-  nep145: Nep145Processor;
-  nep171: Nep171Processor;
+  nep141: FunctionCallProcessorNep141;
+  nep145: FunctionCallProcessorNep145;
+  nep171: FunctionCallProcessorNep171;
 
   private constructor() {
     this.transactions = [];
-    this.nep141 = new Nep141Processor(this);
-    this.nep145 = new Nep145Processor(this);
-    this.nep171 = new Nep171Processor(this);
+    this.nep141 = new FunctionCallProcessorNep141(this);
+    this.nep145 = new FunctionCallProcessorNep145(this);
+    this.nep171 = new FunctionCallProcessorNep171(this);
   }
 
   /**

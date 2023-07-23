@@ -5,5 +5,5 @@ export interface StorageBalance {
 
 export interface StorageBalanceBounds {
   min: string;
-  max?: string;
+  max?: string | null;
 }

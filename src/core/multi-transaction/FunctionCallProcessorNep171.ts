@@ -14,7 +14,7 @@ import { Amount, Gas } from '../../utils';
 import { MultiTransaction } from './MultiTransaction';
 import { FunctionCallProcessor } from './FunctionCallProcessor';
 
-export class Nep171Processor extends FunctionCallProcessor {
+export class FunctionCallProcessorNep171 extends FunctionCallProcessor {
   nft_transfer({ args, gas }: NftTransferOptions): MultiTransaction {
     return this.functionCall<NftTransferArgs>({
       methodName: 'nft_transfer',

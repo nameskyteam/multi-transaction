@@ -10,7 +10,7 @@ import { Amount } from '../../utils';
 import { MultiTransaction } from './MultiTransaction';
 import { FunctionCallProcessor } from './FunctionCallProcessor';
 
-export class Nep145Processor extends FunctionCallProcessor {
+export class FunctionCallProcessorNep145 extends FunctionCallProcessor {
   storage_deposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',

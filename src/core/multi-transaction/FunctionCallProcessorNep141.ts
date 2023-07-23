@@ -3,7 +3,7 @@ import { Amount, Gas } from '../../utils';
 import { MultiTransaction } from './MultiTransaction';
 import { FunctionCallProcessor } from './FunctionCallProcessor';
 
-export class Nep141Processor extends FunctionCallProcessor {
+export class FunctionCallProcessorNep141 extends FunctionCallProcessor {
   ft_transfer({ args, gas }: FtTransferOptions): MultiTransaction {
     return this.functionCall<FtTransferArgs>({
       methodName: 'ft_transfer',
