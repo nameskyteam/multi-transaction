@@ -1,5 +1,5 @@
 import { MultiTransaction } from '../core';
-import { ViewOptions } from './options';
+import { SendOptions, SendRawOptions, ViewOptions } from './options';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 
 export interface View {
@@ -7,6 +7,6 @@ export interface View {
 }
 
 export interface MultiSend {
-  send<Value>(mTx: MultiTransaction): Promise<Value | void>;
-  sendRaw(mTx: MultiTransaction): Promise<FinalExecutionOutcome[] | void>;
+  send<Value>(mTx: MultiTransaction, options?: SendOptions<Value>): Promise<Value | void>;
+  sendRaw(mTx: MultiTransaction, options?: SendRawOptions): Promise<FinalExecutionOutcome[] | void>;
 }

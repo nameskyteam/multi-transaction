@@ -1,4 +1,4 @@
-import { FunctionCallOptions, EmptyArgs, MultiSend } from '../../types';
+import { FunctionCallOptions, EmptyArgs, MultiSend, SendOptions, SendRawOptions } from '../../types';
 import { Actions } from './Actions';
 import { Transaction, AccessKey, Action } from '../../types';
 import { Amount, Gas } from '../../utils';
@@ -135,12 +135,12 @@ export class MultiTransaction {
   }
 
   // -------------------------------------------- Send mTx -------------------------------------------------
-  async send<Value>(sender: MultiSend): Promise<Value | void> {
-    return sender.send(this);
+  async send<Value>(sender: MultiSend, options: SendOptions<Value>): Promise<Value | void> {
+    return sender.send(this, options);
   }
 
-  async sendRaw(sender: MultiSend): Promise<FinalExecutionOutcome[] | void> {
-    return sender.sendRaw(this);
+  async sendRaw(sender: MultiSend, options: SendRawOptions): Promise<FinalExecutionOutcome[] | void> {
+    return sender.sendRaw(this, options);
   }
 
   // -------------------------------------------- Actions --------------------------------------------------

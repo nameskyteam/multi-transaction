@@ -1,6 +1,6 @@
 import { WalletSelector } from '@near-wallet-selector/core';
 import { Account, Near } from 'near-api-js';
-import { EmptyArgs, MultiSend, View, ViewOptions } from '../types';
+import { EmptyArgs, MultiSend, SendOptions, View, ViewOptions } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-selector.types';
@@ -81,27 +81,14 @@ interface WalletSelectorEnhancement extends View, MultiSend {
   ): Promise<ParseableFinalExecutionOutcome[]>;
 }
 
-export interface MultiSendWalletSelectorSendOptions<Value> {
+export interface MultiSendWalletSelectorSendOptions<Value> extends SendOptions<Value> {
   walletId?: string;
   callbackUrl?: string;
-  throwReceiptErrors?: boolean;
-
-  /**
-   * Deserialize returned value from bytes
-   */
-  parse?: Parse<Value>;
 }
 
 export type MultiSendWalletSelectorSendRawOptions = Omit<MultiSendWalletSelectorSendOptions<unknown>, 'parse'>;
 
-export interface MultiSendWalletSelectorSendWithLocalKeyOptions<Value> {
-  throwReceiptErrors?: boolean;
-
-  /**
-   * Deserialize returned value from bytes
-   */
-  parse?: Parse<Value>;
-}
+export interface MultiSendWalletSelectorSendWithLocalKeyOptions<Value> extends SendOptions<Value> {}
 
 export type MultiSendWalletSelectorSendRawWithLocalKeyOptions = Omit<
   MultiSendWalletSelectorSendWithLocalKeyOptions<unknown>,

@@ -60,6 +60,17 @@ export interface ViewOptions<Value, Args> {
   blockQuery?: BlockQuery;
 }
 
+export interface SendOptions<Value> {
+  throwReceiptErrors?: boolean;
+
+  /**
+   * Deserialize returned value from bytes
+   */
+  parse?: Parse<Value>;
+}
+
+export type SendRawOptions = Omit<SendOptions<unknown>, 'parse'>;
+
 export interface EmptyArgs {}
 
 export type BlockQuery = BlockReference;

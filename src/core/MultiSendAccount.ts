@@ -1,5 +1,5 @@
 import { Account, Connection } from 'near-api-js';
-import { EmptyArgs, MultiSend, View, ViewOptions } from '../types';
+import { EmptyArgs, MultiSend, SendOptions, View, ViewOptions } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   getParseableFinalExecutionOutcome,
@@ -103,14 +103,7 @@ export class MultiSendAccount extends Account implements View, MultiSend {
   }
 }
 
-export interface MultiSendAccountSendOptions<Value> {
-  throwReceiptErrors?: boolean;
-
-  /**
-   * Deserialize returned value from bytes
-   */
-  parse?: Parse<Value>;
-}
+export interface MultiSendAccountSendOptions<Value> extends SendOptions<Value> {}
 
 export type MultiSendAccountSendRawOptions = Omit<MultiSendAccountSendOptions<unknown>, 'parse'>;
 
