@@ -10,20 +10,20 @@ import {
   throwReceiptErrorsFromOutcomes,
 } from '../utils';
 import { Action } from 'near-api-js/lib/transaction';
-import { MultiTransaction } from './MultiTransaction';
+import { MultiTransaction } from './multi-transaction';
 import { getParser, Parse, stringifyOrSkip } from '../serde';
 
 export class MultiSendAccount extends Account implements View, MultiSend {
-  protected constructor(connection: Connection, accountId = '') {
+  constructor(connection: Connection, accountId = '') {
     super(connection, accountId);
   }
 
-  static new(connection: Connection, accountId?: string) {
-    return new this(connection, accountId);
+  static new(connection: Connection, accountId?: string): MultiSendAccount {
+    return new MultiSendAccount(connection, accountId);
   }
 
-  static from(account: Account) {
-    return new this(account.connection, account.accountId);
+  static from(account: Account): MultiSendAccount {
+    return new MultiSendAccount(account.connection, account.accountId);
   }
 
   override async signAndSendTransaction({

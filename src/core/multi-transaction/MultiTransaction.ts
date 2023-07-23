@@ -1,50 +1,35 @@
-import {
-  FtTransferArgs,
-  FtTransferCallArgs,
-  NftApproveArgs,
-  NftRevokeAllArgs,
-  NftRevokeArgs,
-  NftTransferArgs,
-  NftTransferCallArgs,
-  FunctionCallOptions,
-  StorageDepositOptions,
-  StorageWithdrawOptions,
-  StorageUnregisterOptions,
-  FtTransferOptions,
-  FtTransferCallOptions,
-  StorageDepositArgs,
-  StorageWithdrawArgs,
-  StorageUnregisterArgs,
-  NftTransferOptions,
-  NftTransferCallOptions,
-  NftApproveOptions,
-  NftRevokeOptions,
-  NftRevokeAllOptions,
-  EmptyArgs,
-  MultiSend,
-} from '../types';
+import { FunctionCallOptions, EmptyArgs, MultiSend } from '../../types';
 import { Actions } from './Actions';
-import { Transaction, AccessKey, Action } from '../types';
-import { Amount, Gas } from '../utils';
+import { Transaction, AccessKey, Action } from '../../types';
+import { Amount, Gas } from '../../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
-import { stringifyOrSkip } from '../serde';
+import { stringifyOrSkip } from '../../serde';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
+import { Nep141Processor } from './Nep141Processor';
+import { Nep145Processor } from './Nep145Processor';
+import { Nep171Processor } from './Nep171Processor';
 
 /**
  * Helper for creating transaction(s).
  */
 export class MultiTransaction {
-  protected transactions: Transaction[];
+  private transactions: Transaction[];
+  nep141: Nep141Processor;
+  nep145: Nep145Processor;
+  nep171: Nep171Processor;
 
-  protected constructor() {
+  private constructor() {
     this.transactions = [];
+    this.nep141 = new Nep141Processor(this);
+    this.nep145 = new Nep145Processor(this);
+    this.nep171 = new Nep171Processor(this);
   }
 
   /**
    * Create an instance that contains no transaction.
    */
   static new() {
-    return new this();
+    return new MultiTransaction();
   }
 
   /**
@@ -53,7 +38,7 @@ export class MultiTransaction {
    * @param signerId Transaction signer id
    */
   static batch(receiverId: string, signerId?: string) {
-    return this.new().batch(receiverId, signerId);
+    return MultiTransaction.new().batch(receiverId, signerId);
   }
 
   /**
@@ -96,7 +81,7 @@ export class MultiTransaction {
   }
 
   static fromTransactions(transactions: Transaction[]) {
-    return this.new().addTransactions(transactions);
+    return MultiTransaction.new().addTransactions(transactions);
   }
 
   toTransactions(): Transaction[] {
@@ -207,98 +192,5 @@ export class MultiTransaction {
 
   transfer(amount: string): this {
     return this.addAction(Actions.transfer({ amount }));
-  }
-
-  // --------------------------------------------- NEP145 --------------------------------------------------
-  storage_deposit({ args, attachedDeposit, gas }: StorageDepositOptions): this {
-    return this.functionCall<StorageDepositArgs>({
-      methodName: 'storage_deposit',
-      args,
-      attachedDeposit,
-      gas,
-    });
-  }
-
-  storage_withdraw({ args, gas }: StorageWithdrawOptions): this {
-    return this.functionCall<StorageWithdrawArgs>({
-      methodName: 'storage_withdraw',
-      args,
-      attachedDeposit: Amount.ONE_YOCTO,
-      gas,
-    });
-  }
-
-  storage_unregister({ args, gas }: StorageUnregisterOptions): this {
-    return this.functionCall<StorageUnregisterArgs>({
-      methodName: 'storage_unregister',
-      args,
-      attachedDeposit: Amount.ONE_YOCTO,
-      gas,
-    });
-  }
-
-  // --------------------------------------------- NEP141 --------------------------------------------------
-  ft_transfer({ args, gas }: FtTransferOptions): this {
-    return this.functionCall<FtTransferArgs>({
-      methodName: 'ft_transfer',
-      args,
-      attachedDeposit: Amount.ONE_YOCTO,
-      gas,
-    });
-  }
-
-  ft_transfer_call({ args, gas }: FtTransferCallOptions): this {
-    return this.functionCall<FtTransferCallArgs>({
-      methodName: 'ft_transfer_call',
-      args,
-      attachedDeposit: Amount.ONE_YOCTO,
-      gas: gas ?? Gas.tera(50),
-    });
-  }
-
-  // --------------------------------------------- NEP171 --------------------------------------------------
-  nft_transfer({ args, gas }: NftTransferOptions): this {
-    return this.functionCall<NftTransferArgs>({
-      methodName: 'nft_transfer',
-      args,
-      attachedDeposit: Amount.ONE_YOCTO,
-      gas,
-    });
-  }
-
-  nft_transfer_call({ args, gas }: NftTransferCallOptions): this {
-    return this.functionCall<NftTransferCallArgs>({
-      methodName: 'nft_transfer_call',
-      args,
-      attachedDeposit: Amount.ONE_YOCTO,
-      gas: gas ?? Gas.tera(50),
-    });
-  }
-
-  nft_approve({ args, attachedDeposit, gas }: NftApproveOptions): this {
-    return this.functionCall<NftApproveArgs>({
-      methodName: 'nft_approve',
-      args,
-      attachedDeposit: attachedDeposit ?? Amount.parseYoctoNear('0.005'),
-      gas,
-    });
-  }
-
-  nft_revoke({ args, gas }: NftRevokeOptions): this {
-    return this.functionCall<NftRevokeArgs>({
-      methodName: 'nft_revoke',
-      args,
-      attachedDeposit: Amount.ONE_YOCTO,
-      gas,
-    });
-  }
-
-  nft_revoke_all({ args, gas }: NftRevokeAllOptions): this {
-    return this.functionCall<NftRevokeAllArgs>({
-      methodName: 'nft_revoke_all',
-      args,
-      attachedDeposit: Amount.ONE_YOCTO,
-      gas,
-    });
   }
 }

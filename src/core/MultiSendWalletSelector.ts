@@ -5,7 +5,7 @@ import { PublicKey } from 'near-api-js/lib/utils';
 import { EmptyArgs, MultiSendWalletSelector } from '../types';
 import { MultiSendWalletSelectorConfig } from '../types';
 import { ViewFunctionOptions } from '../types';
-import { MultiTransaction } from './MultiTransaction';
+import { MultiTransaction } from './multi-transaction';
 import {
   Amount,
   getParseableFinalExecutionOutcomes,
