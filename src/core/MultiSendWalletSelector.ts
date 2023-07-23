@@ -5,8 +5,11 @@ import { PublicKey } from 'near-api-js/lib/utils';
 import {
   EmptyArgs,
   MultiSendWalletSelector,
+  MultiSendWalletSelectorCallOptions,
+  MultiSendWalletSelectorCallRawOptions,
   MultiSendWalletSelectorSendRawOptions,
-  MultiSendWalletSelectorSendRawWithLocalKeyOptions,
+  SendOptions,
+  SendRawOptions,
 } from '../types';
 import { MultiSendWalletSelectorConfig } from '../types';
 import { ViewOptions } from '../types';
@@ -19,7 +22,7 @@ import {
   parseNearWalletSelectorTransactions,
   throwReceiptErrorsFromOutcomes,
 } from '../utils';
-import { MultiSendWalletSelectorSendOptions, MultiSendWalletSelectorSendWithLocalKeyOptions } from '../types';
+import { MultiSendWalletSelectorSendOptions } from '../types';
 import { getParser, stringifyOrSkip } from '../serde';
 import { BigNumber } from 'bignumber.js';
 
@@ -120,16 +123,40 @@ export async function setupMultiSendWalletSelector(
         });
       },
 
+      async call<Value, Args = EmptyArgs>(
+        options: MultiSendWalletSelectorCallOptions<Value, Args>
+      ): Promise<Value | void> {
+        const outcome = await this.callRaw(options);
+        return outcome?.parse(options.parse ?? 'json');
+      },
+
+      async callRaw<Args = EmptyArgs>({
+        contractId,
+        methodName,
+        args,
+        attachedDeposit,
+        gas,
+        stringify,
+        ...sendOptions
+      }: MultiSendWalletSelectorCallRawOptions<Args>): Promise<ParseableFinalExecutionOutcome | void> {
+        const mTx = MultiTransaction.batch(contractId).functionCall({
+          methodName,
+          args,
+          attachedDeposit,
+          gas,
+          stringify,
+        });
+        const outcomes = await this.sendRaw(mTx, sendOptions);
+        return outcomes?.[0];
+      },
+
       async send<Value>(
         mTx: MultiTransaction,
         options?: MultiSendWalletSelectorSendOptions<Value>
       ): Promise<Value | void> {
         const outcomes = await this.sendRaw(mTx, options);
-        if (!outcomes) {
-          return;
-        }
-        const outcome = outcomes[outcomes.length - 1];
-        return outcome.parse(options?.parse ?? 'json');
+        const outcome = outcomes?.[outcomes.length - 1];
+        return outcome?.parse(options?.parse ?? 'json');
       },
 
       async sendRaw(
@@ -175,7 +202,7 @@ export async function setupMultiSendWalletSelector(
       async sendWithLocalKey<Value>(
         signerId: string,
         mTx: MultiTransaction,
-        options?: MultiSendWalletSelectorSendWithLocalKeyOptions<Value>
+        options?: SendOptions<Value>
       ): Promise<Value> {
         const outcomes = await this.sendRawWithLocalKey(signerId, mTx, options);
         const outcome = outcomes[outcomes.length - 1];
@@ -185,7 +212,7 @@ export async function setupMultiSendWalletSelector(
       async sendRawWithLocalKey(
         signerId: string,
         mTx: MultiTransaction,
-        options?: MultiSendWalletSelectorSendRawWithLocalKeyOptions
+        options?: SendRawOptions
       ): Promise<ParseableFinalExecutionOutcome[]> {
         const account = await this.near.account(signerId);
         const outcomes: FinalExecutionOutcome[] = [];

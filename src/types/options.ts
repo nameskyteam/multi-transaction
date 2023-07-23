@@ -60,6 +60,22 @@ export interface ViewOptions<Value, Args> {
   blockQuery?: BlockQuery;
 }
 
+export interface CallOptions<Value, Args> extends FunctionCallOptions<Args> {
+  /**
+   * Contract id
+   */
+  contractId: string;
+
+  throwReceiptErrors?: boolean;
+
+  /**
+   * Deserialize returned value from bytes
+   */
+  parse?: Parse<Value>;
+}
+
+export type CallRawOptions<Args> = Omit<CallOptions<unknown, Args>, 'parse'>;
+
 export interface SendOptions<Value> {
   throwReceiptErrors?: boolean;
 

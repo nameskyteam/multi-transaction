@@ -1,16 +1,25 @@
 import { WalletSelector } from '@near-wallet-selector/core';
 import { Account, Near } from 'near-api-js';
-import { EmptyArgs, MultiSend, SendOptions, View, ViewOptions } from '../types';
+import {
+  Call,
+  CallOptions,
+  CallRawOptions,
+  EmptyArgs,
+  MultiSend,
+  SendOptions,
+  SendRawOptions,
+  View,
+  ViewOptions,
+} from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-selector.types';
-import { Parse } from '../serde';
 import { ParseableFinalExecutionOutcome } from '../utils';
 import { Modify } from '@near-wallet-selector/core/src/lib/utils.types';
 
 export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
 
-interface WalletSelectorEnhancement extends View, MultiSend {
+interface WalletSelectorEnhancement extends View, Call, MultiSend {
   near: Near;
   keyStore: BrowserLocalStorageKeyStore;
   viewer: Account;
@@ -40,6 +49,18 @@ interface WalletSelectorEnhancement extends View, MultiSend {
   view<Value, Args = EmptyArgs>(options: ViewOptions<Value, Args>): Promise<Value>;
 
   /**
+   * Call a contract method and return success value
+   */
+  call<Value, Args = EmptyArgs>(options: MultiSendWalletSelectorCallOptions<Value, Args>): Promise<Value | void>;
+
+  /**
+   * Call a contract method
+   */
+  callRaw<Args = EmptyArgs>(
+    options: MultiSendWalletSelectorCallRawOptions<Args>
+  ): Promise<ParseableFinalExecutionOutcome | void>;
+
+  /**
    * Send multiple transactions and return success value of last transaction
    * @param mTx Multiple transactions
    * @param options Options
@@ -62,11 +83,7 @@ interface WalletSelectorEnhancement extends View, MultiSend {
    * @param mTx Multiple transactions
    * @param options Options
    */
-  sendWithLocalKey<Value>(
-    signerId: string,
-    mTx: MultiTransaction,
-    options?: MultiSendWalletSelectorSendWithLocalKeyOptions<Value>
-  ): Promise<Value>;
+  sendWithLocalKey<Value>(signerId: string, mTx: MultiTransaction, options?: SendOptions<Value>): Promise<Value>;
 
   /**
    * Sign and send multiple transactions with local key in `this.keystore`
@@ -77,9 +94,19 @@ interface WalletSelectorEnhancement extends View, MultiSend {
   sendRawWithLocalKey(
     signerId: string,
     mTx: MultiTransaction,
-    options?: MultiSendWalletSelectorSendRawWithLocalKeyOptions
+    options?: SendRawOptions
   ): Promise<ParseableFinalExecutionOutcome[]>;
 }
+
+export interface MultiSendWalletSelectorCallOptions<Value, Args> extends CallOptions<Value, Args> {
+  walletId?: string;
+  callbackUrl?: string;
+}
+
+export type MultiSendWalletSelectorCallRawOptions<Args> = Omit<
+  MultiSendWalletSelectorCallOptions<unknown, Args>,
+  'parse'
+>;
 
 export interface MultiSendWalletSelectorSendOptions<Value> extends SendOptions<Value> {
   walletId?: string;
@@ -88,17 +115,13 @@ export interface MultiSendWalletSelectorSendOptions<Value> extends SendOptions<V
 
 export type MultiSendWalletSelectorSendRawOptions = Omit<MultiSendWalletSelectorSendOptions<unknown>, 'parse'>;
 
-export interface MultiSendWalletSelectorSendWithLocalKeyOptions<Value> extends SendOptions<Value> {}
-
-export type MultiSendWalletSelectorSendRawWithLocalKeyOptions = Omit<
-  MultiSendWalletSelectorSendWithLocalKeyOptions<unknown>,
-  'parse'
->;
-
 export type MultiSendWalletSelectorConfig = MultiSendWalletSelectorParams | MultiSendWalletSelectorParamsWithSelector;
 
-type MultiSendWalletSelectorParams = WalletSelectorParams & WalletSelectorParamsExtra;
-type MultiSendWalletSelectorParamsWithSelector = { selector: WalletSelector } & WalletSelectorParamsExtra;
-type WalletSelectorParamsExtra = {
+interface MultiSendWalletSelectorParams extends WalletSelectorParams {
   keyStorePrefix?: string;
-};
+}
+
+interface MultiSendWalletSelectorParamsWithSelector {
+  keyStorePrefix?: string;
+  selector: WalletSelector;
+}
