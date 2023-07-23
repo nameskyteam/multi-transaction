@@ -2,7 +2,6 @@ import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/pro
 import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
 import { Buffer } from 'buffer';
 import { getParser, Parse } from '../serde';
-import { Class, WrapperClass } from '../types';
 
 export function getParseableFinalExecutionOutcome(outcome: FinalExecutionOutcome): ParseableFinalExecutionOutcome {
   return {
@@ -14,13 +13,6 @@ export function getParseableFinalExecutionOutcome(outcome: FinalExecutionOutcome
 
     json<T>(): T {
       return parseOutcomeValue(outcome, 'json');
-    },
-
-    borsh<T>(type: Class<T> | WrapperClass<T>): T {
-      return parseOutcomeValue(outcome, {
-        method: 'borsh',
-        type,
-      });
     },
   };
 }
@@ -42,18 +34,6 @@ export interface ParseableFinalExecutionOutcome extends FinalExecutionOutcome {
    * Parse success value in JSON format.
    */
   json<T>(): T;
-
-  /**
-   * Parse success value in borsh format.
-   * @param type Class of generics `T`
-   */
-  borsh<T>(type: Class<T>): T;
-  /**
-   * Parse success value in borsh format.
-   * @param type `Wrapper` class that wraps the generics `T`
-   */
-  borsh<T>(type: WrapperClass<T>): T;
-  borsh<T>(type: Class<T> | WrapperClass<T>): T;
 }
 
 /**
