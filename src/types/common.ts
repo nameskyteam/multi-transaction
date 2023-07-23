@@ -1,6 +1,8 @@
 /**
  * Refers to a class that implements `T`
  */
+import { BigNumber } from 'bignumber.js';
+
 export type Class<T> = new (...args: any[]) => T;
 
 /**
@@ -14,3 +16,5 @@ export type WrapperClass<T> = Class<Wrapper<T>>;
 export interface Wrapper<T> {
   unwrap(): T;
 }
+
+export type BigNumberish = BigNumber | string | number;

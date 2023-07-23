@@ -17,13 +17,12 @@
   "dependencies": {
     "@dao-xyz/borsh": "^5.1.5",
     "@near-wallet-selector/core": "^8.2.0",
-    "big.js": "^6.2.1",
+    "bignumber.js": "^9.1.1",
     "bn.js": "^5.2.1",
     "buffer": "^6.0.3",
     "near-api-js": "^2.1.4"
   },
   "devDependencies": {
-    "@types/big.js": "^6.1.6",
     "@types/bn.js": "^5.1.1",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",

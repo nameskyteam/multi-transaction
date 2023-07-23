@@ -16,6 +16,7 @@ import {
 } from '../utils';
 import { SendOptions, SendWithLocalKeyOptions } from '../types/enhancement';
 import { getParser, stringifyOrSkip } from '../serde';
+import { BigNumber } from 'bignumber.js';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 
@@ -92,7 +93,7 @@ export async function setupMultiSendWalletSelector(
           return true;
         }
 
-        const remainingAllowance = Amount.from(allowance);
+        const remainingAllowance = BigNumber(allowance);
         return remainingAllowance.gte(requiredMinAllowance);
       },
 

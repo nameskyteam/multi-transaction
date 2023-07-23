@@ -1,30 +1,19 @@
-import { BigWrapper, BigWrapperSource } from './BigWrapper';
+import { BigNumber } from 'bignumber.js';
+import { BigNumberish } from '../types';
 
-export type GasSource = BigWrapperSource<Gas>;
-
-export class Gas extends BigWrapper<Gas> {
+export class Gas {
   static DEFAULT = Gas.tera(30);
 
-  private constructor(n: GasSource) {
-    super(n);
-  }
-
-  static from(n: GasSource): Gas {
-    return new Gas(n);
-  }
-
-  protected override from(n: GasSource): Gas {
-    return new Gas(n);
-  }
+  private constructor() {}
 
   /**
    * parse from tera units
    * @example
-   * const rawGas = Gas.parse('5'); // Gas('5000000000000')
+   * const rawGas = Gas.parse('5'); // BigNumber('5000000000000')
    * @param gas tera gas
    */
-  static parse(gas: GasSource): Gas {
-    return Gas.from(gas).shift(12).round(0);
+  static parse(gas: BigNumberish): BigNumber {
+    return BigNumber(gas).shiftedBy(12).decimalPlaces(0);
   }
 
   /**
@@ -33,7 +22,7 @@ export class Gas extends BigWrapper<Gas> {
    * const rawGas = Gas.tera('5'); // '5000000000000'
    * @param gas tera gas
    */
-  static tera(gas: GasSource): string {
+  static tera(gas: BigNumberish): string {
     return Gas.parse(gas).toFixed();
   }
 }

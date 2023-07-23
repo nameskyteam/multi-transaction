@@ -1,4 +1,3 @@
-export * from './BigWrapper';
 export * from './Amount';
 export * from './Gas';
 export * from './outcome';

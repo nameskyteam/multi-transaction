@@ -1,7 +1,9 @@
-import Big from 'big.js';
+import { BigNumber } from 'bignumber.js';
 
-Big.RM = Big.roundDown;
-Big.DP = 100;
+BigNumber.config({
+  DECIMAL_PLACES: 100,
+  ROUNDING_MODE: BigNumber.ROUND_DOWN,
+});
 
 export * from './core';
 export * from './types';
