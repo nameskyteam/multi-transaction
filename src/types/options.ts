@@ -28,7 +28,7 @@ export interface FunctionCallOptions<Args> {
   stringify?: Stringify<Args>;
 }
 
-export interface ViewFunctionOptions<Value, Args> {
+export interface ViewOptions<Value, Args> {
   /**
    * Contract id
    */

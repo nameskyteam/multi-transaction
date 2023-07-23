@@ -135,11 +135,11 @@ export class MultiTransaction {
   }
 
   // -------------------------------------------- Send mTx -------------------------------------------------
-  async send<Value>(sender: MultiSend): Promise<Value | undefined> {
+  async send<Value>(sender: MultiSend): Promise<Value | void> {
     return sender.send(this);
   }
 
-  async sendRaw(sender: MultiSend): Promise<FinalExecutionOutcome[] | undefined> {
+  async sendRaw(sender: MultiSend): Promise<FinalExecutionOutcome[] | void> {
     return sender.sendRaw(this);
   }
 

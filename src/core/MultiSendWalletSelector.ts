@@ -2,9 +2,14 @@ import { setupWalletSelector, WalletSelector } from '@near-wallet-selector/core'
 import { keyStores, Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
-import { EmptyArgs, MultiSendWalletSelector } from '../types';
+import {
+  EmptyArgs,
+  MultiSendWalletSelector,
+  MultiSendWalletSelectorSendRawOptions,
+  MultiSendWalletSelectorSendRawWithLocalKeyOptions,
+} from '../types';
 import { MultiSendWalletSelectorConfig } from '../types';
-import { ViewFunctionOptions } from '../types';
+import { ViewOptions } from '../types';
 import { MultiTransaction } from './multi-transaction';
 import {
   Amount,
@@ -14,7 +19,7 @@ import {
   parseNearWalletSelectorTransactions,
   throwReceiptErrorsFromOutcomes,
 } from '../utils';
-import { SendOptions, SendWithLocalKeyOptions } from '../types/enhancement';
+import { MultiSendWalletSelectorSendOptions, MultiSendWalletSelectorSendWithLocalKeyOptions } from '../types';
 import { getParser, stringifyOrSkip } from '../serde';
 import { BigNumber } from 'bignumber.js';
 
@@ -104,7 +109,7 @@ export async function setupMultiSendWalletSelector(
         stringify = 'json',
         parse = 'json',
         blockQuery,
-      }: ViewFunctionOptions<Value, Args>): Promise<Value> {
+      }: ViewOptions<Value, Args>): Promise<Value> {
         return this.viewer.viewFunction({
           contractId,
           methodName,
@@ -115,19 +120,25 @@ export async function setupMultiSendWalletSelector(
         });
       },
 
-      async send<Value>(mTx: MultiTransaction, options?: SendOptions<Value>): Promise<Value | undefined> {
+      async send<Value>(
+        mTx: MultiTransaction,
+        options?: MultiSendWalletSelectorSendOptions<Value>
+      ): Promise<Value | void> {
         const outcomes = await this.sendRaw(mTx, options);
-        const outcome = outcomes?.[outcomes.length - 1];
-        return outcome?.parse(options?.parse ?? 'json');
+        if (!outcomes) {
+          return;
+        }
+        const outcome = outcomes[outcomes.length - 1];
+        return outcome.parse(options?.parse ?? 'json');
       },
 
       async sendRaw(
         mTx: MultiTransaction,
-        options?: Omit<SendOptions<unknown>, 'parse'>
-      ): Promise<ParseableFinalExecutionOutcome[] | undefined> {
+        options?: MultiSendWalletSelectorSendRawOptions
+      ): Promise<ParseableFinalExecutionOutcome[] | void> {
         const wallet = await this.wallet(options?.walletId);
         const transactions = parseNearWalletSelectorTransactions(mTx);
-        let outcomes: FinalExecutionOutcome[] | undefined;
+        let outcomes: FinalExecutionOutcome[] | void;
 
         if (transactions.length === 0) {
           throw Error(`Transaction not found.`);
@@ -164,17 +175,17 @@ export async function setupMultiSendWalletSelector(
       async sendWithLocalKey<Value>(
         signerId: string,
         mTx: MultiTransaction,
-        options?: SendWithLocalKeyOptions<Value>
+        options?: MultiSendWalletSelectorSendWithLocalKeyOptions<Value>
       ): Promise<Value> {
-        const outcomes = await this.sendWithLocalKeyRaw(signerId, mTx, options);
+        const outcomes = await this.sendRawWithLocalKey(signerId, mTx, options);
         const outcome = outcomes[outcomes.length - 1];
         return outcome.parse(options?.parse ?? 'json');
       },
 
-      async sendWithLocalKeyRaw(
+      async sendRawWithLocalKey(
         signerId: string,
         mTx: MultiTransaction,
-        options?: Omit<SendWithLocalKeyOptions<unknown>, 'parse'>
+        options?: MultiSendWalletSelectorSendRawWithLocalKeyOptions
       ): Promise<ParseableFinalExecutionOutcome[]> {
         const account = await this.near.account(signerId);
         const outcomes: FinalExecutionOutcome[] = [];

@@ -1,12 +1,12 @@
 import { MultiTransaction } from '../core';
-import { ViewFunctionOptions } from './options';
+import { ViewOptions } from './options';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 
 export interface View {
-  view<Value, Args>(options: ViewFunctionOptions<Value, Args>): Promise<Value>;
+  view<Value, Args>(options: ViewOptions<Value, Args>): Promise<Value>;
 }
 
 export interface MultiSend {
-  send<Value>(mTx: MultiTransaction): Promise<Value | undefined>;
-  sendRaw(mTx: MultiTransaction): Promise<FinalExecutionOutcome[] | undefined>;
+  send<Value>(mTx: MultiTransaction): Promise<Value | void>;
+  sendRaw(mTx: MultiTransaction): Promise<FinalExecutionOutcome[] | void>;
 }

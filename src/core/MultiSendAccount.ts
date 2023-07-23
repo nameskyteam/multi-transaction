@@ -1,5 +1,5 @@
 import { Account, Connection } from 'near-api-js';
-import { EmptyArgs, MultiSend, View, ViewFunctionOptions } from '../types';
+import { EmptyArgs, MultiSend, View, ViewOptions } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   getParseableFinalExecutionOutcome,
@@ -60,7 +60,7 @@ export class MultiSendAccount extends Account implements View, MultiSend {
     stringify = 'json',
     parse = 'json',
     blockQuery,
-  }: ViewFunctionOptions<Value, Args>): Promise<Value> {
+  }: ViewOptions<Value, Args>): Promise<Value> {
     return super.viewFunction({
       contractId,
       methodName,
@@ -76,7 +76,7 @@ export class MultiSendAccount extends Account implements View, MultiSend {
    * @param mTx Multiple transactions
    * @param options Options
    */
-  async send<Value>(mTx: MultiTransaction, options?: SendOptions<Value>): Promise<Value> {
+  async send<Value>(mTx: MultiTransaction, options?: MultiSendAccountSendOptions<Value>): Promise<Value> {
     const outcomes = await this.sendRaw(mTx, options);
     const outcome = outcomes[outcomes.length - 1];
     return outcome.parse(options?.parse ?? 'json');
@@ -89,7 +89,7 @@ export class MultiSendAccount extends Account implements View, MultiSend {
    */
   async sendRaw(
     mTx: MultiTransaction,
-    options?: Omit<SendOptions<unknown>, 'parse'>
+    options?: MultiSendAccountSendRawOptions
   ): Promise<ParseableFinalExecutionOutcome[]> {
     const outcomes = await this.signAndSendTransactions({
       transactions: parseNearApiJsTransactions(mTx),
@@ -103,7 +103,7 @@ export class MultiSendAccount extends Account implements View, MultiSend {
   }
 }
 
-export interface SendOptions<Value> {
+export interface MultiSendAccountSendOptions<Value> {
   throwReceiptErrors?: boolean;
 
   /**
@@ -111,6 +111,8 @@ export interface SendOptions<Value> {
    */
   parse?: Parse<Value>;
 }
+
+export type MultiSendAccountSendRawOptions = Omit<MultiSendAccountSendOptions<unknown>, 'parse'>;
 
 export interface SignAndSendTransactionOptions {
   receiverId: string;
