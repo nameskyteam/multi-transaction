@@ -52,19 +52,16 @@ import { MultiTransaction, Gas, Amount } from "multi-transaction";
 ```
 
 ```typescript
-const mTx = MultiTransaction
-  .batch('wrap.near')
-  .functionCall({
-    methodName: 'ft_transfer',
-    args: {
-      receiver_id: 'bob.near',
-      amount: Amount.parseYoctoNear('8.88')
-    },
-    attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.tera('10')
-  });
-
-await account.send(mTx);
+await account.call({
+  contractId: 'wrap.near',
+  methodName: 'ft_transfer',
+  args: {
+    receiver_id: 'bob.near',
+    amount: Amount.parseYoctoNear('8.88')
+  },
+  attachedDeposit: Amount.ONE_YOCTO,
+  gas: Gas.tera('10')
+});
 ```
 
 ### Batch transaction
@@ -216,19 +213,16 @@ const Example = () => {
       return
     };
     
-    const mTx = MultiTransaction
-      .batch('wrap.near')
-      .functionCall({
-        methodName: 'ft_transfer',
-        args: {
-          receiver_id: 'bob.near',
-          amount: Amount.parseYoctoNear('8.88')
-        },
-        attachedDeposit: Amount.ONE_YOCTO,
-        gas: Gas.tera('10')
-      });
-    
-    await selector.send(mTx);
+    await selector.call({
+      contractId: 'wrap.near',
+      methodName: 'ft_transfer',
+      args: {
+        receiver_id: 'bob.near',
+        amount: Amount.parseYoctoNear('8.88')
+      },
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas: Gas.tera('10')
+    });
   };
   
   return (
