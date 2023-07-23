@@ -29,7 +29,7 @@ const near = new Near({ networkId, nodeUrl, keyStore });
 const account = MultiSendAccount.new(near.connection, accountId);
 ```
 
-### Call a view only function
+### View a contract method
 ```typescript
 import { Amount } from "multi-transaction";
 ```
@@ -46,7 +46,7 @@ const amount = await account.view<string>({
 console.log(`Balance: ${ Amount.formatYoctoNear(amount) } NEAR`);
 ```
 
-### Call a change function
+### Call a contract method
 ```typescript
 import { MultiTransaction, Gas, Amount } from "multi-transaction";
 ```
@@ -121,7 +121,7 @@ const mTx = MultiTransaction
 await account.send(mTx);
 ```
 
-### Complex transactions
+### Complex multiple transactions
 ```typescript
 const USDT_DECIMALS = 6;
 
@@ -174,7 +174,7 @@ const useWalletSelector = () => {
 }
 ```
 
-### Call a view only function
+### View a contract method
 ```tsx
 const Example = () => {
   const { selector } = useWalletSelector();
@@ -203,7 +203,7 @@ const Example = () => {
 }
 ```
 
-### Call a change function
+### Call a contract method
 ```tsx
 const Example = () => {
   const { selector } = useWalletSelector();
