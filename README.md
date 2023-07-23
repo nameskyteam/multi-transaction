@@ -133,12 +133,14 @@ const mTx = MultiTransaction
   .addKey('ed25519:<PUBLIC_KEY>', { permission: 'FullAccess' })
   // Second transaction: send 1000 USDT to honey
   .batch('usdt.tether-token.near')
+  // NEP145 helper, same as `.functionCall`
   .nep145.storage_deposit({
     args: {
       account_id: 'honey.alice.near'
     },
     attachedDeposit: Amount.parseYoctoNear('0.00125')
   })
+  // NEP141 helper, same as `.functionCall`
   .nep141.ft_transfer({
     args: {
       receiver_id: 'honey.alice.near',
