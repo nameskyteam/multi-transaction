@@ -138,7 +138,7 @@ export async function setupMultiSendWalletSelector(
       ): Promise<ParseableFinalExecutionOutcome[] | void> {
         const wallet = await this.wallet(options?.walletId);
         const transactions = parseNearWalletSelectorTransactions(mTx);
-        let outcomes: FinalExecutionOutcome[] | void;
+        let outcomes: FinalExecutionOutcome[] | undefined;
 
         if (transactions.length === 0) {
           throw Error(`Transaction not found.`);
