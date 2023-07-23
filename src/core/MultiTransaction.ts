@@ -53,7 +53,7 @@ export class MultiTransaction {
    * @param signerId Transaction signer id
    */
   static batch(receiverId: string, signerId?: string) {
-    return new this().batch(receiverId, signerId);
+    return this.new().batch(receiverId, signerId);
   }
 
   /**
@@ -96,7 +96,7 @@ export class MultiTransaction {
   }
 
   static fromTransactions(transactions: Transaction[]) {
-    return new this().addTransactions(transactions);
+    return this.new().addTransactions(transactions);
   }
 
   toTransactions(): Transaction[] {
