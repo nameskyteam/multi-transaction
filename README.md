@@ -61,7 +61,7 @@ const mTx = MultiTransaction
       amount: Amount.parseYoctoNear('8.88')
     },
     attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.tera(10)
+    gas: Gas.tera('10')
   });
 
 await account.send(mTx);
@@ -79,7 +79,7 @@ const mTx = MultiTransaction
       amount: Amount.parseYoctoNear('8.88')
     },
     attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.tera(10)
+    gas: Gas.tera('10')
   })
   .functionCall({
     methodName: 'ft_transfer',
@@ -88,7 +88,7 @@ const mTx = MultiTransaction
       amount: Amount.parseYoctoNear('8.88')
     },
     attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.tera(10)
+    gas: Gas.tera('10')
   });
 
 await account.send(mTx);
@@ -108,7 +108,7 @@ const mTx = MultiTransaction
       amount: Amount.parseYoctoNear('8.88')
     },
     attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.tera(10)
+    gas: Gas.tera('10')
   })
   .batch('usdt.tether-token.near')
   .functionCall({
@@ -118,7 +118,7 @@ const mTx = MultiTransaction
       amount: Amount.parse('8.88', USDT_DECIMALS).toFixed()
     },
     attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.tera(10)
+    gas: Gas.tera('10')
   });
 
 await account.send(mTx);
@@ -225,7 +225,7 @@ const Example = () => {
           amount: Amount.parseYoctoNear('8.88')
         },
         attachedDeposit: Amount.ONE_YOCTO,
-        gas: Gas.tera(10)
+        gas: Gas.tera('10')
       });
     
     await selector.send(mTx);
