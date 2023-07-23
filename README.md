@@ -20,7 +20,7 @@ import { Near, keyStores, KeyPair } from "near-api-js";
 const networkId = 'mainnet';
 const nodeUrl = 'https://rpc.mainnet.near.org';
 const accountId = 'alice.near';
-const keyPair = KeyPair.fromString('ed25519:<ALICE_PRIVATE_KEY>');
+const keyPair = KeyPair.fromString('ed25519:<PRIVATE_KEY>');
 
 const keyStore = new keyStores.InMemoryKeyStore();
 await keyStore.setKey(networkId, accountId, keyPair);
