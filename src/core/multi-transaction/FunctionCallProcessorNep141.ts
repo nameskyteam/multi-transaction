@@ -18,7 +18,7 @@ export class FunctionCallProcessorNep141 extends FunctionCallProcessor {
       methodName: 'ft_transfer_call',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
-      gas: gas ?? Gas.tera(50),
+      gas: gas ?? Gas.parse(50, 'tera'),
     });
   }
 }

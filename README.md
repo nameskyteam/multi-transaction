@@ -43,7 +43,7 @@ const amount = await account.view<string>({
   }
 });
 
-console.log(`Balance: ${ Amount.formatYoctoNear(amount) } NEAR`);
+console.log(`Balance: ${ Amount.format(amount, 'near') } wNEAR`);
 ```
 
 ### Call a contract method
@@ -57,10 +57,10 @@ await account.call({
   methodName: 'ft_transfer',
   args: {
     receiver_id: 'bob.near',
-    amount: Amount.parseYoctoNear('8.88')
+    amount: Amount.parse('8.88', 'near')
   },
   attachedDeposit: Amount.ONE_YOCTO,
-  gas: Gas.tera('10')
+  gas: Gas.parse('10', 'tera')
 });
 ```
 
@@ -73,19 +73,19 @@ const mTx = MultiTransaction
     methodName: 'ft_transfer',
     args: {
       receiver_id: 'bob.near',
-      amount: Amount.parseYoctoNear('8.88')
+      amount: Amount.parse('8.88', 'near')
     },
     attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.tera('10')
+    gas: Gas.parse('10', 'tera')
   })
   .functionCall({
     methodName: 'ft_transfer',
     args: {
       receiver_id: 'mike.near',
-      amount: Amount.parseYoctoNear('8.88')
+      amount: Amount.parse('8.88', 'near')
     },
     attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.tera('10')
+    gas: Gas.parse('10', 'tera')
   });
 
 await account.send(mTx);
@@ -102,10 +102,10 @@ const mTx = MultiTransaction
     methodName: 'ft_transfer',
     args: {
       receiver_id: 'bob.near',
-      amount: Amount.parseYoctoNear('8.88')
+      amount: Amount.parse('8.88', 'near')
     },
     attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.tera('10')
+    gas: Gas.parse('10', 'tera')
   })
   .batch('usdt.tether-token.near')
   .functionCall({
@@ -115,7 +115,7 @@ const mTx = MultiTransaction
       amount: Amount.parse('8.88', USDT_DECIMALS).toFixed()
     },
     attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.tera('10')
+    gas: Gas.parse('10', 'tera')
   });
 
 await account.send(mTx);
@@ -129,7 +129,7 @@ const mTx = MultiTransaction
   // First transaction: create account for honey
   .batch('honey.alice.near', 'alice.near')
   .createAccount()
-  .transfer(Amount.parseYoctoNear('0.1'))
+  .transfer(Amount.parse('0.1', 'near'))
   .addKey('ed25519:<PUBLIC_KEY>', { permission: 'FullAccess' })
   // Second transaction: send 1000 USDT to honey
   .batch('usdt.tether-token.near')
@@ -138,7 +138,7 @@ const mTx = MultiTransaction
     args: {
       account_id: 'honey.alice.near'
     },
-    attachedDeposit: Amount.parseYoctoNear('0.00125')
+    attachedDeposit: Amount.parse('0.00125', 'near')
   })
   // NEP141 helper, same as `.functionCall`
   .nep141.ft_transfer({
@@ -194,7 +194,7 @@ const Example = () => {
       }
     });
     
-    console.log(`Balance: ${ Amount.formatYoctoNear(amount) } NEAR`);
+    console.log(`Balance: ${ Amount.format(amount, 'near') } wNEAR`);
   };
   
   return (
@@ -220,10 +220,10 @@ const Example = () => {
       methodName: 'ft_transfer',
       args: {
         receiver_id: 'bob.near',
-        amount: Amount.parseYoctoNear('8.88')
+        amount: Amount.parse('8.88', 'near')
       },
       attachedDeposit: Amount.ONE_YOCTO,
-      gas: Gas.tera('10')
+      gas: Gas.parse('10', 'tera')
     });
   };
   

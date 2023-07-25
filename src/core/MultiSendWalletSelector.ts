@@ -65,7 +65,7 @@ export async function setupMultiSendWalletSelector(
 
       async isLoginAccessKeyActive(
         accountId?: string,
-        requiredMinAllowance = Amount.parseYoctoNear('0.01')
+        requiredMinAllowance = Amount.parse('0.01', 'near')
       ): Promise<boolean> {
         accountId = accountId ?? this.getActiveAccountId();
         if (!accountId) {

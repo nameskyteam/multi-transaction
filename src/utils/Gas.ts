@@ -2,27 +2,36 @@ import { BigNumber } from 'bignumber.js';
 import { BigNumberish } from '../types';
 
 export class Gas {
-  static DEFAULT = Gas.tera(30);
+  static DEFAULT = Gas.parse(30, 'tera');
+  static TERA_DECIMALS = 12 as const;
+  static GIGA_DECIMALS = 9 as const;
 
   private constructor() {}
 
   /**
-   * parse from tera units
+   * Parse from specific units.
    * @example
-   * const rawGas = Gas.parse('5'); // BigNumber('5000000000000')
-   * @param gas tera gas
+   * const rawGas = Gas.parse('5', Gas.TERA_DECIMALS); // BigNumber('5000000000000')
+   * @param gas Human readable gas
+   * @param units Units decimals
    */
-  static parse(gas: BigNumberish): BigNumber {
-    return BigNumber(gas).shiftedBy(12).decimalPlaces(0);
-  }
-
+  static parse(gas: BigNumberish, units: number): BigNumber;
   /**
-   * parse from tera units and fix to `string` type
+   * Parse from Tera or Giga units.
    * @example
-   * const rawGas = Gas.tera('5'); // '5000000000000'
-   * @param gas tera gas
+   * const rawGas = Gas.parse('5', 'tera'); // '5000000000000'
+   * @param gas Human readable gas
+   * @param units Tera or Giga units
    */
-  static tera(gas: BigNumberish): string {
-    return Gas.parse(gas).toFixed();
+  static parse(gas: BigNumberish, units: 'tera' | 'giga'): string;
+  static parse(gas: BigNumberish, units: number | 'tera' | 'giga'): BigNumber | string;
+  static parse(gas: BigNumberish, units: number | 'tera' | 'giga'): BigNumber | string {
+    if (units === 'tera') {
+      return BigNumber(gas).shiftedBy(Gas.TERA_DECIMALS).toFixed(0);
+    } else if (units === 'giga') {
+      return BigNumber(gas).shiftedBy(Gas.GIGA_DECIMALS).toFixed(0);
+    } else {
+      return BigNumber(gas).shiftedBy(units).decimalPlaces(0);
+    }
   }
 }
