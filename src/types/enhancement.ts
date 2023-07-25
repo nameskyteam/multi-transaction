@@ -1,16 +1,6 @@
 import { WalletSelector } from '@near-wallet-selector/core';
 import { Account, Near } from 'near-api-js';
-import {
-  Call,
-  CallOptions,
-  CallRawOptions,
-  EmptyArgs,
-  MultiSend,
-  SendOptions,
-  SendRawOptions,
-  View,
-  ViewOptions,
-} from '../types';
+import { Call, CallOptions, EmptyArgs, MultiSend, SendOptions, SendRawOptions, View, ViewOptions } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-selector.types';

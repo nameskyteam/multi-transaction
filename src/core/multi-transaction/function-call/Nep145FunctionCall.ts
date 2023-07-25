@@ -5,12 +5,12 @@ import {
   StorageUnregisterOptions,
   StorageWithdrawArgs,
   StorageWithdrawOptions,
-} from '../../types';
-import { Amount } from '../../utils';
-import { MultiTransaction } from './MultiTransaction';
-import { FunctionCallProcessor } from './FunctionCallProcessor';
+} from '../../../types';
+import { Amount } from '../../../utils';
+import { MultiTransaction } from '../MultiTransaction';
+import { FunctionCall } from './FunctionCall';
 
-export class FunctionCallProcessorNep145 extends FunctionCallProcessor {
+export class Nep145FunctionCall extends FunctionCall {
   storage_deposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',

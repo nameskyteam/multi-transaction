@@ -1,7 +1,7 @@
-import { MultiTransaction } from './MultiTransaction';
-import { FunctionCallOptions } from '../../types';
+import { MultiTransaction } from '../MultiTransaction';
+import { FunctionCallOptions } from '../../../types';
 
-export abstract class FunctionCallProcessor {
+export abstract class FunctionCall {
   private mTx: MultiTransaction;
 
   constructor(mTx: MultiTransaction) {

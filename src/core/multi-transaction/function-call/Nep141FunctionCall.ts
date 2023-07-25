@@ -1,9 +1,9 @@
-import { FtTransferArgs, FtTransferCallArgs, FtTransferCallOptions, FtTransferOptions } from '../../types';
-import { Amount, Gas } from '../../utils';
-import { MultiTransaction } from './MultiTransaction';
-import { FunctionCallProcessor } from './FunctionCallProcessor';
+import { FtTransferArgs, FtTransferCallArgs, FtTransferCallOptions, FtTransferOptions } from '../../../types';
+import { Amount, Gas } from '../../../utils';
+import { MultiTransaction } from '../MultiTransaction';
+import { FunctionCall } from './FunctionCall';
 
-export class FunctionCallProcessorNep141 extends FunctionCallProcessor {
+export class Nep141FunctionCall extends FunctionCall {
   ft_transfer({ args, gas }: FtTransferOptions): MultiTransaction {
     return this.functionCall<FtTransferArgs>({
       methodName: 'ft_transfer',
@@ -18,7 +18,7 @@ export class FunctionCallProcessorNep141 extends FunctionCallProcessor {
       methodName: 'ft_transfer_call',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
-      gas: gas ?? Gas.parse(50, 'tera'),
+      gas: gas ?? Gas.parseStr(50, 'tera'),
     });
   }
 }

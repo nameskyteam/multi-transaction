@@ -9,12 +9,12 @@ import {
   NftTransferCallArgs,
   NftTransferCallOptions,
   NftTransferOptions,
-} from '../../types';
-import { Amount, Gas } from '../../utils';
-import { MultiTransaction } from './MultiTransaction';
-import { FunctionCallProcessor } from './FunctionCallProcessor';
+} from '../../../types';
+import { Amount, Gas } from '../../../utils';
+import { MultiTransaction } from '../MultiTransaction';
+import { FunctionCall } from './FunctionCall';
 
-export class FunctionCallProcessorNep171 extends FunctionCallProcessor {
+export class Nep171FunctionCall extends FunctionCall {
   nft_transfer({ args, gas }: NftTransferOptions): MultiTransaction {
     return this.functionCall<NftTransferArgs>({
       methodName: 'nft_transfer',
@@ -29,7 +29,7 @@ export class FunctionCallProcessorNep171 extends FunctionCallProcessor {
       methodName: 'nft_transfer_call',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
-      gas: gas ?? Gas.parse(50, 'tera'),
+      gas: gas ?? Gas.parseStr(50, 'tera'),
     });
   }
 
@@ -37,7 +37,7 @@ export class FunctionCallProcessorNep171 extends FunctionCallProcessor {
     return this.functionCall<NftApproveArgs>({
       methodName: 'nft_approve',
       args,
-      attachedDeposit: attachedDeposit ?? Amount.parse('0.005', 'near'),
+      attachedDeposit: attachedDeposit ?? Amount.parseStr('0.005', 'near'),
       gas,
     });
   }
