@@ -11,36 +11,13 @@ export class Amount {
   /**
    * Parse from specific units.
    * @example
-   * const rawAmount = Amount.parse('5', 'near'); // BigNumber('5000000000000000000000000')
-   * @param amount Human readable amount
-   * @param units Units decimals
-   */
-  static parse(amount: BigNumberish, units: 'near' | number): BigNumber {
-    units = units === 'near' ? Amount.NEAR_DECIMALS : units;
-    return BigNumber(amount).shiftedBy(units).decimalPlaces(0);
-  }
-
-  /**
-   * Parse from specific units.
-   * @example
    * const rawAmount = Amount.parse('5', 'near'); // '5000000000000000000000000'
    * @param amount Human readable amount
    * @param units Units decimals
    */
-  static parseStr(amount: BigNumberish, units: 'near' | number): string {
-    return Amount.parse(amount, units).toFixed();
-  }
-
-  /**
-   * Format in specific units.
-   * @example
-   * const humanReadableAmount = Amount.format('5000000000000000000000000', 'near'); // BigNumber('5')
-   * @param amount Raw amount
-   * @param units Units decimals
-   */
-  static format(amount: BigNumberish, units: 'near' | number): BigNumber {
+  static parse(amount: BigNumberish, units: 'near' | number): string {
     units = units === 'near' ? Amount.NEAR_DECIMALS : units;
-    return BigNumber(amount).shiftedBy(-units);
+    return BigNumber(amount).shiftedBy(units).toFixed(0);
   }
 
   /**
@@ -51,8 +28,9 @@ export class Amount {
    * @param units Units decimals
    * @param decimalPlaces Decimal places
    */
-  static formatStr(amount: BigNumberish, units: 'near' | number, decimalPlaces?: number): string {
-    amount = Amount.format(amount, units);
+  static format(amount: BigNumberish, units: 'near' | number, decimalPlaces?: number): string {
+    units = units === 'near' ? Amount.NEAR_DECIMALS : units;
+    amount = BigNumber(amount).shiftedBy(-units);
     if (decimalPlaces) {
       return amount.toFixed(decimalPlaces);
     } else {

@@ -29,7 +29,7 @@ export class Nep171FunctionCall extends FunctionCall {
       methodName: 'nft_transfer_call',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
-      gas: gas ?? Gas.parseStr(50, 'tera'),
+      gas: gas ?? Gas.parse(50, 'tera'),
     });
   }
 
@@ -37,7 +37,7 @@ export class Nep171FunctionCall extends FunctionCall {
     return this.functionCall<NftApproveArgs>({
       methodName: 'nft_approve',
       args,
-      attachedDeposit: attachedDeposit ?? Amount.parseStr('0.005', 'near'),
+      attachedDeposit: attachedDeposit ?? Amount.parse('0.005', 'near'),
       gas,
     });
   }

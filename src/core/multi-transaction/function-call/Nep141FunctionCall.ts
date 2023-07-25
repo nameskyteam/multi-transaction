@@ -18,7 +18,7 @@ export class Nep141FunctionCall extends FunctionCall {
       methodName: 'ft_transfer_call',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
-      gas: gas ?? Gas.parseStr(50, 'tera'),
+      gas: gas ?? Gas.parse(50, 'tera'),
     });
   }
 }
