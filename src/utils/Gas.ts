@@ -1,14 +1,23 @@
 import { BigNumber } from 'bignumber.js';
 import { BigNumberish } from '../types';
+import { Units } from './Units';
+
+export type GasUnits = 'tera' | 'giga' | number;
 
 export class Gas {
-  static TERA_DECIMALS = 12 as const;
-  static GIGA_DECIMALS = 9 as const;
-
-  // 30 Tera gas
-  static DEFAULT = '30000000000000' as const;
+  static DEFAULT = '30000000000000' as const; // 30 Tera gas
 
   private constructor() {}
+
+  private static unitsToDecimals(units: GasUnits): number {
+    if (units === 'tera') {
+      return 12;
+    } else if (units === 'giga') {
+      return 9;
+    } else {
+      return units;
+    }
+  }
 
   /**
    * Parse from specific units and return a fixed string.
@@ -17,8 +26,8 @@ export class Gas {
    * @param gas Human readable gas
    * @param units Units decimals
    */
-  static parse(gas: BigNumberish, units: 'tera' | 'giga' | number): string {
-    return Gas.parseBigNumber(gas, units).toFixed();
+  static parse(gas: BigNumberish, units: GasUnits): string {
+    return Units.parse(gas, Gas.unitsToDecimals(units));
   }
 
   /**
@@ -28,13 +37,8 @@ export class Gas {
    * @param gas Human readable gas
    * @param units Units decimals
    */
-  static parseBigNumber(gas: BigNumberish, units: 'tera' | 'giga' | number): BigNumber {
-    if (units === 'tera') {
-      units = Gas.TERA_DECIMALS;
-    } else if (units === 'giga') {
-      units = Gas.GIGA_DECIMALS;
-    }
-    return BigNumber(gas).shiftedBy(units).decimalPlaces(0);
+  static parseBigNumber(gas: BigNumberish, units: GasUnits): BigNumber {
+    return Units.parseBigNumber(gas, Gas.unitsToDecimals(units));
   }
 
   /**
@@ -45,13 +49,8 @@ export class Gas {
    * @param units Units decimals
    * @param decimalPlaces Decimal places
    */
-  static format(gas: BigNumberish, units: 'tera' | 'giga' | number, decimalPlaces?: number): string {
-    gas = Gas.formatBigNumber(gas, units);
-    if (decimalPlaces) {
-      return gas.toFixed(decimalPlaces);
-    } else {
-      return gas.toFixed();
-    }
+  static format(gas: BigNumberish, units: GasUnits, decimalPlaces?: number): string {
+    return Units.format(gas, Gas.unitsToDecimals(units), decimalPlaces);
   }
 
   /**
@@ -61,12 +60,7 @@ export class Gas {
    * @param gas Raw gas
    * @param units Units decimals
    */
-  static formatBigNumber(gas: BigNumberish, units: 'tera' | 'giga' | number): BigNumber {
-    if (units === 'tera') {
-      units = Gas.TERA_DECIMALS;
-    } else if (units === 'giga') {
-      units = Gas.GIGA_DECIMALS;
-    }
-    return BigNumber(gas).shiftedBy(-units);
+  static formatBigNumber(gas: BigNumberish, units: GasUnits): BigNumber {
+    return Units.formatBigNumber(gas, Gas.unitsToDecimals(units));
   }
 }
