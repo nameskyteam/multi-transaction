@@ -32,17 +32,11 @@ export class Amount {
     }
   }
 
-  /**
-   * No deposit yocto NEAR
-   */
-  static noDeposit(): '0' {
+  static default(): string {
     return '0';
   }
 
-  /**
-   * One yocto NEAR
-   */
-  static oneYocto(): '1' {
+  static oneYocto(): string {
     return '1';
   }
 

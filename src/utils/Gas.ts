@@ -21,11 +21,8 @@ export class Gas {
     }
   }
 
-  /**
-   * Default gas 30 Tera
-   */
-  static default(): '30000000000000' {
-    return '30000000000000';
+  static default(): string {
+    return Gas.parse('30', 'tera');
   }
 
   /**
