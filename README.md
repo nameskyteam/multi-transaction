@@ -59,7 +59,7 @@ await account.call({
     receiver_id: 'bob.near',
     amount: Amount.parse('8.88', 'near')
   },
-  attachedDeposit: Amount.ONE_YOCTO,
+  attachedDeposit: Amount.oneYocto(),
   gas: Gas.parse('10', 'tera')
 });
 ```
@@ -75,7 +75,7 @@ const mTx = MultiTransaction
       receiver_id: 'bob.near',
       amount: Amount.parse('8.88', 'near')
     },
-    attachedDeposit: Amount.ONE_YOCTO,
+    attachedDeposit: Amount.oneYocto(),
     gas: Gas.parse('10', 'tera')
   })
   .functionCall({
@@ -84,7 +84,7 @@ const mTx = MultiTransaction
       receiver_id: 'mike.near',
       amount: Amount.parse('8.88', 'near')
     },
-    attachedDeposit: Amount.ONE_YOCTO,
+    attachedDeposit: Amount.oneYocto(),
     gas: Gas.parse('10', 'tera')
   });
 
@@ -102,7 +102,7 @@ const mTx = MultiTransaction
       receiver_id: 'bob.near',
       amount: Amount.parse('8.88', 'near')
     },
-    attachedDeposit: Amount.ONE_YOCTO,
+    attachedDeposit: Amount.oneYocto(),
     gas: Gas.parse('10', 'tera')
   })
   .batch('usdt.tether-token.near')
@@ -112,7 +112,7 @@ const mTx = MultiTransaction
       receiver_id: 'bob.near',
       amount: Amount.parse('8.88', 'usdt')
     },
-    attachedDeposit: Amount.ONE_YOCTO,
+    attachedDeposit: Amount.oneYocto(),
     gas: Gas.parse('10', 'tera')
   });
 
@@ -129,14 +129,14 @@ const mTx = MultiTransaction
   .addKey('ed25519:<PUBLIC_KEY>', { permission: 'FullAccess' })
   // Second transaction: send 1000 USDT to honey
   .batch('usdt.tether-token.near')
-  // NEP145 helper, same as `.functionCall`
+  // NEP145 method, same as `.functionCall`
   .nep145.storage_deposit({
     args: {
       account_id: 'honey.alice.near'
     },
     attachedDeposit: Amount.parse('0.00125', 'near')
   })
-  // NEP141 helper, same as `.functionCall`
+  // NEP141 method, same as `.functionCall`
   .nep141.ft_transfer({
     args: {
       receiver_id: 'honey.alice.near',
@@ -218,7 +218,7 @@ const Example = () => {
         receiver_id: 'bob.near',
         amount: Amount.parse('8.88', 'near')
       },
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas: Gas.parse('10', 'tera')
     });
   };
