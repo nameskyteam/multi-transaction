@@ -24,7 +24,7 @@ export class Nep145FunctionCall extends FunctionCall {
     return this.functionCall<StorageWithdrawArgs>({
       methodName: 'storage_withdraw',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas,
     });
   }
@@ -33,7 +33,7 @@ export class Nep145FunctionCall extends FunctionCall {
     return this.functionCall<StorageUnregisterArgs>({
       methodName: 'storage_unregister',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas,
     });
   }

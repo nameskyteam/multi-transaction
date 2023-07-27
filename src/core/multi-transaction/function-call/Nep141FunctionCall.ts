@@ -8,7 +8,7 @@ export class Nep141FunctionCall extends FunctionCall {
     return this.functionCall<FtTransferArgs>({
       methodName: 'ft_transfer',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas,
     });
   }
@@ -17,7 +17,7 @@ export class Nep141FunctionCall extends FunctionCall {
     return this.functionCall<FtTransferCallArgs>({
       methodName: 'ft_transfer_call',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas: gas ?? Gas.parse(50, 'tera'),
     });
   }

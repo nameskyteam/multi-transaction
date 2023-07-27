@@ -19,7 +19,7 @@ export class Nep171FunctionCall extends FunctionCall {
     return this.functionCall<NftTransferArgs>({
       methodName: 'nft_transfer',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas,
     });
   }
@@ -28,7 +28,7 @@ export class Nep171FunctionCall extends FunctionCall {
     return this.functionCall<NftTransferCallArgs>({
       methodName: 'nft_transfer_call',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas: gas ?? Gas.parse(50, 'tera'),
     });
   }
@@ -46,7 +46,7 @@ export class Nep171FunctionCall extends FunctionCall {
     return this.functionCall<NftRevokeArgs>({
       methodName: 'nft_revoke',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas,
     });
   }
@@ -55,7 +55,7 @@ export class Nep171FunctionCall extends FunctionCall {
     return this.functionCall<NftRevokeAllArgs>({
       methodName: 'nft_revoke_all',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas,
     });
   }
