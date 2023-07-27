@@ -1,16 +1,23 @@
 import { BigNumberish } from '../types';
 import { Units } from './Units';
 
-export type GasUnits = 'tera' | number;
+export type GasUnits = 'tera' | 'giga' | 'mega' | 'kilo' | number;
 
 export class Gas {
   private constructor() {}
 
   private static unitsToDecimals(units: GasUnits): number {
-    if (units === 'tera') {
-      return 12;
-    } else {
-      return units;
+    switch (units) {
+      case 'tera':
+        return 12;
+      case 'giga':
+        return 9;
+      case 'mega':
+        return 6;
+      case 'kilo':
+        return 3;
+      default:
+        return units;
     }
   }
 
@@ -23,6 +30,7 @@ export class Gas {
 
   /**
    * Parse from specific units and return a fixed string.
+   * If you prefer a `BigNumber` as return, use `Units.parse` instead.
    * @example
    * const rawGas = Gas.parse('30', 'tera'); // '30000000000000'
    * @param gas Human readable gas
@@ -34,6 +42,7 @@ export class Gas {
 
   /**
    * Format in specific units and return a fixed string.
+   * If you prefer a `BigNumber` as return, use `Units.format` instead.
    * @example
    * const humanReadableGas = Gas.format('30000000000000', 'tera'); // '30'
    * @param gas Raw gas

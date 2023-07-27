@@ -93,8 +93,6 @@ await account.send(mTx);
 
 ### Multiple transactions
 ```typescript
-const USDT_DECIMALS = 6;
-
 // two transactions, each contains one action
 const mTx = MultiTransaction
   .batch('wrap.near')
@@ -112,7 +110,7 @@ const mTx = MultiTransaction
     methodName: 'ft_transfer',
     args: {
       receiver_id: 'bob.near',
-      amount: Amount.parse('8.88', USDT_DECIMALS)
+      amount: Amount.parse('8.88', 'usdt')
     },
     attachedDeposit: Amount.ONE_YOCTO,
     gas: Gas.parse('10', 'tera')
@@ -123,8 +121,6 @@ await account.send(mTx);
 
 ### Complex multiple transactions
 ```typescript
-const USDT_DECIMALS = 6;
-
 const mTx = MultiTransaction
   // First transaction: create account for honey
   .batch('honey.alice.near', 'alice.near')
@@ -144,7 +140,7 @@ const mTx = MultiTransaction
   .nep141.ft_transfer({
     args: {
       receiver_id: 'honey.alice.near',
-      amount: Amount.parse('1000', USDT_DECIMALS)
+      amount: Amount.parse('1000', 'usdt')
     }
   })
 

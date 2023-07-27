@@ -2,17 +2,33 @@ import { BigNumberish } from '../types';
 import { Units } from './Units';
 
 export const NEAR_DECIMALS = 24 as const;
+export const USDT_DECIMALS = 6 as const;
+export const USDC_DECIMALS = 6 as const;
+export const DAI_DECIMALS = 18 as const;
+export const BTC_DECIMALS = 8 as const;
+export const ETH_DECIMALS = 18 as const;
 
-export type AmountUnits = 'near' | number;
+export type AmountUnits = 'near' | 'usdt' | 'usdc' | 'dai' | 'btc' | 'eth' | number;
 
 export class Amount {
   private constructor() {}
 
   private static unitsToDecimals(units: AmountUnits): number {
-    if (units === 'near') {
-      return NEAR_DECIMALS;
-    } else {
-      return units;
+    switch (units) {
+      case 'near':
+        return NEAR_DECIMALS;
+      case 'usdt':
+        return USDT_DECIMALS;
+      case 'usdc':
+        return USDC_DECIMALS;
+      case 'dai':
+        return DAI_DECIMALS;
+      case 'btc':
+        return BTC_DECIMALS;
+      case 'eth':
+        return ETH_DECIMALS;
+      default:
+        return units;
     }
   }
 
@@ -32,6 +48,7 @@ export class Amount {
 
   /**
    * Parse from specific units and return a fixed string.
+   * If you prefer a `BigNumber` as return, use `Units.parse` instead.
    * @example
    * const rawAmount = Amount.parse('5', 'near'); // '5000000000000000000000000'
    * @param amount Human readable amount
@@ -43,6 +60,7 @@ export class Amount {
 
   /**
    * Format in specific units and return a fixed string.
+   * If you prefer a `BigNumber` as return, use `Units.format` instead.
    * @example
    * const humanReadableAmount = Amount.format('5000000000000000000000000', 'near'); // '5'
    * @param amount Raw amount
