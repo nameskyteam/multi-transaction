@@ -1,4 +1,4 @@
-import { BigNumberish } from '../types';
+import { BigNumberLike } from '../types';
 import { Units } from './Units';
 
 export type GasUnits = 'tera' | 'giga' | 'mega' | 'kilo' | number;
@@ -33,8 +33,8 @@ export class Gas {
    * @param gas Human readable gas
    * @param units Units decimals
    */
-  static parse(gas: BigNumberish, units: GasUnits): string {
-    return Units.parse(gas, Gas.unitsToDecimals(units)).toFixed();
+  static parse(gas: BigNumberLike, units: GasUnits): string {
+    return Units.parse(gas, Gas.unitsToDecimals(units)).toFixed(0);
   }
 
   /**
@@ -46,7 +46,7 @@ export class Gas {
    * @param units Units decimals
    * @param decimalPlaces Decimal places
    */
-  static format(gas: BigNumberish, units: GasUnits, decimalPlaces?: number): string {
+  static format(gas: BigNumberLike, units: GasUnits, decimalPlaces?: number): string {
     gas = Units.format(gas, Gas.unitsToDecimals(units));
     if (decimalPlaces) {
       return gas.toFixed(decimalPlaces);

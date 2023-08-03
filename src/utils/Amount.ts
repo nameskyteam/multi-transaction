@@ -1,4 +1,4 @@
-import { BigNumberish } from '../types';
+import { BigNumberLike } from '../types';
 import { Units } from './Units';
 
 export const NEAR_DECIMALS = 24 as const;
@@ -48,8 +48,8 @@ export class Amount {
    * @param amount Human readable amount
    * @param units Units decimals
    */
-  static parse(amount: BigNumberish, units: AmountUnits): string {
-    return Units.parse(amount, Amount.unitsToDecimals(units)).toFixed();
+  static parse(amount: BigNumberLike, units: AmountUnits): string {
+    return Units.parse(amount, Amount.unitsToDecimals(units)).toFixed(0);
   }
 
   /**
@@ -61,7 +61,7 @@ export class Amount {
    * @param units Units decimals
    * @param decimalPlaces Decimal places
    */
-  static format(amount: BigNumberish, units: AmountUnits, decimalPlaces?: number): string {
+  static format(amount: BigNumberLike, units: AmountUnits, decimalPlaces?: number): string {
     amount = Units.format(amount, Amount.unitsToDecimals(units));
     if (decimalPlaces) {
       return amount.toFixed(decimalPlaces);
