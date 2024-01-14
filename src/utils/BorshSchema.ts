@@ -1,5 +1,16 @@
 import * as borsh from 'borsh';
-import { mapRecord } from './common';
+
+interface ExternalStructFields {
+  [field: string]: borsh.Schema;
+}
+
+export interface StructFields {
+  [field: string]: BorshSchema;
+}
+
+export interface EnumVariants {
+  [variant: string]: BorshSchema;
+}
 
 export class BorshSchema {
   private readonly schema: borsh.Schema;
@@ -17,35 +28,38 @@ export class BorshSchema {
   }
 
   // --------------------------------------- struct ---------------------------------------
-  static Struct(fields: Record<string, BorshSchema>): BorshSchema {
+  static Struct(fields: StructFields): BorshSchema {
     return BorshSchema.from({
-      struct: mapRecord(fields, (_, schema) => schema.into()),
+      struct: Object.entries(fields).reduce<ExternalStructFields>((fields, [field, value]) => {
+        fields[field] = value.into();
+        return fields;
+      }, {}),
     });
   }
 
-  static Array(value: BorshSchema, len: number): BorshSchema {
-    return BorshSchema.from({ array: { type: value.into(), len } });
+  static Array(element: BorshSchema, len: number): BorshSchema {
+    return BorshSchema.from({ array: { type: element.into(), len } });
   }
 
-  static Vec(value: BorshSchema): BorshSchema {
-    return BorshSchema.from({ array: { type: value.into() } });
+  static Vec(element: BorshSchema): BorshSchema {
+    return BorshSchema.from({ array: { type: element.into() } });
   }
 
   static HashMap(key: BorshSchema, value: BorshSchema): BorshSchema {
     return BorshSchema.from({ map: { key: key.into(), value: value.into() } });
   }
 
-  static HashSet(value: BorshSchema): BorshSchema {
-    return BorshSchema.from({ set: value.into() });
+  static HashSet(element: BorshSchema): BorshSchema {
+    return BorshSchema.from({ set: element.into() });
   }
 
   // -------------------------------------- enum ------------------------------------------
-  static Enum(values: Record<string, BorshSchema>[]): BorshSchema {
-    const schemas = values.map((value) => {
-      return { struct: mapRecord(value, (_, schema) => schema.into()) };
+  static Enum(variants: EnumVariants): BorshSchema {
+    return BorshSchema.from({
+      enum: Object.entries(variants).map(([variant, associatedValue]) => {
+        return { struct: { [variant]: associatedValue.into() } };
+      }),
     });
-
-    return BorshSchema.from({ enum: schemas });
   }
 
   static Option(value: BorshSchema): BorshSchema {
