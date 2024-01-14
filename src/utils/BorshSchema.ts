@@ -1,15 +1,15 @@
 import * as borsh from 'borsh';
 
 interface ExternalStructFields {
-  [field: string]: borsh.Schema;
+  [k: string]: borsh.Schema;
 }
 
 export interface StructFields {
-  [field: string]: BorshSchema;
+  [k: string]: BorshSchema;
 }
 
 export interface EnumVariants {
-  [variant: string]: BorshSchema;
+  [k: string]: BorshSchema;
 }
 
 export class BorshSchema {
@@ -30,8 +30,8 @@ export class BorshSchema {
   // --------------------------------------- struct ---------------------------------------
   static Struct(fields: StructFields): BorshSchema {
     return BorshSchema.from({
-      struct: Object.entries(fields).reduce<ExternalStructFields>((fields, [field, value]) => {
-        fields[field] = value.into();
+      struct: Object.entries(fields).reduce<ExternalStructFields>((fields, [key, value]) => {
+        fields[key] = value.into();
         return fields;
       }, {}),
     });
@@ -45,19 +45,19 @@ export class BorshSchema {
     return BorshSchema.from({ array: { type: element.into() } });
   }
 
-  static HashMap(key: BorshSchema, value: BorshSchema): BorshSchema {
-    return BorshSchema.from({ map: { key: key.into(), value: value.into() } });
-  }
-
   static HashSet(element: BorshSchema): BorshSchema {
     return BorshSchema.from({ set: element.into() });
+  }
+
+  static HashMap(key: BorshSchema, value: BorshSchema): BorshSchema {
+    return BorshSchema.from({ map: { key: key.into(), value: value.into() } });
   }
 
   // -------------------------------------- enum ------------------------------------------
   static Enum(variants: EnumVariants): BorshSchema {
     return BorshSchema.from({
-      enum: Object.entries(variants).map(([variant, associatedValue]) => {
-        return { struct: { [variant]: associatedValue.into() } };
+      enum: Object.entries(variants).map(([key, value]) => {
+        return { struct: { [key]: value.into() } };
       }),
     });
   }
