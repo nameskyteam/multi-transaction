@@ -21,7 +21,8 @@ import {
 } from '../utils';
 import { Action } from 'near-api-js/lib/transaction';
 import { MultiTransaction } from './multi-transaction';
-import { getParser, stringifyOrSkip } from '../serde';
+import { Stringifier } from '../stringifier';
+import { Parser } from '../parser';
 
 export class MultiSendAccount extends Account implements View, Call, MultiSend {
   constructor(connection: Connection, accountId = '') {
@@ -67,16 +68,16 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
     contractId,
     methodName,
     args,
-    stringify = 'json',
-    parse = 'json',
+    stringifier = Stringifier.json(),
+    parser = Parser.json(),
     blockQuery,
   }: ViewOptions<Value, Args>): Promise<Value> {
     return super.viewFunction({
       contractId,
       methodName,
       args: args as any,
-      stringify: (args: Args | Uint8Array) => stringifyOrSkip(args, stringify),
-      parse: getParser(parse),
+      stringify: stringifier.stringifyOrSkip,
+      parse: parser.parse,
       blockQuery,
     });
   }
@@ -86,7 +87,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
    */
   async call<Value, Args = EmptyArgs>(options: CallOptions<Value, Args>): Promise<Value> {
     const outcome = await this.callRaw(options);
-    return outcome.parse(options.parse ?? 'json');
+    return outcome.parse(options.parser);
   }
 
   /**
@@ -98,7 +99,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
     args,
     attachedDeposit,
     gas,
-    stringify,
+    stringifier,
     ...sendOptions
   }: CallRawOptions<Args>): Promise<ParseableFinalExecutionOutcome> {
     const mTx = MultiTransaction.batch(contractId).functionCall({
@@ -106,7 +107,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
       args,
       attachedDeposit,
       gas,
-      stringify,
+      stringifier,
     });
     const outcomes = await this.sendRaw(mTx, sendOptions);
     return outcomes[0];
@@ -120,7 +121,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
   async send<Value>(mTx: MultiTransaction, options?: SendOptions<Value>): Promise<Value> {
     const outcomes = await this.sendRaw(mTx, options);
     const outcome = outcomes[outcomes.length - 1];
-    return outcome.parse(options?.parse ?? 'json');
+    return outcome.parse(options?.parser);
   }
 
   /**

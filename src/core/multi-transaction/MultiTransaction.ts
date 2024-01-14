@@ -3,24 +3,18 @@ import { Actions } from './Actions';
 import { Transaction, AccessKey, Action } from '../../types';
 import { Amount, Gas } from '../../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
-import { stringifyOrSkip } from '../../serde';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { Nep141FunctionCall, Nep145FunctionCall, Nep171FunctionCall } from './function-call';
+import { Stringifier } from '../../stringifier';
 
 /**
  * Helper for creating transaction(s).
  */
 export class MultiTransaction {
-  private transactions: Transaction[];
-  nep141: Nep141FunctionCall;
-  nep145: Nep145FunctionCall;
-  nep171: Nep171FunctionCall;
+  private readonly transactions: Transaction[];
 
   private constructor() {
     this.transactions = [];
-    this.nep141 = new Nep141FunctionCall(this);
-    this.nep145 = new Nep145FunctionCall(this);
-    this.nep171 = new Nep171FunctionCall(this);
   }
 
   /**
@@ -176,12 +170,12 @@ export class MultiTransaction {
     args,
     attachedDeposit = Amount.default(),
     gas = Gas.default(),
-    stringify = 'json',
+    stringifier = Stringifier.json(),
   }: FunctionCallOptions<Args>): this {
     return this.addAction(
       Actions.functionCall({
         methodName,
-        args: stringifyOrSkip(args ?? ({} as any), stringify),
+        args: stringifier.stringifyOrSkip(args ?? ({} as Args)),
         attachedDeposit,
         gas,
       })
@@ -190,5 +184,17 @@ export class MultiTransaction {
 
   transfer(amount: string): this {
     return this.addAction(Actions.transfer({ amount }));
+  }
+
+  get nep141(): Nep141FunctionCall {
+    return new Nep141FunctionCall(this);
+  }
+
+  get nep145(): Nep145FunctionCall {
+    return new Nep145FunctionCall(this);
+  }
+
+  get nep171(): Nep171FunctionCall {
+    return new Nep171FunctionCall(this);
   }
 }
