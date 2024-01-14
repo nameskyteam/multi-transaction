@@ -1,4 +1,4 @@
-import borsh from 'borsh';
+import * as borsh from 'borsh';
 import { mapRecord } from './common';
 
 export class BorshSchema {
@@ -19,7 +19,7 @@ export class BorshSchema {
   // --------------------------------------- struct ---------------------------------------
   static Struct(fields: Record<string, BorshSchema>): BorshSchema {
     return BorshSchema.from({
-      struct: mapRecord(fields, (schema) => schema.into()),
+      struct: mapRecord(fields, (_, schema) => schema.into()),
     });
   }
 
@@ -27,7 +27,7 @@ export class BorshSchema {
     return BorshSchema.from({ array: { type: value.into(), len } });
   }
 
-  static Vector(value: BorshSchema): BorshSchema {
+  static Vec(value: BorshSchema): BorshSchema {
     return BorshSchema.from({ array: { type: value.into() } });
   }
 
@@ -40,9 +40,9 @@ export class BorshSchema {
   }
 
   // -------------------------------------- enum ------------------------------------------
-  static Enum(values: Record<string, Record<string, BorshSchema>>): BorshSchema {
-    const schemas = Object.values(values).map((value) => {
-      return { struct: mapRecord(value, (schema) => schema.into()) };
+  static Enum(values: Record<string, BorshSchema>[]): BorshSchema {
+    const schemas = values.map((value) => {
+      return { struct: mapRecord(value, (_, schema) => schema.into()) };
     });
 
     return BorshSchema.from({ enum: schemas });
