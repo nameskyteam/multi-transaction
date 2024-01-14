@@ -12,8 +12,8 @@ import {
 } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
-  getParseableFinalExecutionOutcome,
-  getParseableFinalExecutionOutcomes,
+  intoParseableFinalExecutionOutcome,
+  intoParseableFinalExecutionOutcomes,
   NearApiJsTransactionLike,
   ParseableFinalExecutionOutcome,
   parseNearApiJsTransactions,
@@ -43,7 +43,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
     returnError,
   }: SignAndSendTransactionOptions): Promise<ParseableFinalExecutionOutcome> {
     const outcome = await super.signAndSendTransaction({ receiverId, actions, returnError });
-    return getParseableFinalExecutionOutcome(outcome);
+    return intoParseableFinalExecutionOutcome(outcome);
   }
 
   async signAndSendTransactions({
@@ -58,7 +58,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
       const outcome = await this.signAndSendTransaction({ ...transaction, returnError });
       outcomes.push(outcome);
     }
-    return getParseableFinalExecutionOutcomes(outcomes);
+    return intoParseableFinalExecutionOutcomes(outcomes);
   }
 
   /**
@@ -138,7 +138,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
       throwReceiptErrorsFromOutcomes(outcomes);
     }
 
-    return getParseableFinalExecutionOutcomes(outcomes);
+    return intoParseableFinalExecutionOutcomes(outcomes);
   }
 }
 

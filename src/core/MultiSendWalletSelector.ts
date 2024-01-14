@@ -16,7 +16,7 @@ import { ViewOptions } from '../types';
 import { MultiTransaction } from './multi-transaction';
 import {
   Amount,
-  getParseableFinalExecutionOutcomes,
+  intoParseableFinalExecutionOutcomes,
   ParseableFinalExecutionOutcome,
   parseNearApiJsTransactions,
   parseNearWalletSelectorTransactions,
@@ -197,7 +197,7 @@ export async function setupMultiSendWalletSelector(
           throwReceiptErrorsFromOutcomes(outcomes);
         }
 
-        return getParseableFinalExecutionOutcomes(outcomes);
+        return intoParseableFinalExecutionOutcomes(outcomes);
       },
 
       async sendWithLocalKey<Value>(
@@ -232,7 +232,7 @@ export async function setupMultiSendWalletSelector(
           throwReceiptErrorsFromOutcomes(outcomes);
         }
 
-        return getParseableFinalExecutionOutcomes(outcomes);
+        return intoParseableFinalExecutionOutcomes(outcomes);
       },
     };
   }

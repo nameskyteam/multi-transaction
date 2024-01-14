@@ -3,7 +3,7 @@ import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
 import { Buffer } from 'buffer';
 import { Parser } from '../parser';
 
-export function getParseableFinalExecutionOutcome(outcome: FinalExecutionOutcome): ParseableFinalExecutionOutcome {
+export function intoParseableFinalExecutionOutcome(outcome: FinalExecutionOutcome): ParseableFinalExecutionOutcome {
   return {
     ...outcome,
 
@@ -13,10 +13,10 @@ export function getParseableFinalExecutionOutcome(outcome: FinalExecutionOutcome
   };
 }
 
-export function getParseableFinalExecutionOutcomes(
+export function intoParseableFinalExecutionOutcomes(
   outcomes: FinalExecutionOutcome[]
 ): ParseableFinalExecutionOutcome[] {
-  return outcomes.map((outcome) => getParseableFinalExecutionOutcome(outcome));
+  return outcomes.map((outcome) => intoParseableFinalExecutionOutcome(outcome));
 }
 
 export interface ParseableFinalExecutionOutcome extends FinalExecutionOutcome {
