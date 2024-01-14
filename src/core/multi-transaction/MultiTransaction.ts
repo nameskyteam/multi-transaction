@@ -4,7 +4,11 @@ import { Transaction, AccessKey, Action } from '../../types';
 import { Amount, Gas } from '../../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
-import { Nep141FunctionCall, Nep145FunctionCall, Nep171FunctionCall } from './function-call';
+import {
+  FungibleTokenFunctionCallWrapper,
+  StorageManagementFunctionCallWrapper,
+  NonFubgibleTokenFunctionCallWrapper,
+} from './function-call-wrapper';
 import { Stringifier } from '../../stringifier';
 
 /**
@@ -168,7 +172,7 @@ export class MultiTransaction {
   functionCall<Args = EmptyArgs>({
     methodName,
     args,
-    attachedDeposit = Amount.default(),
+    attachedDeposit = Amount.ZERO,
     gas = Gas.default(),
     stringifier = Stringifier.json(),
   }: FunctionCallOptions<Args>): this {
@@ -186,15 +190,15 @@ export class MultiTransaction {
     return this.addAction(Actions.transfer({ amount }));
   }
 
-  get nep141(): Nep141FunctionCall {
-    return new Nep141FunctionCall(this);
+  get fungibleToken(): FungibleTokenFunctionCallWrapper {
+    return new FungibleTokenFunctionCallWrapper(this);
   }
 
-  get nep145(): Nep145FunctionCall {
-    return new Nep145FunctionCall(this);
+  get nonFungibleToken(): NonFubgibleTokenFunctionCallWrapper {
+    return new NonFubgibleTokenFunctionCallWrapper(this);
   }
 
-  get nep171(): Nep171FunctionCall {
-    return new Nep171FunctionCall(this);
+  get storageManagement(): StorageManagementFunctionCallWrapper {
+    return new StorageManagementFunctionCallWrapper(this);
   }
 }

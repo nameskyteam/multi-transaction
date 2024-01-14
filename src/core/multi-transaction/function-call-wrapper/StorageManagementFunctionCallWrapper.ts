@@ -8,9 +8,9 @@ import {
 } from '../../../types';
 import { Amount } from '../../../utils';
 import { MultiTransaction } from '../MultiTransaction';
-import { FunctionCall } from './FunctionCall';
+import { FunctionCallWrapper } from './FunctionCallWrapper';
 
-export class Nep145FunctionCall extends FunctionCall {
+export class StorageManagementFunctionCallWrapper extends FunctionCallWrapper {
   storage_deposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',
@@ -24,7 +24,7 @@ export class Nep145FunctionCall extends FunctionCall {
     return this.functionCall<StorageWithdrawArgs>({
       methodName: 'storage_withdraw',
       args,
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
   }
@@ -33,7 +33,7 @@ export class Nep145FunctionCall extends FunctionCall {
     return this.functionCall<StorageUnregisterArgs>({
       methodName: 'storage_unregister',
       args,
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
   }

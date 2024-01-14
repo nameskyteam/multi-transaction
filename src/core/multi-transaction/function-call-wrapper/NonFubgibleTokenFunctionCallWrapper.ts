@@ -12,14 +12,14 @@ import {
 } from '../../../types';
 import { Amount, Gas } from '../../../utils';
 import { MultiTransaction } from '../MultiTransaction';
-import { FunctionCall } from './FunctionCall';
+import { FunctionCallWrapper } from './FunctionCallWrapper';
 
-export class Nep171FunctionCall extends FunctionCall {
+export class NonFubgibleTokenFunctionCallWrapper extends FunctionCallWrapper {
   nft_transfer({ args, gas }: NftTransferOptions): MultiTransaction {
     return this.functionCall<NftTransferArgs>({
       methodName: 'nft_transfer',
       args,
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
   }
@@ -28,8 +28,8 @@ export class Nep171FunctionCall extends FunctionCall {
     return this.functionCall<NftTransferCallArgs>({
       methodName: 'nft_transfer_call',
       args,
-      attachedDeposit: Amount.oneYocto(),
-      gas: gas ?? Gas.parse(50, 'tera'),
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas: gas ?? Gas.parse(50, 'T'),
     });
   }
 
@@ -37,7 +37,7 @@ export class Nep171FunctionCall extends FunctionCall {
     return this.functionCall<NftApproveArgs>({
       methodName: 'nft_approve',
       args,
-      attachedDeposit: attachedDeposit ?? Amount.parse('0.005', 'near'),
+      attachedDeposit: attachedDeposit ?? Amount.parse('0.005', 'NEAR'),
       gas,
     });
   }
@@ -46,7 +46,7 @@ export class Nep171FunctionCall extends FunctionCall {
     return this.functionCall<NftRevokeArgs>({
       methodName: 'nft_revoke',
       args,
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
   }
@@ -55,7 +55,7 @@ export class Nep171FunctionCall extends FunctionCall {
     return this.functionCall<NftRevokeAllArgs>({
       methodName: 'nft_revoke_all',
       args,
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
   }
