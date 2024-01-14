@@ -8,7 +8,7 @@ export class FungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     return this.functionCall<FtTransferArgs>({
       methodName: 'ft_transfer',
       args,
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
   }
@@ -17,8 +17,8 @@ export class FungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     return this.functionCall<FtTransferCallArgs>({
       methodName: 'ft_transfer_call',
       args,
-      attachedDeposit: Amount.oneYocto(),
-      gas: gas ?? Gas.parse(50, 'tera'),
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas: gas ?? Gas.parse(50, 'T'),
     });
   }
 }

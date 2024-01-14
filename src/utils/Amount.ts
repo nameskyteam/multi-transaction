@@ -1,43 +1,35 @@
 import { BigNumberLike } from '../types';
 import { Units } from './Units';
 
-export const NEAR_DECIMALS = 24 as const;
-export const USDT_DECIMALS = 6 as const;
-export const USDC_DECIMALS = 6 as const;
-export const DAI_DECIMALS = 18 as const;
-export const BTC_DECIMALS = 8 as const;
-export const ETH_DECIMALS = 18 as const;
+const NEAR_DECIMALS = 24;
+const USDT_DECIMALS = 6;
+const USDC_DECIMALS = 6;
+const BTC_DECIMALS = 8;
+const ETH_DECIMALS = 18;
 
-export type AmountUnits = 'near' | 'usdt' | 'usdc' | 'dai' | 'btc' | 'eth' | number;
+export type AmountUnits = 'NEAR' | 'USDT' | 'USDC' | 'BTC' | 'ETH' | number;
 
 export class Amount {
+  static ZERO = '0';
+  static ONE_YOCTO = '1';
+
   private constructor() {}
 
   private static unitsToDecimals(units: AmountUnits): number {
     switch (units) {
-      case 'near':
+      case 'NEAR':
         return NEAR_DECIMALS;
-      case 'usdt':
+      case 'USDT':
         return USDT_DECIMALS;
-      case 'usdc':
+      case 'USDC':
         return USDC_DECIMALS;
-      case 'dai':
-        return DAI_DECIMALS;
-      case 'btc':
+      case 'BTC':
         return BTC_DECIMALS;
-      case 'eth':
+      case 'ETH':
         return ETH_DECIMALS;
       default:
         return units;
     }
-  }
-
-  static default(): string {
-    return '0';
-  }
-
-  static oneYocto(): string {
-    return '1';
   }
 
   /**

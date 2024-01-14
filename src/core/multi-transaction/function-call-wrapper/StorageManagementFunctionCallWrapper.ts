@@ -24,7 +24,7 @@ export class StorageManagementFunctionCallWrapper extends FunctionCallWrapper {
     return this.functionCall<StorageWithdrawArgs>({
       methodName: 'storage_withdraw',
       args,
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
   }
@@ -33,7 +33,7 @@ export class StorageManagementFunctionCallWrapper extends FunctionCallWrapper {
     return this.functionCall<StorageUnregisterArgs>({
       methodName: 'storage_unregister',
       args,
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
   }

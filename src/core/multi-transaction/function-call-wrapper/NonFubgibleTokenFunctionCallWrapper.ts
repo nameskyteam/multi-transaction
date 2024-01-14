@@ -19,7 +19,7 @@ export class NonFubgibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     return this.functionCall<NftTransferArgs>({
       methodName: 'nft_transfer',
       args,
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
   }
@@ -28,8 +28,8 @@ export class NonFubgibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     return this.functionCall<NftTransferCallArgs>({
       methodName: 'nft_transfer_call',
       args,
-      attachedDeposit: Amount.oneYocto(),
-      gas: gas ?? Gas.parse(50, 'tera'),
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas: gas ?? Gas.parse(50, 'T'),
     });
   }
 
@@ -37,7 +37,7 @@ export class NonFubgibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     return this.functionCall<NftApproveArgs>({
       methodName: 'nft_approve',
       args,
-      attachedDeposit: attachedDeposit ?? Amount.parse('0.005', 'near'),
+      attachedDeposit: attachedDeposit ?? Amount.parse('0.005', 'NEAR'),
       gas,
     });
   }
@@ -46,7 +46,7 @@ export class NonFubgibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     return this.functionCall<NftRevokeArgs>({
       methodName: 'nft_revoke',
       args,
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
   }
@@ -55,7 +55,7 @@ export class NonFubgibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     return this.functionCall<NftRevokeAllArgs>({
       methodName: 'nft_revoke_all',
       args,
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
   }

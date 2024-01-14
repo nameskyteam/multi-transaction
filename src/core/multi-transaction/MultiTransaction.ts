@@ -172,7 +172,7 @@ export class MultiTransaction {
   functionCall<Args = EmptyArgs>({
     methodName,
     args,
-    attachedDeposit = Amount.default(),
+    attachedDeposit = Amount.ZERO,
     gas = Gas.default(),
     stringifier = Stringifier.json(),
   }: FunctionCallOptions<Args>): this {
