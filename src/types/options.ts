@@ -1,5 +1,6 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
-import { Parse, Stringify } from '../serde';
+import { Stringifier } from '../stringifier';
+import { Parser } from '../parser';
 
 export interface FunctionCallOptions<Args> {
   /**
@@ -25,7 +26,7 @@ export interface FunctionCallOptions<Args> {
   /**
    * Serialize args into bytes
    */
-  stringify?: Stringify<Args>;
+  stringifier?: Stringifier<Args>;
 }
 
 export interface ViewOptions<Value, Args> {
@@ -47,12 +48,12 @@ export interface ViewOptions<Value, Args> {
   /**
    * Serialize args into bytes
    */
-  stringify?: Stringify<Args>;
+  stringifier?: Stringifier<Args>;
 
   /**
    * Deserialize returned value from bytes
    */
-  parse?: Parse<Value>;
+  parser?: Parser<Value>;
 
   /**
    * View contract method in the past block
@@ -67,7 +68,7 @@ export interface CallOptions<Value, Args> extends FunctionCallOptions<Args>, Sen
   contractId: string;
 }
 
-export type CallRawOptions<Args> = Omit<CallOptions<unknown, Args>, 'parse'>;
+export type CallRawOptions<Args> = Omit<CallOptions<unknown, Args>, 'parser'>;
 
 export interface SendOptions<Value> {
   throwReceiptErrors?: boolean;
@@ -75,10 +76,10 @@ export interface SendOptions<Value> {
   /**
    * Deserialize returned value from bytes
    */
-  parse?: Parse<Value>;
+  parser?: Parser<Value>;
 }
 
-export type SendRawOptions = Omit<SendOptions<unknown>, 'parse'>;
+export type SendRawOptions = Omit<SendOptions<unknown>, 'parser'>;
 
 export interface EmptyArgs {}
 

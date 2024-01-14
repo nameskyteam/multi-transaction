@@ -1,51 +1,42 @@
 import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/providers';
 import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
 import { Buffer } from 'buffer';
-import { getParser, Parse } from '../serde';
+import { Parser } from '../parser';
 
-export function getParseableFinalExecutionOutcome(outcome: FinalExecutionOutcome): ParseableFinalExecutionOutcome {
+export function intoParseableFinalExecutionOutcome(outcome: FinalExecutionOutcome): ParseableFinalExecutionOutcome {
   return {
     ...outcome,
 
-    parse<T>(parse: Parse<T>): T {
-      return parseOutcomeValue(outcome, parse);
-    },
-
-    json<T>(): T {
-      return parseOutcomeValue(outcome, 'json');
+    parse<T>(parser: Parser<T> = Parser.json()): T {
+      return parseOutcomeValue(outcome, parser);
     },
   };
 }
 
-export function getParseableFinalExecutionOutcomes(
+export function intoParseableFinalExecutionOutcomes(
   outcomes: FinalExecutionOutcome[]
 ): ParseableFinalExecutionOutcome[] {
-  return outcomes.map((outcome) => getParseableFinalExecutionOutcome(outcome));
+  return outcomes.map((outcome) => intoParseableFinalExecutionOutcome(outcome));
 }
 
 export interface ParseableFinalExecutionOutcome extends FinalExecutionOutcome {
   /**
    * Parse success value.
-   * @param parse Parse options
+   * @param parser Parser
    */
-  parse<T>(parse: Parse<T>): T;
-
-  /**
-   * Parse success value in JSON format.
-   */
-  json<T>(): T;
+  parse<T>(parser?: Parser<T>): T;
 }
 
 /**
  * Parse success value from outcome.
  * @param outcome Transaction outcome
- * @param parse Parse options
+ * @param parser Parser
  */
-export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parse: Parse<Value>): Value {
+export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parser: Parser<Value>): Value {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
   if (successValue) {
     const valueRaw = Buffer.from(successValue, 'base64');
-    return getParser(parse)(valueRaw);
+    return parser.parse(valueRaw);
   } else if (successValue === '') {
     return undefined as Value;
   } else {

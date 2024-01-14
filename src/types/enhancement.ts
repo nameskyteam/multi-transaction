@@ -95,7 +95,7 @@ export interface MultiSendWalletSelectorCallOptions<Value, Args> extends CallOpt
 
 export type MultiSendWalletSelectorCallRawOptions<Args> = Omit<
   MultiSendWalletSelectorCallOptions<unknown, Args>,
-  'parse'
+  'parser'
 >;
 
 export interface MultiSendWalletSelectorSendOptions<Value> extends SendOptions<Value> {
@@ -103,7 +103,7 @@ export interface MultiSendWalletSelectorSendOptions<Value> extends SendOptions<V
   callbackUrl?: string;
 }
 
-export type MultiSendWalletSelectorSendRawOptions = Omit<MultiSendWalletSelectorSendOptions<unknown>, 'parse'>;
+export type MultiSendWalletSelectorSendRawOptions = Omit<MultiSendWalletSelectorSendOptions<unknown>, 'parser'>;
 
 export type MultiSendWalletSelectorConfig = MultiSendWalletSelectorParams | MultiSendWalletSelectorParamsWithSelector;
 
