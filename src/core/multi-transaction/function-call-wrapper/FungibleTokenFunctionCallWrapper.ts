@@ -1,9 +1,9 @@
 import { FtTransferArgs, FtTransferCallArgs, FtTransferCallOptions, FtTransferOptions } from '../../../types';
 import { Amount, Gas } from '../../../utils';
 import { MultiTransaction } from '../MultiTransaction';
-import { FunctionCall } from './FunctionCall';
+import { FunctionCallWrapper } from './FunctionCallWrapper';
 
-export class Nep141FunctionCall extends FunctionCall {
+export class FungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
   ft_transfer({ args, gas }: FtTransferOptions): MultiTransaction {
     return this.functionCall<FtTransferArgs>({
       methodName: 'ft_transfer',

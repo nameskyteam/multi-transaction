@@ -12,50 +12,49 @@ import {
 } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
-  intoParseableFinalExecutionOutcome,
   intoParseableFinalExecutionOutcomes,
   NearApiJsTransactionLike,
   ParseableFinalExecutionOutcome,
   parseNearApiJsTransactions,
   throwReceiptErrorsFromOutcomes,
 } from '../utils';
-import { Action } from 'near-api-js/lib/transaction';
 import { MultiTransaction } from './multi-transaction';
 import { Stringifier } from '../stringifier';
 import { Parser } from '../parser';
 
-export class MultiSendAccount extends Account implements View, Call, MultiSend {
-  constructor(connection: Connection, accountId = '') {
-    super(connection, accountId);
+interface SignAndSendTransactionsOptions {
+  transactions: NearApiJsTransactionLike[];
+}
+
+export class MultiSendAccount implements View, Call, MultiSend {
+  private readonly account: Account;
+
+  private constructor(account: Account) {
+    this.account = account;
   }
 
-  static new(connection: Connection, accountId?: string): MultiSendAccount {
-    return new MultiSendAccount(connection, accountId);
+  static new(connection: Connection, accountId = ''): MultiSendAccount {
+    const account = new Account(connection, accountId);
+    return MultiSendAccount.from(account);
   }
 
   static from(account: Account): MultiSendAccount {
-    return new MultiSendAccount(account.connection, account.accountId);
+    return new MultiSendAccount(account);
   }
 
-  override async signAndSendTransaction({
-    receiverId,
-    actions,
-    returnError,
-  }: SignAndSendTransactionOptions): Promise<ParseableFinalExecutionOutcome> {
-    const outcome = await super.signAndSendTransaction({ receiverId, actions, returnError });
-    return intoParseableFinalExecutionOutcome(outcome);
+  into(): Account {
+    return this.account;
   }
 
-  async signAndSendTransactions({
+  private async signAndSendTransactions({
     transactions,
-    returnError,
   }: SignAndSendTransactionsOptions): Promise<ParseableFinalExecutionOutcome[]> {
     const outcomes: FinalExecutionOutcome[] = [];
     if (transactions.length === 0) {
       throw Error('Transaction not found.');
     }
     for (const transaction of transactions) {
-      const outcome = await this.signAndSendTransaction({ ...transaction, returnError });
+      const outcome = await this.account.signAndSendTransaction({ ...transaction });
       outcomes.push(outcome);
     }
     return intoParseableFinalExecutionOutcomes(outcomes);
@@ -72,7 +71,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
     parser = Parser.json(),
     blockQuery,
   }: ViewOptions<Value, Args>): Promise<Value> {
-    return super.viewFunction({
+    return this.account.viewFunction({
       contractId,
       methodName,
       args: args as any,
@@ -140,15 +139,4 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
 
     return intoParseableFinalExecutionOutcomes(outcomes);
   }
-}
-
-export interface SignAndSendTransactionOptions {
-  receiverId: string;
-  actions: Action[];
-  returnError?: boolean;
-}
-
-export interface SignAndSendTransactionsOptions {
-  transactions: NearApiJsTransactionLike[];
-  returnError?: boolean;
 }

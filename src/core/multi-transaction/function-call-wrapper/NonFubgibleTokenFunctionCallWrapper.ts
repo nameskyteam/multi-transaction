@@ -12,9 +12,9 @@ import {
 } from '../../../types';
 import { Amount, Gas } from '../../../utils';
 import { MultiTransaction } from '../MultiTransaction';
-import { FunctionCall } from './FunctionCall';
+import { FunctionCallWrapper } from './FunctionCallWrapper';
 
-export class Nep171FunctionCall extends FunctionCall {
+export class NonFubgibleTokenFunctionCallWrapper extends FunctionCallWrapper {
   nft_transfer({ args, gas }: NftTransferOptions): MultiTransaction {
     return this.functionCall<NftTransferArgs>({
       methodName: 'nft_transfer',

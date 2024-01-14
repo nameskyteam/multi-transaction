@@ -8,9 +8,9 @@ import {
 } from '../../../types';
 import { Amount } from '../../../utils';
 import { MultiTransaction } from '../MultiTransaction';
-import { FunctionCall } from './FunctionCall';
+import { FunctionCallWrapper } from './FunctionCallWrapper';
 
-export class Nep145FunctionCall extends FunctionCall {
+export class StorageManagementFunctionCallWrapper extends FunctionCallWrapper {
   storage_deposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',
