@@ -35,7 +35,7 @@ export class BorshSchema {
   /**
    * Schema for empty struct.
    * @example
-   * const empty: Empty = {};
+   * const empty: Record<string, never> = {};
    *
    * const schema = BorshSchema.Empty;
    */
@@ -76,7 +76,7 @@ export class BorshSchema {
    * @example
    * type Shape =
    *   | {
-   *       Any: Empty;
+   *       Any: Record<string, never>;
    *     }
    *   | {
    *       Square: number;
