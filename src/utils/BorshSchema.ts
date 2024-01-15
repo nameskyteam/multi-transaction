@@ -48,7 +48,7 @@ export class BorshSchema {
    *   name: BorshSchema.String,
    *   age: BorshSchema.u8
    * });
-   * @param fields struct fields
+   * @param fields Struct fields
    */
   static Struct(fields: StructFields): BorshSchema {
     return BorshSchema.from({
@@ -76,8 +76,8 @@ export class BorshSchema {
    * const messages: string[] = ['hello', 'world'];
    *
    * const schema = BorshSchema.Array(BorshSchema.String, 2);
-   * @param ele element
-   * @param len length
+   * @param ele Element
+   * @param len Length
    */
   static Array(ele: BorshSchema, len: number): BorshSchema {
     return BorshSchema.from({ array: { type: ele.into(), len } });
@@ -89,7 +89,7 @@ export class BorshSchema {
    * const messages: string[] = ['hello', 'world'];
    *
    * const schema = BorshSchema.Vec(BorshSchema.String);
-   * @param ele element
+   * @param ele Element
    */
   static Vec(ele: BorshSchema): BorshSchema {
     return BorshSchema.from({ array: { type: ele.into() } });
@@ -101,7 +101,7 @@ export class BorshSchema {
    * const messages: Set<string> = new Set(['hello', 'world']);
    *
    * const schema = BorshSchema.HashSet(BorshSchema.String);
-   * @param ele element
+   * @param ele Element
    */
   static HashSet(ele: BorshSchema): BorshSchema {
     return BorshSchema.from({ set: ele.into() });
@@ -116,8 +116,8 @@ export class BorshSchema {
    * ]);
    *
    * const schema = BorshSchema.HashMap(BorshSchema.String, BorshSchema.u128);
-   * @param k key
-   * @param v value
+   * @param k Key
+   * @param v Value
    */
   static HashMap(k: BorshSchema, v: BorshSchema): BorshSchema {
     return BorshSchema.from({ map: { key: k.into(), value: v.into() } });
@@ -189,7 +189,7 @@ export class BorshSchema {
    *     radius: BorshSchema.u32
    *   })
    * });
-   * @param variants enum variants
+   * @param variants Enum variants
    */
   static Enum(variants: EnumVariants): BorshSchema {
     return BorshSchema.from({
@@ -205,7 +205,7 @@ export class BorshSchema {
    * const message: string | null = 'hello world';
    *
    * const schema = BorshSchema.Option(BorshSchema.String);
-   * @param v value
+   * @param v Value
    */
   static Option(v: BorshSchema): BorshSchema {
     return BorshSchema.from({ option: v.into() });
