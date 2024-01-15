@@ -30,7 +30,19 @@ export class BorshSchema {
     return this.schema;
   }
 
-  // --------------------------------------- struct ---------------------------------------
+  // --------------------------------------- custom ---------------------------------------
+
+  /**
+   * Schema for empty struct.
+   * @example
+   * const empty: Empty = {};
+   *
+   * const schema = BorshSchema.Empty;
+   */
+  static get Empty(): BorshSchema {
+    return BorshSchema.struct({});
+  }
+
   /**
    * Schema for custom struct.
    * @example
@@ -44,13 +56,13 @@ export class BorshSchema {
    *   age: 18
    * };
    *
-   * const schema = BorshSchema.Struct({
+   * const schema = BorshSchema.struct({
    *   name: BorshSchema.String,
    *   age: BorshSchema.u8
    * });
    * @param fields Struct fields
    */
-  static Struct(fields: StructFields): BorshSchema {
+  static struct(fields: StructFields): BorshSchema {
     return BorshSchema.from({
       struct: Object.entries(fields).reduce<ExternalStructFields>((externalStructFields, [k, v]) => {
         externalStructFields[k] = v.into();
@@ -60,15 +72,97 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for empty struct.
+   * Schema for custom enum.
    * @example
-   * const empty: Empty = {};
+   * type Shape =
+   *   | {
+   *       Any: Empty;
+   *     }
+   *   | {
+   *       Square: number;
+   *     }
+   *   | {
+   *       Rectangle: {
+   *         length: number;
+   *         width: number;
+   *       };
+   *     }
+   *   | {
+   *       Circle: {
+   *         radius: number;
+   *       };
+   *     };
    *
-   * const schema = BorshSchema.Empty;
+   * const any: Shape = {
+   *   Any: {}
+   * };
+   *
+   * const square: Shape = {
+   *   Square: 5
+   * };
+   *
+   * const rectangle: Shape = {
+   *   Rectangle: {
+   *     length: 5,
+   *     width: 4
+   *   }
+   * };
+   *
+   * const circle: Shape = {
+   *   Circle: {
+   *     radius: 2
+   *   }
+   * };
+   *
+   * const schema = BorshSchema.enum({
+   *   Any: BorshSchema.Empty,
+   *   Square: BorshSchema.u32,
+   *   Rectangle: BorshSchema.struct({
+   *     length: BorshSchema.u32,
+   *     width: BorshSchema.u32
+   *   }),
+   *   Circle: BorshSchema.struct({
+   *     radius: BorshSchema.u32
+   *   })
+   * });
+   * @param variants Enum variants
    */
-  static get Empty(): BorshSchema {
-    return BorshSchema.Struct({});
+  static enum(variants: EnumVariants): BorshSchema {
+    return BorshSchema.from({
+      enum: Object.entries(variants).map(([k, v]) => {
+        return { struct: { [k]: v.into() } };
+      }),
+    });
   }
+
+  // -------------------------------------- string ----------------------------------------
+
+  /**
+   * Schema for non-fixed length string.
+   * @example
+   * const message: string = 'hello world';
+   *
+   * const schema = BorshSchema.String;
+   */
+  static get String(): BorshSchema {
+    return BorshSchema.from('string');
+  }
+
+  // -------------------------------------- option ----------------------------------------
+
+  /**
+   * Schema for optional value.
+   * @example
+   * const message: string | null = 'hello world';
+   *
+   * const schema = BorshSchema.Option(BorshSchema.String);
+   * @param v Value
+   */
+  static Option(v: BorshSchema): BorshSchema {
+    return BorshSchema.from({ option: v.into() });
+  }
+
+  // --------------------------------------- collection -----------------------------------
 
   /**
    * Schema for fixed length array.
@@ -123,97 +217,10 @@ export class BorshSchema {
     return BorshSchema.from({ map: { key: k.into(), value: v.into() } });
   }
 
-  /**
-   * Schema for non-fixed length string.
-   * @example
-   * const message: string = 'hello world';
-   *
-   * const schema = BorshSchema.String;
-   */
-  static get String(): BorshSchema {
-    return BorshSchema.from('string');
-  }
-
-  // -------------------------------------- enum ------------------------------------------
-  /**
-   * Schema for custom enum.
-   * @example
-   * type Shape =
-   *   | {
-   *       Any: Empty;
-   *     }
-   *   | {
-   *       Square: number;
-   *     }
-   *   | {
-   *       Rectangle: {
-   *         length: number;
-   *         width: number;
-   *       };
-   *     }
-   *   | {
-   *       Circle: {
-   *         radius: number;
-   *       };
-   *     };
-   *
-   * const any: Shape = {
-   *   Any: {}
-   * };
-   *
-   * const square: Shape = {
-   *   Square: 5
-   * };
-   *
-   * const rectangle: Shape = {
-   *   Rectangle: {
-   *     length: 5,
-   *     width: 4
-   *   }
-   * };
-   *
-   * const circle: Shape = {
-   *   Circle: {
-   *     radius: 2
-   *   }
-   * };
-   *
-   * const schema = BorshSchema.Enum({
-   *   Any: BorshSchema.Empty,
-   *   Square: BorshSchema.u32,
-   *   Rectangle: BorshSchema.Struct({
-   *     length: BorshSchema.u32,
-   *     width: BorshSchema.u32
-   *   }),
-   *   Circle: BorshSchema.Struct({
-   *     radius: BorshSchema.u32
-   *   })
-   * });
-   * @param variants Enum variants
-   */
-  static Enum(variants: EnumVariants): BorshSchema {
-    return BorshSchema.from({
-      enum: Object.entries(variants).map(([k, v]) => {
-        return { struct: { [k]: v.into() } };
-      }),
-    });
-  }
-
-  /**
-   * Schema for optional value.
-   * @example
-   * const message: string | null = 'hello world';
-   *
-   * const schema = BorshSchema.Option(BorshSchema.String);
-   * @param v Value
-   */
-  static Option(v: BorshSchema): BorshSchema {
-    return BorshSchema.from({ option: v.into() });
-  }
-
   // -------------------------------------- primitive -------------------------------------
+
   /**
-   * Schema for primitive u8.
+   * Schema for u8.
    * @example
    * const n: number = 100;
    *
@@ -224,7 +231,7 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for primitive u16.
+   * Schema for u16.
    * @example
    * const n: number = 100;
    *
@@ -235,7 +242,7 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for primitive u32.
+   * Schema for u32.
    * @example
    * const n: number = 100;
    *
@@ -246,7 +253,7 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for primitive u64.
+   * Schema for u64.
    * @example
    * const n: bigint = 100n;
    *
@@ -257,7 +264,7 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for primitive u128.
+   * Schema for u128.
    * @example
    * const n: bigint = 100n;
    *
@@ -268,7 +275,7 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for primitive i8.
+   * Schema for i8.
    * @example
    * const n: number = 100;
    *
@@ -279,7 +286,7 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for primitive i16.
+   * Schema for i16.
    * @example
    * const n: number = 100;
    *
@@ -290,7 +297,7 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for primitive i32.
+   * Schema for i32.
    * @example
    * const n: number = 100;
    *
@@ -301,7 +308,7 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for primitive i64.
+   * Schema for i64.
    * @example
    * const n: bigint = 100n;
    *
@@ -312,7 +319,7 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for primitive i128.
+   * Schema for i128.
    * @example
    * const n: bigint = 100n;
    *
@@ -323,7 +330,7 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for primitive f32.
+   * Schema for f32.
    * @example
    * const n: number = 1.0;
    *
@@ -334,7 +341,7 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for primitive f64.
+   * Schema for f64.
    * @example
    * const n: number = 1.0;
    *
@@ -345,7 +352,7 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for primitive bool.
+   * Schema for bool.
    * @example
    * const b: boolean = true;
    *
