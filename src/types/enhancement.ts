@@ -1,6 +1,6 @@
 import { WalletSelector } from '@near-wallet-selector/core';
 import { Account, Near } from 'near-api-js';
-import { Call, CallOptions, EmptyArgs, MultiSend, SendOptions, SendRawOptions, View, ViewOptions } from '../types';
+import { Call, CallOptions, MultiSend, SendOptions, SendRawOptions, View, ViewOptions } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-selector.types';
@@ -36,19 +36,17 @@ interface WalletSelectorEnhancement extends View, Call, MultiSend {
   /**
    * View a contract method
    */
-  view<Value, Args = EmptyArgs>(options: ViewOptions<Value, Args>): Promise<Value>;
+  view<Value, Args>(options: ViewOptions<Value, Args>): Promise<Value>;
 
   /**
    * Call a contract method and return success value
    */
-  call<Value, Args = EmptyArgs>(options: MultiSendWalletSelectorCallOptions<Value, Args>): Promise<Value | void>;
+  call<Value, Args>(options: MultiSendWalletSelectorCallOptions<Value, Args>): Promise<Value | void>;
 
   /**
    * Call a contract method
    */
-  callRaw<Args = EmptyArgs>(
-    options: MultiSendWalletSelectorCallRawOptions<Args>
-  ): Promise<ParseableFinalExecutionOutcome | void>;
+  callRaw<Args>(options: MultiSendWalletSelectorCallRawOptions<Args>): Promise<ParseableFinalExecutionOutcome | void>;
 
   /**
    * Send multiple transactions and return success value of last transaction

@@ -27,7 +27,6 @@ export class Gas {
 
   /**
    * Parse from specific units and return a fixed string.
-   * If you prefer a `BigNumber` as return, use `Units.parse` instead.
    * @example
    * const rawGas = Gas.parse('30', 'T'); // '30000000000000'
    * @param gas Human readable gas
@@ -39,7 +38,6 @@ export class Gas {
 
   /**
    * Format in specific units and return a fixed string.
-   * If you prefer a `BigNumber` as return, use `Units.format` instead.
    * @example
    * const humanReadableGas = Gas.format('30000000000000', 'T'); // '30'
    * @param gas Raw gas

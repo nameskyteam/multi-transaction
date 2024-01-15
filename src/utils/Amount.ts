@@ -10,8 +10,8 @@ const ETH_DECIMALS = 18;
 export type AmountUnits = 'NEAR' | 'USDT' | 'USDC' | 'BTC' | 'ETH' | number;
 
 export class Amount {
-  static ZERO = '0';
-  static ONE_YOCTO = '1';
+  static readonly ZERO = '0';
+  static readonly ONE_YOCTO = '1';
 
   private constructor() {}
 
@@ -34,9 +34,8 @@ export class Amount {
 
   /**
    * Parse from specific units and return a fixed string.
-   * If you prefer a `BigNumber` as return, use `Units.parse` instead.
    * @example
-   * const rawAmount = Amount.parse('5', 'near'); // '5000000000000000000000000'
+   * const rawAmount = Amount.parse('5', 'NEAR'); // '5000000000000000000000000'
    * @param amount Human readable amount
    * @param units Units decimals
    */
@@ -46,9 +45,8 @@ export class Amount {
 
   /**
    * Format in specific units and return a fixed string.
-   * If you prefer a `BigNumber` as return, use `Units.format` instead.
    * @example
-   * const humanReadableAmount = Amount.format('5000000000000000000000000', 'near'); // '5'
+   * const humanReadableAmount = Amount.format('5000000000000000000000000', 'NEAR'); // '5'
    * @param amount Raw amount
    * @param units Units decimals
    * @param decimalPlaces Decimal places

@@ -1,26 +1,16 @@
 import { Account, Connection } from 'near-api-js';
-import {
-  Call,
-  CallOptions,
-  CallRawOptions,
-  EmptyArgs,
-  MultiSend,
-  SendOptions,
-  SendRawOptions,
-  View,
-  ViewOptions,
-} from '../types';
+import { Call, CallOptions, CallRawOptions, MultiSend, SendOptions, SendRawOptions, View, ViewOptions } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
-  intoParseableFinalExecutionOutcomes,
+  toParseableFinalExecutionOutcomes,
   NearApiJsTransactionLike,
   ParseableFinalExecutionOutcome,
   parseNearApiJsTransactions,
   throwReceiptErrorsFromOutcomes,
+  Stringifier,
+  Parser,
 } from '../utils';
 import { MultiTransaction } from './multi-transaction';
-import { Stringifier } from '../stringifier';
-import { Parser } from '../parser';
 
 interface SignAndSendTransactionsOptions {
   transactions: NearApiJsTransactionLike[];
@@ -57,13 +47,13 @@ export class MultiSendAccount implements View, Call, MultiSend {
       const outcome = await this.account.signAndSendTransaction({ ...transaction });
       outcomes.push(outcome);
     }
-    return intoParseableFinalExecutionOutcomes(outcomes);
+    return toParseableFinalExecutionOutcomes(outcomes);
   }
 
   /**
    * View a contract method
    */
-  async view<Value, Args = EmptyArgs>({
+  async view<Value, Args>({
     contractId,
     methodName,
     args,
@@ -84,7 +74,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
   /**
    * Call a contract method and return success value
    */
-  async call<Value, Args = EmptyArgs>(options: CallOptions<Value, Args>): Promise<Value> {
+  async call<Value, Args>(options: CallOptions<Value, Args>): Promise<Value> {
     const outcome = await this.callRaw(options);
     return outcome.parse(options.parser);
   }
@@ -92,7 +82,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
   /**
    * Call a contract method
    */
-  async callRaw<Args = EmptyArgs>({
+  async callRaw<Args>({
     contractId,
     methodName,
     args,
@@ -137,6 +127,6 @@ export class MultiSendAccount implements View, Call, MultiSend {
       throwReceiptErrorsFromOutcomes(outcomes);
     }
 
-    return intoParseableFinalExecutionOutcomes(outcomes);
+    return toParseableFinalExecutionOutcomes(outcomes);
   }
 }

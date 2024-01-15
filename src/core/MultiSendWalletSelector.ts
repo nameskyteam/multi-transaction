@@ -3,7 +3,6 @@ import { keyStores, Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
 import {
-  EmptyArgs,
   MultiSendWalletSelector,
   MultiSendWalletSelectorCallOptions,
   MultiSendWalletSelectorCallRawOptions,
@@ -16,16 +15,16 @@ import { ViewOptions } from '../types';
 import { MultiTransaction } from './multi-transaction';
 import {
   Amount,
-  intoParseableFinalExecutionOutcomes,
+  toParseableFinalExecutionOutcomes,
   ParseableFinalExecutionOutcome,
   parseNearApiJsTransactions,
   parseNearWalletSelectorTransactions,
+  Parser,
+  Stringifier,
   throwReceiptErrorsFromOutcomes,
 } from '../utils';
 import { MultiSendWalletSelectorSendOptions } from '../types';
 import { BigNumber } from 'bignumber.js';
-import { Stringifier } from '../stringifier';
-import { Parser } from '../parser';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 
@@ -106,7 +105,7 @@ export async function setupMultiSendWalletSelector(
         return remainingAllowance.gte(requiredMinAllowance);
       },
 
-      async view<Value, Args = EmptyArgs>({
+      async view<Value, Args>({
         contractId,
         methodName,
         args,
@@ -124,14 +123,12 @@ export async function setupMultiSendWalletSelector(
         });
       },
 
-      async call<Value, Args = EmptyArgs>(
-        options: MultiSendWalletSelectorCallOptions<Value, Args>
-      ): Promise<Value | void> {
+      async call<Value, Args>(options: MultiSendWalletSelectorCallOptions<Value, Args>): Promise<Value | void> {
         const outcome = await this.callRaw(options);
         return outcome?.parse(options.parser);
       },
 
-      async callRaw<Args = EmptyArgs>({
+      async callRaw<Args>({
         contractId,
         methodName,
         args,
@@ -197,7 +194,7 @@ export async function setupMultiSendWalletSelector(
           throwReceiptErrorsFromOutcomes(outcomes);
         }
 
-        return intoParseableFinalExecutionOutcomes(outcomes);
+        return toParseableFinalExecutionOutcomes(outcomes);
       },
 
       async sendWithLocalKey<Value>(
@@ -232,7 +229,7 @@ export async function setupMultiSendWalletSelector(
           throwReceiptErrorsFromOutcomes(outcomes);
         }
 
-        return intoParseableFinalExecutionOutcomes(outcomes);
+        return toParseableFinalExecutionOutcomes(outcomes);
       },
     };
   }

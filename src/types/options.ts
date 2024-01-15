@@ -1,6 +1,5 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
-import { Stringifier } from '../stringifier';
-import { Parser } from '../parser';
+import { Parser, Stringifier } from '../utils';
 
 export interface FunctionCallOptions<Args> {
   /**
@@ -80,7 +79,5 @@ export interface SendOptions<Value> {
 }
 
 export type SendRawOptions = Omit<SendOptions<unknown>, 'parser'>;
-
-export interface EmptyArgs {}
 
 export type BlockQuery = BlockReference;
