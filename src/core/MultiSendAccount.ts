@@ -3,7 +3,7 @@ import {
   Call,
   CallOptions,
   CallRawOptions,
-  Empty,
+  EmptyArgs,
   MultiSend,
   SendOptions,
   SendRawOptions,
@@ -63,7 +63,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
   /**
    * View a contract method
    */
-  async view<Value, Args = Empty>({
+  async view<Value, Args = EmptyArgs>({
     contractId,
     methodName,
     args,
@@ -84,7 +84,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
   /**
    * Call a contract method and return success value
    */
-  async call<Value, Args = Empty>(options: CallOptions<Value, Args>): Promise<Value> {
+  async call<Value, Args = EmptyArgs>(options: CallOptions<Value, Args>): Promise<Value> {
     const outcome = await this.callRaw(options);
     return outcome.parse(options.parser);
   }
@@ -92,7 +92,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
   /**
    * Call a contract method
    */
-  async callRaw<Args = Empty>({
+  async callRaw<Args = EmptyArgs>({
     contractId,
     methodName,
     args,

@@ -81,3 +81,5 @@ export interface SendOptions<Value> {
 export type SendRawOptions = Omit<SendOptions<unknown>, 'parser'>;
 
 export type BlockQuery = BlockReference;
+
+export interface EmptyArgs {}

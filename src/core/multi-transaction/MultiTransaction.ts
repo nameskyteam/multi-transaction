@@ -1,4 +1,4 @@
-import { FunctionCallOptions, Empty } from '../../types';
+import { FunctionCallOptions, EmptyArgs } from '../../types';
 import { Actions } from './Actions';
 import { Transaction, AccessKey, Action } from '../../types';
 import { Amount, Gas, Stringifier } from '../../utils';
@@ -130,7 +130,7 @@ export class MultiTransaction {
     return this.addActions([Actions.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() })]);
   }
 
-  functionCall<Args = Empty>({
+  functionCall<Args = EmptyArgs>({
     methodName,
     args,
     attachedDeposit = Amount.ZERO,
