@@ -138,17 +138,24 @@ export class BorshSchema {
   /**
    * Schema for custom enum.
    * @example
-   * interface Shape {
-   *   Any?: Empty;
-   *   Square?: number;
-   *   Rectangle?: {
-   *     length: number;
-   *     width: number;
-   *   },
-   *   Circle?: {
-   *     radius: number;
-   *   }
-   * }
+   * type Shape =
+   *   | {
+   *       Any: Empty;
+   *     }
+   *   | {
+   *       Square: number;
+   *     }
+   *   | {
+   *       Rectangle: {
+   *         length: number;
+   *         width: number;
+   *       };
+   *     }
+   *   | {
+   *       Circle: {
+   *         radius: number;
+   *       };
+   *     };
    *
    * const any: Shape = {
    *   Any: {}
@@ -161,13 +168,13 @@ export class BorshSchema {
    * const rectangle: Shape = {
    *   Rectangle: {
    *     length: 5,
-   *     width: 2
+   *     width: 4
    *   }
    * };
    *
    * const circle: Shape = {
    *   Circle: {
-   *     radius: 5
+   *     radius: 2
    *   }
    * };
    *
