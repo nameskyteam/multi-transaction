@@ -1,6 +1,5 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
-import { Stringifier } from '../stringifier';
-import { Parser } from '../parser';
+import { Parser, Stringifier } from '../utils';
 
 export interface FunctionCallOptions<Args> {
   /**

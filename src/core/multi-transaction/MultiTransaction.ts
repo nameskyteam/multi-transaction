@@ -1,14 +1,13 @@
 import { FunctionCallOptions, EmptyArgs } from '../../types';
 import { Actions } from './Actions';
 import { Transaction, AccessKey, Action } from '../../types';
-import { Amount, Gas } from '../../utils';
+import { Amount, Gas, Stringifier } from '../../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
 import {
   FungibleTokenFunctionCallWrapper,
   StorageManagementFunctionCallWrapper,
   NonFubgibleTokenFunctionCallWrapper,
 } from './function-call-wrapper';
-import { Stringifier } from '../../stringifier';
 
 /**
  * Helper for creating transaction(s).

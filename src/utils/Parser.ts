@@ -1,6 +1,5 @@
-import { jsonParse } from './json';
-import { borshParse } from './borsh';
-import { BorshSchema } from '../utils';
+import * as borsh from 'borsh';
+import { BorshSchema } from './index';
 
 export type ParserKind = 'json' | 'borsh' | 'custom';
 export type Parse<T> = (buffer: Uint8Array) => T;
@@ -25,4 +24,18 @@ export class Parser<T> {
   static custom<T>(parse: Parse<T>): Parser<T> {
     return new Parser('custom', parse);
   }
+}
+
+/**
+ * Deserialize data in JSON format.
+ */
+export function jsonParse<T>(buffer: Uint8Array): T {
+  return JSON.parse(Buffer.from(buffer).toString());
+}
+
+/**
+ * Deserialize data in borsh format.
+ */
+export function borshParse<T>(schema: BorshSchema, buffer: Uint8Array): T {
+  return borsh.deserialize(schema.into(), buffer) as T;
 }

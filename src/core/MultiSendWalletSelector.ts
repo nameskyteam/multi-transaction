@@ -20,12 +20,12 @@ import {
   ParseableFinalExecutionOutcome,
   parseNearApiJsTransactions,
   parseNearWalletSelectorTransactions,
+  Parser,
+  Stringifier,
   throwReceiptErrorsFromOutcomes,
 } from '../utils';
 import { MultiSendWalletSelectorSendOptions } from '../types';
 import { BigNumber } from 'bignumber.js';
-import { Stringifier } from '../stringifier';
-import { Parser } from '../parser';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 

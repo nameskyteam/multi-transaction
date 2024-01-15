@@ -1,7 +1,7 @@
 import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/providers';
 import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
 import { Buffer } from 'buffer';
-import { Parser } from '../parser';
+import { Parser } from './Parser';
 
 export function intoParseableFinalExecutionOutcome(outcome: FinalExecutionOutcome): ParseableFinalExecutionOutcome {
   return {

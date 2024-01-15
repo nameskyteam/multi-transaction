@@ -1,7 +1,6 @@
+import * as borsh from 'borsh';
 import { Buffer } from 'buffer';
-import { jsonStringify } from './json';
-import { borshStringify } from './borsh';
-import { BorshSchema } from '../utils';
+import { BorshSchema } from './index';
 
 export type StringifierKind = 'json' | 'borsh' | 'custom';
 export type Stringify<T> = (data: T) => Buffer;
@@ -34,4 +33,18 @@ export class Stringifier<T> {
       return this.stringify(data);
     }
   }
+}
+
+/**
+ * Serialize data in JSON format.
+ */
+export function jsonStringify<T>(data: T): Buffer {
+  return Buffer.from(JSON.stringify(data));
+}
+
+/**
+ * Serialize data in borsh format.
+ */
+export function borshStringify<T>(schema: BorshSchema, data: T): Buffer {
+  return Buffer.from(borsh.serialize(schema.into(), data));
 }
