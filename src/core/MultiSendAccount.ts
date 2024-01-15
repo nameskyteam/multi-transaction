@@ -1,5 +1,15 @@
 import { Account, Connection } from 'near-api-js';
-import { Call, CallOptions, CallRawOptions, MultiSend, SendOptions, SendRawOptions, View, ViewOptions } from '../types';
+import {
+  Call,
+  CallOptions,
+  CallRawOptions,
+  EmptyArgs,
+  MultiSend,
+  SendOptions,
+  SendRawOptions,
+  View,
+  ViewOptions,
+} from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   toParseableFinalExecutionOutcomes,
@@ -53,7 +63,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
   /**
    * View a contract method
    */
-  async view<Value, Args>({
+  async view<Value, Args = EmptyArgs>({
     contractId,
     methodName,
     args,
@@ -74,7 +84,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
   /**
    * Call a contract method and return success value
    */
-  async call<Value, Args>(options: CallOptions<Value, Args>): Promise<Value> {
+  async call<Value, Args = EmptyArgs>(options: CallOptions<Value, Args>): Promise<Value> {
     const outcome = await this.callRaw(options);
     return outcome.parse(options.parser);
   }
@@ -82,7 +92,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
   /**
    * Call a contract method
    */
-  async callRaw<Args>({
+  async callRaw<Args = EmptyArgs>({
     contractId,
     methodName,
     args,

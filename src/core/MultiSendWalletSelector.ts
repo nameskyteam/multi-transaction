@@ -3,6 +3,7 @@ import { keyStores, Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
 import {
+  EmptyArgs,
   MultiSendWalletSelector,
   MultiSendWalletSelectorCallOptions,
   MultiSendWalletSelectorCallRawOptions,
@@ -105,7 +106,7 @@ export async function setupMultiSendWalletSelector(
         return remainingAllowance.gte(requiredMinAllowance);
       },
 
-      async view<Value, Args>({
+      async view<Value, Args = EmptyArgs>({
         contractId,
         methodName,
         args,
@@ -123,12 +124,14 @@ export async function setupMultiSendWalletSelector(
         });
       },
 
-      async call<Value, Args>(options: MultiSendWalletSelectorCallOptions<Value, Args>): Promise<Value | void> {
+      async call<Value, Args = EmptyArgs>(
+        options: MultiSendWalletSelectorCallOptions<Value, Args>
+      ): Promise<Value | void> {
         const outcome = await this.callRaw(options);
         return outcome?.parse(options.parser);
       },
 
-      async callRaw<Args>({
+      async callRaw<Args = EmptyArgs>({
         contractId,
         methodName,
         args,
