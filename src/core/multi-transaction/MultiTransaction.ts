@@ -1,4 +1,4 @@
-import { FunctionCallOptions } from '../../types';
+import { FunctionCallOptions, EmptyArgs } from '../../types';
 import { Actions } from './Actions';
 import { Transaction, AccessKey, Action } from '../../types';
 import { Amount, Gas, Stringifier } from '../../utils';
@@ -130,9 +130,9 @@ export class MultiTransaction {
     return this.addActions([Actions.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() })]);
   }
 
-  functionCall<Args>({
+  functionCall<Args = EmptyArgs>({
     methodName,
-    args,
+    args = {} as any,
     attachedDeposit = Amount.ZERO,
     gas = Gas.default(),
     stringifier = Stringifier.json(),
@@ -140,7 +140,7 @@ export class MultiTransaction {
     return this.addActions([
       Actions.functionCall({
         methodName,
-        args: stringifier.stringifyOrSkip(args ?? ({} as Args)),
+        args: stringifier.stringifyOrSkip(args),
         attachedDeposit,
         gas,
       }),

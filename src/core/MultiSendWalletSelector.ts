@@ -117,8 +117,8 @@ export async function setupMultiSendWalletSelector(
           contractId,
           methodName,
           args: args as any,
-          stringify: stringifier.stringifyOrSkip,
-          parse: parser.parse,
+          stringify: (args) => stringifier.stringifyOrSkip(args),
+          parse: (buffer) => parser.parse(buffer),
           blockQuery,
         });
       },
