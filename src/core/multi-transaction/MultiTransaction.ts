@@ -96,9 +96,8 @@ export class MultiTransaction {
 
   /**
    * Get the transaction.
-   * @protected
    */
-  protected getTheTransaction(): Transaction {
+  private getTheTransaction(): Transaction {
     return this.transactions[this.transactions.length - 1];
   }
 
