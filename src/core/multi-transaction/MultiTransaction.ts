@@ -1,9 +1,8 @@
-import { FunctionCallOptions, EmptyArgs, MultiSend, SendOptions, SendRawOptions } from '../../types';
+import { FunctionCallOptions, EmptyArgs } from '../../types';
 import { Actions } from './Actions';
 import { Transaction, AccessKey, Action } from '../../types';
 import { Amount, Gas } from '../../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
-import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   FungibleTokenFunctionCallWrapper,
   StorageManagementFunctionCallWrapper,
@@ -43,7 +42,7 @@ export class MultiTransaction {
    * @param signerId Transaction signer id
    */
   batch(receiverId: string, signerId?: string): this {
-    return this.addTransaction({ signerId, receiverId, actions: [] });
+    return this.addTransactions([{ signerId, receiverId, actions: [] }]);
   }
 
   /**
@@ -84,39 +83,12 @@ export class MultiTransaction {
     return Array.from(this.transactions);
   }
 
-  /**
-   * Add a transaction.
-   * @param transaction Transaction
-   */
-  addTransaction(transaction: Transaction): this {
-    this.transactions.push(transaction);
-    return this;
-  }
-
-  /**
-   * Add transactions.
-   * @param transactions Transactions
-   */
-  addTransactions(transactions: Transaction[]): this {
+  private addTransactions(transactions: Transaction[]): this {
     this.transactions.push(...transactions);
     return this;
   }
 
-  /**
-   * Add an action to the transaction.
-   * @param action Action
-   */
-  addAction(action: Action): this {
-    const transaction = this.getTheTransaction();
-    transaction.actions.push(action);
-    return this;
-  }
-
-  /**
-   * Add actions to the transaction.
-   * @param actions Actions
-   */
-  addActions(actions: Action[]): this {
+  private addActions(actions: Action[]): this {
     const transaction = this.getTheTransaction();
     transaction.actions.push(...actions);
     return this;
@@ -130,43 +102,34 @@ export class MultiTransaction {
     return this.transactions[this.transactions.length - 1];
   }
 
-  // -------------------------------------------- Send mTx -------------------------------------------------
-  async send<Value>(sender: MultiSend, options: SendOptions<Value>): Promise<Value | void> {
-    return sender.send(this, options);
-  }
-
-  async sendRaw(sender: MultiSend, options: SendRawOptions): Promise<FinalExecutionOutcome[] | void> {
-    return sender.sendRaw(this, options);
-  }
-
   // -------------------------------------------- Actions --------------------------------------------------
   createAccount(): this {
-    return this.addAction(Actions.createAccount());
+    return this.addActions([Actions.createAccount()]);
   }
 
   deleteAccount(beneficiaryId: string): this {
-    return this.addAction(Actions.deleteAccount({ beneficiaryId }));
+    return this.addActions([Actions.deleteAccount({ beneficiaryId })]);
   }
 
   addKey(publicKey: string, accessKey: AccessKey): this {
-    return this.addAction(
+    return this.addActions([
       Actions.addKey({
         publicKey: PublicKey.fromString(publicKey).toString(),
         accessKey,
-      })
-    );
+      }),
+    ]);
   }
 
   deleteKey(publicKey: string): this {
-    return this.addAction(Actions.deleteKey({ publicKey: PublicKey.fromString(publicKey).toString() }));
+    return this.addActions([Actions.deleteKey({ publicKey: PublicKey.fromString(publicKey).toString() })]);
   }
 
   deployContract(code: Uint8Array): this {
-    return this.addAction(Actions.deployContract({ code }));
+    return this.addActions([Actions.deployContract({ code })]);
   }
 
   stake(amount: string, publicKey: string): this {
-    return this.addAction(Actions.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() }));
+    return this.addActions([Actions.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() })]);
   }
 
   functionCall<Args = EmptyArgs>({
@@ -176,18 +139,18 @@ export class MultiTransaction {
     gas = Gas.default(),
     stringifier = Stringifier.json(),
   }: FunctionCallOptions<Args>): this {
-    return this.addAction(
+    return this.addActions([
       Actions.functionCall({
         methodName,
         args: stringifier.stringifyOrSkip(args ?? ({} as Args)),
         attachedDeposit,
         gas,
-      })
-    );
+      }),
+    ]);
   }
 
   transfer(amount: string): this {
-    return this.addAction(Actions.transfer({ amount }));
+    return this.addActions([Actions.transfer({ amount })]);
   }
 
   get fungibleToken(): FungibleTokenFunctionCallWrapper {

@@ -1,4 +1,4 @@
-import borsh from 'borsh';
+import * as borsh from 'borsh';
 import { BorshSchema } from '../utils';
 
 /**
