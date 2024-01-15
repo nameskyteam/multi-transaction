@@ -132,7 +132,7 @@ export class MultiTransaction {
 
   functionCall<Args = EmptyArgs>({
     methodName,
-    args,
+    args = {} as any,
     attachedDeposit = Amount.ZERO,
     gas = Gas.default(),
     stringifier = Stringifier.json(),
@@ -140,7 +140,7 @@ export class MultiTransaction {
     return this.addActions([
       Actions.functionCall({
         methodName,
-        args: stringifier.stringifyOrSkip(args ?? ({} as Args)),
+        args: stringifier.stringifyOrSkip(args),
         attachedDeposit,
         gas,
       }),

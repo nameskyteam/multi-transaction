@@ -75,8 +75,8 @@ export class MultiSendAccount implements View, Call, MultiSend {
       contractId,
       methodName,
       args: args as any,
-      stringify: stringifier.stringifyOrSkip,
-      parse: parser.parse,
+      stringify: (args) => stringifier.stringifyOrSkip(args),
+      parse: (buffer) => parser.parse(buffer),
       blockQuery,
     });
   }
