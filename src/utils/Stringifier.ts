@@ -6,7 +6,7 @@ export type StringifierKind = 'json' | 'borsh' | 'custom';
 export type Stringify<T> = (data: T) => Buffer;
 
 export class Stringifier<T> {
-  kind: StringifierKind;
+  readonly kind: StringifierKind;
   stringify: Stringify<T>;
 
   private constructor(kind: StringifierKind, stringify: Stringify<T>) {

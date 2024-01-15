@@ -12,7 +12,7 @@ import {
 } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
-  intoParseableFinalExecutionOutcomes,
+  toParseableFinalExecutionOutcomes,
   NearApiJsTransactionLike,
   ParseableFinalExecutionOutcome,
   parseNearApiJsTransactions,
@@ -57,7 +57,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
       const outcome = await this.account.signAndSendTransaction({ ...transaction });
       outcomes.push(outcome);
     }
-    return intoParseableFinalExecutionOutcomes(outcomes);
+    return toParseableFinalExecutionOutcomes(outcomes);
   }
 
   /**
@@ -137,6 +137,6 @@ export class MultiSendAccount implements View, Call, MultiSend {
       throwReceiptErrorsFromOutcomes(outcomes);
     }
 
-    return intoParseableFinalExecutionOutcomes(outcomes);
+    return toParseableFinalExecutionOutcomes(outcomes);
   }
 }
