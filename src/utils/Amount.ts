@@ -10,8 +10,8 @@ const ETH_DECIMALS = 18;
 export type AmountUnits = 'NEAR' | 'USDT' | 'USDC' | 'BTC' | 'ETH' | number;
 
 export class Amount {
-  static ZERO = '0';
-  static ONE_YOCTO = '1';
+  static readonly ZERO = '0';
+  static readonly ONE_YOCTO = '1';
 
   private constructor() {}
 

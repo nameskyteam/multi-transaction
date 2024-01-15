@@ -34,7 +34,12 @@ export class BorshSchema {
   /**
    * Schema for custom struct.
    * @example
-   * const person = {
+   * interface Person {
+   *   name: string;
+   *   age: number;
+   * }
+   *
+   * const person: Person = {
    *   name: 'alice',
    *   age: 18
    * };
@@ -52,6 +57,17 @@ export class BorshSchema {
         return externalStructFields;
       }, {}),
     });
+  }
+
+  /**
+   * Schema for empty struct.
+   * @example
+   * const empty: Empty = {};
+   *
+   * const schema = BorshSchema.Empty;
+   */
+  static get Empty(): BorshSchema {
+    return BorshSchema.Struct({});
   }
 
   /**
@@ -118,30 +134,38 @@ export class BorshSchema {
     return BorshSchema.from('string');
   }
 
-  static get Empty(): BorshSchema {
-    return BorshSchema.Struct({});
-  }
-
   // -------------------------------------- enum ------------------------------------------
   /**
    * Schema for custom enum.
    * @example
-   * const any = {
+   * interface Shape {
+   *   Any?: Empty;
+   *   Square?: number;
+   *   Rectangle?: {
+   *     length: number;
+   *     width: number;
+   *   },
+   *   Circle?: {
+   *     radius: number;
+   *   }
+   * }
+   *
+   * const any: Shape = {
    *   Any: {}
    * };
    *
-   * const square = {
+   * const square: Shape = {
    *   Square: 5
    * };
    *
-   * const rectangle = {
+   * const rectangle: Shape = {
    *   Rectangle: {
    *     length: 5,
    *     width: 2
    *   }
    * };
    *
-   * const circle = {
+   * const circle: Shape = {
    *   Circle: {
    *     radius: 5
    *   }
