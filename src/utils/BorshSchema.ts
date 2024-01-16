@@ -13,6 +13,11 @@ export interface EnumVariants {
 }
 
 /**
+ * Empty interface
+ */
+export interface PhantomData {}
+
+/**
  * Schema used for borsh (de)serialization.
  */
 export class BorshSchema {
@@ -61,22 +66,11 @@ export class BorshSchema {
   }
 
   /**
-   * Schema for empty struct.
-   * @example
-   * const empty: Record<string, never> = {};
-   *
-   * const schema = BorshSchema.EmptyStruct;
-   */
-  static get EmptyStruct(): BorshSchema {
-    return BorshSchema.Struct({});
-  }
-
-  /**
    * Schema for custom enum.
    * @example
    * type Shape =
    *   | {
-   *       Any: Record<string, never>;
+   *       Any: PhantomData;
    *     }
    *   | {
    *       Square: number;
@@ -115,7 +109,7 @@ export class BorshSchema {
    * };
    *
    * const schema = BorshSchema.Enum({
-   *   Any: BorshSchema.EmptyStruct,
+   *   Any: BorshSchema.PhantomData,
    *   Square: BorshSchema.u32,
    *   Rectangle: BorshSchema.Struct({
    *     length: BorshSchema.u32,
@@ -360,5 +354,18 @@ export class BorshSchema {
    */
   static get bool(): BorshSchema {
     return BorshSchema.from('bool');
+  }
+
+  // -------------------------------------- nothing ---------------------------------------
+
+  /**
+   * Schema for nothing.
+   * @example
+   * const nothing: PhantomData = {};
+   *
+   * const schema = BorshSchema.PhantomData;
+   */
+  static get PhantomData(): BorshSchema {
+    return BorshSchema.Struct({});
   }
 }
