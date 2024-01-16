@@ -2,8 +2,8 @@ export interface FungibleTokenMetadata {
   spec: string;
   name: string;
   symbol: string;
-  icon?: string | null;
-  reference?: string | null;
-  reference_hash?: string | null;
+  icon?: string;
+  reference?: string;
+  reference_hash?: string;
   decimals: number;
 }
