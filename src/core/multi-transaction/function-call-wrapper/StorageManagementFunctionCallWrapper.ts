@@ -11,7 +11,7 @@ import { MultiTransaction } from '../MultiTransaction';
 import { FunctionCallWrapper } from './FunctionCallWrapper';
 
 export class StorageManagementFunctionCallWrapper extends FunctionCallWrapper {
-  storage_deposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
+  storageDeposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',
       args,
@@ -20,7 +20,7 @@ export class StorageManagementFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  storage_withdraw({ args, gas }: StorageWithdrawOptions): MultiTransaction {
+  storageWithdraw({ args, gas }: StorageWithdrawOptions): MultiTransaction {
     return this.functionCall<StorageWithdrawArgs>({
       methodName: 'storage_withdraw',
       args,
@@ -29,7 +29,7 @@ export class StorageManagementFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  storage_unregister({ args, gas }: StorageUnregisterOptions): MultiTransaction {
+  storageUnregister({ args, gas }: StorageUnregisterOptions): MultiTransaction {
     return this.functionCall<StorageUnregisterArgs>({
       methodName: 'storage_unregister',
       args,
