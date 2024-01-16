@@ -33,17 +33,6 @@ export class BorshSchema {
   // --------------------------------------- custom ---------------------------------------
 
   /**
-   * Schema for empty struct.
-   * @example
-   * const empty: Record<string, never> = {};
-   *
-   * const schema = BorshSchema.Empty;
-   */
-  static get Empty(): BorshSchema {
-    return BorshSchema.struct({});
-  }
-
-  /**
    * Schema for custom struct.
    * @example
    * interface Person {
@@ -56,19 +45,30 @@ export class BorshSchema {
    *   age: 18
    * };
    *
-   * const schema = BorshSchema.struct({
+   * const schema = BorshSchema.Struct({
    *   name: BorshSchema.String,
    *   age: BorshSchema.u8
    * });
    * @param fields Struct fields
    */
-  static struct(fields: StructFields): BorshSchema {
+  static Struct(fields: StructFields): BorshSchema {
     return BorshSchema.from({
       struct: Object.entries(fields).reduce<ExternalStructFields>((externalStructFields, [k, v]) => {
         externalStructFields[k] = v.into();
         return externalStructFields;
       }, {}),
     });
+  }
+
+  /**
+   * Schema for empty struct.
+   * @example
+   * const empty: Record<string, never> = {};
+   *
+   * const schema = BorshSchema.EmptyStruct;
+   */
+  static get EmptyStruct(): BorshSchema {
+    return BorshSchema.Struct({});
   }
 
   /**
@@ -114,20 +114,20 @@ export class BorshSchema {
    *   }
    * };
    *
-   * const schema = BorshSchema.enum({
-   *   Any: BorshSchema.Empty,
+   * const schema = BorshSchema.Enum({
+   *   Any: BorshSchema.EmptyStruct,
    *   Square: BorshSchema.u32,
-   *   Rectangle: BorshSchema.struct({
+   *   Rectangle: BorshSchema.Struct({
    *     length: BorshSchema.u32,
    *     width: BorshSchema.u32
    *   }),
-   *   Circle: BorshSchema.struct({
+   *   Circle: BorshSchema.Struct({
    *     radius: BorshSchema.u32
    *   })
    * });
    * @param variants Enum variants
    */
-  static enum(variants: EnumVariants): BorshSchema {
+  static Enum(variants: EnumVariants): BorshSchema {
     return BorshSchema.from({
       enum: Object.entries(variants).map(([k, v]) => {
         return { struct: { [k]: v.into() } };

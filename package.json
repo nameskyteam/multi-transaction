@@ -10,7 +10,7 @@
     "src"
   ],
   "scripts": {
-    "build": "tsup src --minify --dts",
+    "build": "rm -rf dist && tsup src --minify --dts",
     "lint": "eslint src/**/*.ts --fix",
     "prepare": "husky install"
   },
