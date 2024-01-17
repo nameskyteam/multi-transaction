@@ -7,7 +7,6 @@ yarn add multi-transaction
 ```
 
 ## Basic Usage
-
 ```typescript
 import { MultiTransaction, MultiSendAccount, Amount, Gas } from 'multi-transaction';
 ```
@@ -17,7 +16,6 @@ const account = MultiSendAccount.new(connection, accountId);
 ```
 
 ### Call a view method
-
 ```typescript
 const amount = await account.view<string>({
   contractId: 'wrap.near',
@@ -31,7 +29,6 @@ console.log(`Balance: ${Amount.format(amount, 'NEAR')} wNEAR`);
 ```
 
 ### Call a change method
-
 ```typescript
 await account.call({
   contractId: 'wrap.near',
@@ -46,7 +43,6 @@ await account.call({
 ```
 
 ### Batch transaction
-
 ```typescript
 // one transaction that contains two actions
 const mTx = MultiTransaction
@@ -74,7 +70,6 @@ await account.send(mTx);
 ```
 
 ### Multiple transactions
-
 ```typescript
 // two transactions, each contains one action
 const mTx = MultiTransaction
@@ -103,7 +98,6 @@ await account.send(mTx);
 ```
 
 ## Frontend Usage
-
 ```typescript
 import { setupMultiSendWalletSelector } from 'multi-transaction';
 ```
