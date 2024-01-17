@@ -1,6 +1,5 @@
-import * as borsh from 'borsh';
 import { Buffer } from 'buffer';
-import { BorshSchema } from './index';
+import { BorshSchema, borshSerialize } from 'borsher';
 
 export type StringifierKind = 'json' | 'borsh' | 'custom';
 export type Stringify<T> = (data: T) => Buffer;
@@ -15,11 +14,11 @@ export class Stringifier<T> {
   }
 
   static json<T>(): Stringifier<T> {
-    return new Stringifier('json', jsonStringify);
+    return new Stringifier('json', (data) => Buffer.from(JSON.stringify(data)));
   }
 
   static borsh<T>(schema: BorshSchema): Stringifier<T> {
-    return new Stringifier('borsh', (data) => borshStringify(schema, data));
+    return new Stringifier('borsh', (data) => borshSerialize(schema, data));
   }
 
   static custom<T>(stringify: Stringify<T>): Stringifier<T> {
@@ -33,18 +32,4 @@ export class Stringifier<T> {
       return this.stringify(data);
     }
   }
-}
-
-/**
- * Serialize data in JSON format.
- */
-export function jsonStringify<T>(data: T): Buffer {
-  return Buffer.from(JSON.stringify(data));
-}
-
-/**
- * Serialize data in borsh format.
- */
-export function borshStringify<T>(schema: BorshSchema, data: T): Buffer {
-  return Buffer.from(borsh.serialize(schema.into(), data));
 }
