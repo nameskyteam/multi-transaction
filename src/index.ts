@@ -9,4 +9,4 @@ export * from './core';
 export * from './types';
 export * from './utils';
 export { BigNumber } from 'bignumber.js';
-export * from 'borsher';
+export { borshSerialize, borshDeserialize, BorshSchema, EnumVariants, StructFields } from 'borsher';
