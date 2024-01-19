@@ -452,10 +452,10 @@ borsh@^2.0.0:
   resolved "https://registry.yarnpkg.com/borsh/-/borsh-2.0.0.tgz#042a9f109565caac3c6a21297cd8c0ae8db3149d"
   integrity sha512-kc9+BgR3zz9+cjbwM8ODoUB4fs3X3I5A/HtX7LZKxCLaMrEeDFoBpnhZY//DTS1VZBSs6S5v46RZRbZjRFspEg==
 
-borsher@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/borsher/-/borsher-1.1.0.tgz#1e4683bd78701194168c75fa8bbf5953851621fb"
-  integrity sha512-nn2ivqm0nbBXgWG8R9HXGszbuhT0GMLQpb9t10ofBDzDH2TJaE4nUPgKBxRLbfKendaTDdnirFDMEAwhFvJfxQ==
+borsher@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/borsher/-/borsher-1.2.0.tgz#9d63d77e3a510040edcae3d206311c3e5b052864"
+  integrity sha512-aHZ6kBt2DK1yGynOdUPm9Zl91IU8pQOioN8r0FvEh79b08cDUt4vUZPnRHKxif7au3QaqW0Y/2lodwa5DcYwYQ==
   dependencies:
     borsh "^2.0.0"
     buffer "^6.0.3"
