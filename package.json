@@ -1,6 +1,6 @@
 {
   "name": "multi-transaction",
-  "version": "5.2.3",
+  "version": "5.2.4",
   "license": "MIT",
   "description": "Make the construction of the transaction easier on NEAR blockchain.",
   "main": "dist/index.js",
