@@ -45,6 +45,32 @@ export class MultiTransaction {
   }
 
   /**
+   * Merge other actions.
+   * This requires that the other should contain ONLY one transaction and with the same receiver id as current transaction.
+   * @param other Other
+   */
+  merge(other: MultiTransaction): this {
+    const otherTransactions = other.toTransactions();
+
+    if (otherTransactions.length === 0) {
+      return this;
+    }
+
+    if (otherTransactions.length > 1) {
+      throw Error('Merging multiple transactions is not allowed');
+    }
+
+    const otherTransaction = otherTransactions[0];
+    const transaction = this.getCurrentTransaction();
+
+    if (otherTransaction.receiverId !== transaction.receiverId) {
+      throw Error('Merging transaction with different receiver id is not allowed');
+    }
+
+    return this.addActions(otherTransaction.actions);
+  }
+
+  /**
    * Extend other.
    * @param other Other
    */
@@ -53,7 +79,7 @@ export class MultiTransaction {
   }
 
   /**
-   * If it contains no transaction, return `true`, else return `false`.
+   * Whether it contains any transaction.
    */
   isEmpty(): boolean {
     return this.transactions.length === 0;
@@ -67,10 +93,10 @@ export class MultiTransaction {
   }
 
   /**
-   * Count actions of the transaction.
+   * Count actions of current transaction.
    */
   countActions(): number {
-    const transaction = this.getTheTransaction();
+    const transaction = this.getCurrentTransaction();
     return transaction.actions.length;
   }
 
@@ -88,19 +114,15 @@ export class MultiTransaction {
   }
 
   private addActions(actions: Action[]): this {
-    const transaction = this.getTheTransaction();
+    const transaction = this.getCurrentTransaction();
     transaction.actions.push(...actions);
     return this;
   }
 
-  /**
-   * Get the transaction.
-   */
-  private getTheTransaction(): Transaction {
+  private getCurrentTransaction(): Transaction {
     return this.transactions[this.transactions.length - 1];
   }
 
-  // -------------------------------------------- Actions --------------------------------------------------
   createAccount(): this {
     return this.addActions([Actions.createAccount()]);
   }
