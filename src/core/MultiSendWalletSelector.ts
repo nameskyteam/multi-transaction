@@ -23,6 +23,7 @@ import {
   Parser,
   Stringifier,
   throwReceiptErrorsFromOutcomes,
+  endless,
 } from '../utils';
 import { MultiSendWalletSelectorSendOptions } from '../types';
 import { BigNumber } from 'bignumber.js';
@@ -124,9 +125,7 @@ export async function setupMultiSendWalletSelector(
         });
       },
 
-      async call<Value, Args = EmptyArgs>(
-        options: MultiSendWalletSelectorCallOptions<Value, Args>
-      ): Promise<Value | void> {
+      async call<Value, Args = EmptyArgs>(options: MultiSendWalletSelectorCallOptions<Value, Args>): Promise<Value> {
         const outcome = await this.callRaw(options);
         return outcome?.parse(options.parser);
       },
@@ -139,7 +138,7 @@ export async function setupMultiSendWalletSelector(
         gas,
         stringifier,
         ...sendOptions
-      }: MultiSendWalletSelectorCallRawOptions<Args>): Promise<ParseableFinalExecutionOutcome | void> {
+      }: MultiSendWalletSelectorCallRawOptions<Args>): Promise<ParseableFinalExecutionOutcome> {
         const mTx = MultiTransaction.batch(contractId).functionCall({
           methodName,
           args,
@@ -151,10 +150,7 @@ export async function setupMultiSendWalletSelector(
         return outcomes?.[0];
       },
 
-      async send<Value>(
-        mTx: MultiTransaction,
-        options?: MultiSendWalletSelectorSendOptions<Value>
-      ): Promise<Value | void> {
+      async send<Value>(mTx: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value> {
         const outcomes = await this.sendRaw(mTx, options);
         const outcome = outcomes?.[outcomes.length - 1];
         return outcome?.parse(options?.parser);
@@ -163,7 +159,7 @@ export async function setupMultiSendWalletSelector(
       async sendRaw(
         mTx: MultiTransaction,
         options?: MultiSendWalletSelectorSendRawOptions
-      ): Promise<ParseableFinalExecutionOutcome[] | void> {
+      ): Promise<ParseableFinalExecutionOutcome[]> {
         const wallet = await this.wallet(options?.walletId);
         const transactions = parseNearWalletSelectorTransactions(mTx);
         let outcomes: FinalExecutionOutcome[] | undefined;
@@ -189,8 +185,8 @@ export async function setupMultiSendWalletSelector(
         }
 
         if (!outcomes) {
-          // When use web wallet
-          return;
+          // browser wallet, wait for direction
+          endless();
         }
 
         if (options?.throwReceiptErrors) {

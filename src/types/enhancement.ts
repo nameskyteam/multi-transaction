@@ -41,21 +41,21 @@ interface WalletSelectorEnhancement extends View, Call, MultiSend {
   /**
    * Call a contract method and return success value
    */
-  call<Value, Args = EmptyArgs>(options: MultiSendWalletSelectorCallOptions<Value, Args>): Promise<Value | void>;
+  call<Value, Args = EmptyArgs>(options: MultiSendWalletSelectorCallOptions<Value, Args>): Promise<Value>;
 
   /**
    * Call a contract method
    */
   callRaw<Args = EmptyArgs>(
     options: MultiSendWalletSelectorCallRawOptions<Args>
-  ): Promise<ParseableFinalExecutionOutcome | void>;
+  ): Promise<ParseableFinalExecutionOutcome>;
 
   /**
    * Send multiple transactions and return success value of last transaction
    * @param mTx Multiple transactions
    * @param options Options
    */
-  send<Value>(mTx: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value | void>;
+  send<Value>(mTx: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value>;
 
   /**
    * Send multiple transactions
@@ -65,7 +65,7 @@ interface WalletSelectorEnhancement extends View, Call, MultiSend {
   sendRaw(
     mTx: MultiTransaction,
     options?: MultiSendWalletSelectorSendRawOptions
-  ): Promise<ParseableFinalExecutionOutcome[] | void>;
+  ): Promise<ParseableFinalExecutionOutcome[]>;
 
   /**
    * Sign and send multiple transactions with local key in `this.keystore` and return success value of last transaction

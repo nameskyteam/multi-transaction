@@ -7,11 +7,11 @@ export interface View {
 }
 
 export interface Call {
-  call<Value, Args>(options: CallOptions<Value, Args>): Promise<Value | void>;
-  callRaw<Args>(options: CallRawOptions<Args>): Promise<ParseableFinalExecutionOutcome | void>;
+  call<Value, Args>(options: CallOptions<Value, Args>): Promise<Value>;
+  callRaw<Args>(options: CallRawOptions<Args>): Promise<ParseableFinalExecutionOutcome>;
 }
 
 export interface MultiSend {
-  send<Value>(mTx: MultiTransaction, options?: SendOptions<Value>): Promise<Value | void>;
-  sendRaw(mTx: MultiTransaction, options?: SendRawOptions): Promise<ParseableFinalExecutionOutcome[] | void>;
+  send<Value>(mTx: MultiTransaction, options?: SendOptions<Value>): Promise<Value>;
+  sendRaw(mTx: MultiTransaction, options?: SendRawOptions): Promise<ParseableFinalExecutionOutcome[]>;
 }
