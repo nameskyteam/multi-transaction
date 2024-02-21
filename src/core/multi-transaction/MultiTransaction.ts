@@ -45,8 +45,9 @@ export class MultiTransaction {
   }
 
   /**
-   * Merge other actions.
+   * Merge other.
    * This requires that the other should contain ONLY one transaction and with the same receiver id as current transaction.
+   * Actions will be merged into current transaction.
    * @param other Other
    */
   merge(other: MultiTransaction): this {
