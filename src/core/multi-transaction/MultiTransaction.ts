@@ -46,7 +46,7 @@ export class MultiTransaction {
 
   /**
    * Merge other.
-   * This requires that the other should contain ONLY one transaction and with the same receiver id as current transaction.
+   * This requires that the other should contain ONLY one transaction and with the same receiver id & signer id as current transaction.
    * Actions will be merged into current transaction.
    * @param other Other
    */
@@ -66,6 +66,10 @@ export class MultiTransaction {
 
     if (otherTransaction.receiverId !== transaction.receiverId) {
       throw Error('Merging transaction with different receiver id is not allowed');
+    }
+
+    if (otherTransaction.signerId !== transaction.signerId) {
+      throw Error('Merging transaction with different signer id is not allowed');
     }
 
     return this.addActions(otherTransaction.actions);
