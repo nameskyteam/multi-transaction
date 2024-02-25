@@ -4,8 +4,8 @@ import { Call, CallOptions, EmptyArgs, MultiSend, SendOptions, SendRawOptions, V
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-selector.types';
-import { ParseableFinalExecutionOutcome } from '../utils';
 import { Modify } from '@near-wallet-selector/core/src/lib/utils.types';
+import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 
 export type MultiSendWalletSelector = Modify<WalletSelector, WalletSelectorEnhancement>;
 
@@ -46,9 +46,7 @@ interface WalletSelectorEnhancement extends View, Call, MultiSend {
   /**
    * Call a contract method
    */
-  callRaw<Args = EmptyArgs>(
-    options: MultiSendWalletSelectorCallRawOptions<Args>
-  ): Promise<ParseableFinalExecutionOutcome>;
+  callRaw<Args = EmptyArgs>(options: MultiSendWalletSelectorCallRawOptions<Args>): Promise<FinalExecutionOutcome>;
 
   /**
    * Send multiple transactions and return success value of last transaction
@@ -62,10 +60,7 @@ interface WalletSelectorEnhancement extends View, Call, MultiSend {
    * @param mTx Multiple transactions
    * @param options Options
    */
-  sendRaw(
-    mTx: MultiTransaction,
-    options?: MultiSendWalletSelectorSendRawOptions
-  ): Promise<ParseableFinalExecutionOutcome[]>;
+  sendRaw(mTx: MultiTransaction, options?: MultiSendWalletSelectorSendRawOptions): Promise<FinalExecutionOutcome[]>;
 
   /**
    * Sign and send multiple transactions with local key in `this.keystore` and return success value of last transaction
@@ -85,7 +80,7 @@ interface WalletSelectorEnhancement extends View, Call, MultiSend {
     signerId: string,
     mTx: MultiTransaction,
     options?: SendRawOptions
-  ): Promise<ParseableFinalExecutionOutcome[]>;
+  ): Promise<FinalExecutionOutcome[]>;
 }
 
 export interface MultiSendWalletSelectorCallOptions<Value, Args> extends CallOptions<Value, Args> {

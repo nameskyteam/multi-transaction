@@ -3,34 +3,12 @@ import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
 import { Buffer } from 'buffer';
 import { Parser } from './Parser';
 
-export function toParseableFinalExecutionOutcome(outcome: FinalExecutionOutcome): ParseableFinalExecutionOutcome {
-  return {
-    ...outcome,
-
-    parse<T>(parser: Parser<T> = Parser.json()): T {
-      return parseOutcomeValue(outcome, parser);
-    },
-  };
-}
-
-export function toParseableFinalExecutionOutcomes(outcomes: FinalExecutionOutcome[]): ParseableFinalExecutionOutcome[] {
-  return outcomes.map((outcome) => toParseableFinalExecutionOutcome(outcome));
-}
-
-export interface ParseableFinalExecutionOutcome extends FinalExecutionOutcome {
-  /**
-   * Parse success value.
-   * @param parser Parser
-   */
-  parse<T>(parser?: Parser<T>): T;
-}
-
 /**
  * Parse success value from outcome.
  * @param outcome Transaction outcome
  * @param parser Parser
  */
-export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parser: Parser<Value>): Value {
+export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parser: Parser<Value> = Parser.json()): Value {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
   if (successValue) {
     const valueRaw = Buffer.from(successValue, 'base64');
@@ -39,13 +17,6 @@ export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parser:
     return undefined as Value;
   } else {
     throw Error(`Outcome status is Failure`);
-  }
-}
-
-export function throwReceiptErrorsFromOutcome(outcome: FinalExecutionOutcome) {
-  const errors = getReceiptErrorsFromOutcome(outcome);
-  if (errors.length !== 0) {
-    throw Error(JSON.stringify(errors));
   }
 }
 

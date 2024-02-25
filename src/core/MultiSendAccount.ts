@@ -12,13 +12,12 @@ import {
 } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
-  toParseableFinalExecutionOutcomes,
   NearApiJsTransactionLike,
-  ParseableFinalExecutionOutcome,
   parseNearApiJsTransactions,
   throwReceiptErrorsFromOutcomes,
   Stringifier,
   Parser,
+  parseOutcomeValue,
 } from '../utils';
 import { MultiTransaction } from './multi-transaction';
 
@@ -26,38 +25,34 @@ interface SignAndSendTransactionsOptions {
   transactions: NearApiJsTransactionLike[];
 }
 
-export class MultiSendAccount implements View, Call, MultiSend {
-  private readonly account: Account;
-
-  private constructor(account: Account) {
-    this.account = account;
+export class MultiSendAccount extends Account implements View, Call, MultiSend {
+  private constructor(connection: Connection, accountId: string) {
+    super(connection, accountId);
   }
 
   static new(connection: Connection, accountId = ''): MultiSendAccount {
-    const account = new Account(connection, accountId);
-    return MultiSendAccount.from(account);
+    return new MultiSendAccount(connection, accountId);
   }
 
-  static from(account: Account): MultiSendAccount {
-    return new MultiSendAccount(account);
-  }
-
-  into(): Account {
-    return this.account;
+  static fromAccount(account: Account): MultiSendAccount {
+    return new MultiSendAccount(account.connection, account.accountId);
   }
 
   private async signAndSendTransactions({
     transactions,
-  }: SignAndSendTransactionsOptions): Promise<ParseableFinalExecutionOutcome[]> {
+  }: SignAndSendTransactionsOptions): Promise<FinalExecutionOutcome[]> {
     const outcomes: FinalExecutionOutcome[] = [];
+
     if (transactions.length === 0) {
       throw Error('Transaction not found.');
     }
+
     for (const transaction of transactions) {
-      const outcome = await this.account.signAndSendTransaction({ ...transaction });
+      const outcome = await this.signAndSendTransaction({ ...transaction });
       outcomes.push(outcome);
     }
-    return toParseableFinalExecutionOutcomes(outcomes);
+
+    return outcomes;
   }
 
   /**
@@ -71,7 +66,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
     parser = Parser.json(),
     blockQuery,
   }: ViewOptions<Value, Args>): Promise<Value> {
-    return this.account.viewFunction({
+    return this.viewFunction({
       contractId,
       methodName,
       args: args as any,
@@ -86,7 +81,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
    */
   async call<Value, Args = EmptyArgs>(options: CallOptions<Value, Args>): Promise<Value> {
     const outcome = await this.callRaw(options);
-    return outcome.parse(options.parser);
+    return parseOutcomeValue(outcome, options.parser);
   }
 
   /**
@@ -100,7 +95,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
     gas,
     stringifier,
     ...sendOptions
-  }: CallRawOptions<Args>): Promise<ParseableFinalExecutionOutcome> {
+  }: CallRawOptions<Args>): Promise<FinalExecutionOutcome> {
     const mTx = MultiTransaction.batch(contractId).functionCall({
       methodName,
       args,
@@ -120,7 +115,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
   async send<Value>(mTx: MultiTransaction, options?: SendOptions<Value>): Promise<Value> {
     const outcomes = await this.sendRaw(mTx, options);
     const outcome = outcomes[outcomes.length - 1];
-    return outcome.parse(options?.parser);
+    return parseOutcomeValue(outcome, options?.parser);
   }
 
   /**
@@ -128,7 +123,7 @@ export class MultiSendAccount implements View, Call, MultiSend {
    * @param mTx Multiple transactions
    * @param options Options
    */
-  async sendRaw(mTx: MultiTransaction, options?: SendRawOptions): Promise<ParseableFinalExecutionOutcome[]> {
+  async sendRaw(mTx: MultiTransaction, options?: SendRawOptions): Promise<FinalExecutionOutcome[]> {
     const outcomes = await this.signAndSendTransactions({
       transactions: parseNearApiJsTransactions(mTx),
     });
@@ -137,6 +132,6 @@ export class MultiSendAccount implements View, Call, MultiSend {
       throwReceiptErrorsFromOutcomes(outcomes);
     }
 
-    return toParseableFinalExecutionOutcomes(outcomes);
+    return outcomes;
   }
 }
