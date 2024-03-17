@@ -79,7 +79,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
   /**
    * Call a contract method and return success value
    */
-  async call<Value, Args = EmptyArgs>(options: CallOptions<Value, Args>): Promise<Value> {
+  async call<Value, Args = EmptyArgs>(options: MultiSendAccountCallOptions<Value, Args>): Promise<Value> {
     const outcome = await this.callRaw(options);
     return parseOutcomeValue(outcome, options.parser);
   }
@@ -95,7 +95,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
     gas,
     stringifier,
     ...sendOptions
-  }: CallRawOptions<Args>): Promise<FinalExecutionOutcome> {
+  }: MultiSendAccountCallRawOptions<Args>): Promise<FinalExecutionOutcome> {
     const mTx = MultiTransaction.batch(contractId).functionCall({
       methodName,
       args,
@@ -112,7 +112,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
    * @param mTx Multiple transactions
    * @param options Options
    */
-  async send<Value>(mTx: MultiTransaction, options?: SendOptions<Value>): Promise<Value> {
+  async send<Value>(mTx: MultiTransaction, options?: MultiSendAccountSendOptions<Value>): Promise<Value> {
     const outcomes = await this.sendRaw(mTx, options);
     const outcome = outcomes[outcomes.length - 1];
     return parseOutcomeValue(outcome, options?.parser);
@@ -123,7 +123,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
    * @param mTx Multiple transactions
    * @param options Options
    */
-  async sendRaw(mTx: MultiTransaction, options?: SendRawOptions): Promise<FinalExecutionOutcome[]> {
+  async sendRaw(mTx: MultiTransaction, options?: MultiSendAccountSendRawOptions): Promise<FinalExecutionOutcome[]> {
     const outcomes = await this.signAndSendTransactions({
       transactions: parseNearApiJsTransactions(mTx),
     });
@@ -135,3 +135,11 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
     return outcomes;
   }
 }
+
+export interface MultiSendAccountCallOptions<Value, Args> extends CallOptions<Value, Args> {}
+
+export interface MultiSendAccountCallRawOptions<Args> extends CallRawOptions<Args> {}
+
+export interface MultiSendAccountSendOptions<Value> extends SendOptions<Value> {}
+
+export interface MultiSendAccountSendRawOptions extends SendRawOptions {}

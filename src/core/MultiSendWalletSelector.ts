@@ -1,5 +1,5 @@
 import { setupWalletSelector, WalletSelector } from '@near-wallet-selector/core';
-import { keyStores, Near } from 'near-api-js';
+import { Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
 import {
@@ -8,15 +8,12 @@ import {
   MultiSendWalletSelectorCallOptions,
   MultiSendWalletSelectorCallRawOptions,
   MultiSendWalletSelectorSendRawOptions,
-  SendOptions,
-  SendRawOptions,
 } from '../types';
 import { MultiSendWalletSelectorConfig } from '../types';
 import { ViewOptions } from '../types';
 import { MultiTransaction } from './multi-transaction';
 import {
   Amount,
-  parseNearApiJsTransactions,
   parseNearWalletSelectorTransactions,
   Parser,
   Stringifier,
@@ -41,20 +38,11 @@ export async function setupMultiSendWalletSelector(
       selector = await setupWalletSelector({ ...config });
     }
 
-    const keyStore = new keyStores.BrowserLocalStorageKeyStore(localStorage, config.keyStorePrefix);
-
-    const near = new Near({
-      ...selector.options.network,
-      keyStore,
-    });
-
-    const viewer = await near.account('');
+    const near = new Near(selector.options.network);
 
     multiSendWalletSelector = {
       ...selector,
       near,
-      keyStore,
-      viewer,
 
       getActiveAccountId(): string | undefined {
         return this.store.getState().accounts.find((accountState) => accountState.active)?.accountId;
@@ -114,7 +102,8 @@ export async function setupMultiSendWalletSelector(
         parser = Parser.json(),
         blockQuery,
       }: ViewOptions<Value, Args>): Promise<Value> {
-        return this.viewer.viewFunction({
+        const viewer = await near.account('');
+        return viewer.viewFunction({
           contractId,
           methodName,
           args: args as any,
@@ -186,41 +175,6 @@ export async function setupMultiSendWalletSelector(
         if (!outcomes) {
           // browser wallet, wait for direction
           endless();
-        }
-
-        if (options?.throwReceiptErrors) {
-          throwReceiptErrorsFromOutcomes(outcomes);
-        }
-
-        return outcomes;
-      },
-
-      async sendWithLocalKey<Value>(
-        signerId: string,
-        mTx: MultiTransaction,
-        options?: SendOptions<Value>
-      ): Promise<Value> {
-        const outcomes = await this.sendRawWithLocalKey(signerId, mTx, options);
-        const outcome = outcomes[outcomes.length - 1];
-        return parseOutcomeValue(outcome, options?.parser);
-      },
-
-      async sendRawWithLocalKey(
-        signerId: string,
-        mTx: MultiTransaction,
-        options?: SendRawOptions
-      ): Promise<FinalExecutionOutcome[]> {
-        const account = await this.near.account(signerId);
-        const outcomes: FinalExecutionOutcome[] = [];
-        const transactions = parseNearApiJsTransactions(mTx);
-
-        if (transactions.length === 0) {
-          throw Error('Transaction not found.');
-        }
-
-        for (const transaction of transactions) {
-          const outcome = await account['signAndSendTransaction'](transaction);
-          outcomes.push(outcome);
         }
 
         if (options?.throwReceiptErrors) {
