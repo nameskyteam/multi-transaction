@@ -5,6 +5,7 @@
   "description": "Make the construction of the transaction easier on NEAR blockchain.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "type": "commonjs",
   "files": [
     "dist",
     "src"
