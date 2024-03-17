@@ -33,12 +33,18 @@
     "husky": "^8.0.2",
     "lint-staged": "^13.0.4",
     "prettier": "^2.8.1",
-    "tsup": "^6.5.0",
+    "tsup": "^8.0.2",
     "typescript": "^4.5.5"
   },
   "prettier": {
     "semi": true,
     "singleQuote": true,
     "printWidth": 120
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }
