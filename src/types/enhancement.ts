@@ -89,13 +89,4 @@ export interface MultiSendWalletSelectorSendRawOptions extends SendRawOptions {
   callbackUrl?: string;
 }
 
-export type MultiSendWalletSelectorConfig = MultiSendWalletSelectorParams | MultiSendWalletSelectorParamsWithSelector;
-
-interface MultiSendWalletSelectorParams extends WalletSelectorParams {
-  keyStorePrefix?: string;
-}
-
-interface MultiSendWalletSelectorParamsWithSelector {
-  keyStorePrefix?: string;
-  selector: WalletSelector;
-}
+export type MultiSendWalletSelectorOptions = WalletSelectorParams | WalletSelector;

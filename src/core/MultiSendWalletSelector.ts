@@ -9,7 +9,7 @@ import {
   MultiSendWalletSelectorCallRawOptions,
   MultiSendWalletSelectorSendRawOptions,
 } from '../types';
-import { MultiSendWalletSelectorConfig } from '../types';
+import { MultiSendWalletSelectorOptions } from '../types';
 import { ViewOptions } from '../types';
 import { MultiTransaction } from './multi-transaction';
 import {
@@ -27,15 +27,15 @@ import { BigNumber } from 'bignumber.js';
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 
 export async function setupMultiSendWalletSelector(
-  config: MultiSendWalletSelectorConfig
+  options: MultiSendWalletSelectorOptions
 ): Promise<MultiSendWalletSelector> {
   if (!multiSendWalletSelector) {
     let selector: WalletSelector;
 
-    if ('selector' in config) {
-      selector = config.selector;
+    if ('wallet' in options) {
+      selector = options;
     } else {
-      selector = await setupWalletSelector({ ...config });
+      selector = await setupWalletSelector({ ...options });
     }
 
     const near = new Near(selector.options.network);

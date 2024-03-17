@@ -6,18 +6,15 @@ Make the construction of the transaction easier on [NEAR](https://near.org) bloc
 yarn add multi-transaction
 ```
 
-## Basic Usage
-```typescript
-import { MultiTransaction, MultiSendAccount, Amount, Gas } from 'multi-transaction';
+## View
+```ts
+import { MultiSendAccount, Amount } from 'multi-transaction';
 ```
 
-```typescript
-const account = MultiSendAccount.new(connection, accountId);
-```
+```ts
+const msAccount = MultiSendAccount.fromAccount(account);
 
-### Call a view method
-```typescript
-const amount = await account.view<string>({
+const amount = await msAccount.view<string>({
   contractId: 'wrap.near',
   methodName: 'ft_balance_of',
   args: {
@@ -28,9 +25,15 @@ const amount = await account.view<string>({
 console.log(`Balance: ${Amount.format(amount, 'NEAR')} wNEAR`);
 ```
 
-### Call a change method
-```typescript
-await account.call({
+### Call
+```ts
+import { MultiSendAccount, Amount, Gas } from 'multi-transaction';
+```
+
+```ts
+const msAccount = MultiSendAccount.fromAccount(account);
+
+await msAccount.call({
   contractId: 'wrap.near',
   methodName: 'ft_transfer',
   args: {
@@ -42,8 +45,14 @@ await account.call({
 });
 ```
 
-### Batch transaction
-```typescript
+### Batch Transaction
+```ts
+import { MultiTransaction, MultiSendAccount, Amount, Gas } from 'multi-transaction';
+```
+
+```ts
+const msAccount = MultiSendAccount.fromAccount(account);
+
 // one transaction that contains two actions
 const mTx = MultiTransaction
   .batch('wrap.near')
@@ -66,11 +75,17 @@ const mTx = MultiTransaction
     gas: Gas.parse('10', 'T')
   });
 
-await account.send(mTx);
+await msAccount.send(mTx);
 ```
 
-### Multiple transactions
-```typescript
+### Multiple Transactions
+```ts
+import { MultiTransaction, MultiSendAccount, Amount, Gas } from 'multi-transaction';
+```
+
+```ts
+const msAccount = MultiSendAccount.fromAccount(account);
+
 // two transactions, each contains one action
 const mTx = MultiTransaction
   .batch('wrap.near')
@@ -94,29 +109,27 @@ const mTx = MultiTransaction
     gas: Gas.parse('10', 'T')
   });
 
-await account.send(mTx);
+await msAccount.send(mTx);
 ```
 
-## Frontend Usage
-```typescript
+## Wallet Selector
+You can replace the official `WalletSelector` with `MultiSendWalletSelector`, while keeping other usage unchanged
+
+```ts
 import { setupMultiSendWalletSelector } from 'multi-transaction';
 ```
 
-### Setup wallet selector
+```ts
+const msSelector = await setupMultiSendWalletSelector({
+  network: 'mainnet',
+  modules: [
+    /* wallet modules */
+  ]
+});
+```
 
-```typescript
-const useWalletSelector = () => {
-  const [selector, setSelector] = useState();
-  
-  useEffect(() => {
-    setupMultiSendWalletSelector({
-      network: 'mainnet',
-      modules: [
-        /* wallet modules */
-      ]
-    }).then(setSelector);
-  }, []);
-  
-  return { selector };
-}
+If you already use `WalletSelector` in your project
+
+```ts
+const msSelector = await setupMultiSendWalletSelector(selector);
 ```
