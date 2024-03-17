@@ -136,17 +136,17 @@ function parseNearWalletSelectorAction(action: Action): NearWalletSelectorAction
   }
 }
 
-export interface NearApiJsTransactionLike {
+export type NearApiJsTransactionLike = {
   receiverId: string;
   actions: NearApiJsActionLike[];
-}
+};
 
-type NearApiJsActionLike = nearApiJs.transactions.Action;
+export type NearApiJsActionLike = nearApiJs.transactions.Action;
 
-export interface NearWalletSelectorTransactionLike {
+export type NearWalletSelectorTransactionLike = {
   signerId?: string;
   receiverId: string;
   actions: NearWalletSelectorActionLike[];
-}
+};
 
-type NearWalletSelectorActionLike = nearWalletSelector.Action;
+export type NearWalletSelectorActionLike = nearWalletSelector.Action;

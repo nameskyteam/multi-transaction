@@ -1,8 +1,8 @@
-export interface Transaction {
+export type Transaction = {
   signerId?: string;
   receiverId: string;
   actions: Action[];
-}
+};
 
 export type Action =
   | CreateAccountAction
@@ -14,90 +14,90 @@ export type Action =
   | FunctionCallAction
   | TransferAction;
 
-export interface CreateAccountAction {
+export type CreateAccountAction = {
   type: 'CreateAccount';
   params: CreateAccountParams;
-}
+};
 
-export interface DeleteAccountAction {
+export type DeleteAccountAction = {
   type: 'DeleteAccount';
   params: DeleteAccountParams;
-}
+};
 
-export interface AddKeyAction {
+export type AddKeyAction = {
   type: 'AddKey';
   params: AddKeyParams;
-}
+};
 
-export interface DeleteKeyAction {
+export type DeleteKeyAction = {
   type: 'DeleteKey';
   params: DeleteKeyParams;
-}
+};
 
-export interface DeployContractAction {
+export type DeployContractAction = {
   type: 'DeployContract';
   params: DeployContractParams;
-}
+};
 
-export interface StakeAction {
+export type StakeAction = {
   type: 'Stake';
   params: StakeParams;
-}
+};
 
-export interface FunctionCallAction {
+export type FunctionCallAction = {
   type: 'FunctionCall';
   params: FunctionCallParams;
-}
+};
 
-export interface TransferAction {
+export type TransferAction = {
   type: 'Transfer';
   params: TransferParams;
-}
+};
 
-export interface CreateAccountParams {}
+export type CreateAccountParams = {};
 
-export interface DeleteAccountParams {
+export type DeleteAccountParams = {
   beneficiaryId: string;
-}
+};
 
-export interface AddKeyParams {
+export type AddKeyParams = {
   publicKey: string;
   accessKey: AccessKey;
-}
+};
 
-export interface DeleteKeyParams {
+export type DeleteKeyParams = {
   publicKey: string;
-}
+};
 
-export interface DeployContractParams {
+export type DeployContractParams = {
   code: Uint8Array;
-}
+};
 
-export interface StakeParams {
+export type StakeParams = {
   amount: string;
   publicKey: string;
-}
+};
 
-export interface FunctionCallParams {
+export type FunctionCallParams = {
   methodName: string;
   args: Uint8Array;
   attachedDeposit: string;
   gas: string;
-}
+};
 
-export interface TransferParams {
+export type TransferParams = {
   amount: string;
-}
+};
 
-export interface AccessKey {
+export type AccessKey = {
   permission: AccessKeyPermission;
   nonce?: number;
-}
+};
 
 export type AccessKeyPermission = 'FullAccess' | FunctionCallAccess;
 
-export interface FunctionCallAccess {
+export type FunctionCallAccess = {
   receiverId: string;
   methodNames: string[];
   allowance?: string;
-}
+};

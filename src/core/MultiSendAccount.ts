@@ -12,7 +12,6 @@ import {
 } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
-  NearApiJsTransactionLike,
   parseNearApiJsTransactions,
   throwReceiptErrorsFromOutcomes,
   Stringifier,
@@ -20,10 +19,6 @@ import {
   parseOutcomeValue,
 } from '../utils';
 import { MultiTransaction } from './multi-transaction';
-
-interface SignAndSendTransactionsOptions {
-  transactions: NearApiJsTransactionLike[];
-}
 
 export class MultiSendAccount extends Account implements View, Call, MultiSend {
   private constructor(connection: Connection, accountId: string) {
@@ -36,23 +31,6 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
 
   static fromAccount(account: Account): MultiSendAccount {
     return new MultiSendAccount(account.connection, account.accountId);
-  }
-
-  private async signAndSendTransactions({
-    transactions,
-  }: SignAndSendTransactionsOptions): Promise<FinalExecutionOutcome[]> {
-    const outcomes: FinalExecutionOutcome[] = [];
-
-    if (transactions.length === 0) {
-      throw Error('Transaction not found.');
-    }
-
-    for (const transaction of transactions) {
-      const outcome = await this.signAndSendTransaction({ ...transaction });
-      outcomes.push(outcome);
-    }
-
-    return outcomes;
   }
 
   /**
@@ -124,9 +102,14 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
    * @param options Options
    */
   async sendRaw(mTx: MultiTransaction, options?: MultiSendAccountSendRawOptions): Promise<FinalExecutionOutcome[]> {
-    const outcomes = await this.signAndSendTransactions({
-      transactions: parseNearApiJsTransactions(mTx),
-    });
+    const transactions = parseNearApiJsTransactions(mTx);
+
+    const outcomes: FinalExecutionOutcome[] = [];
+
+    for (const transaction of transactions) {
+      const outcome = await this.signAndSendTransaction({ ...transaction });
+      outcomes.push(outcome);
+    }
 
     if (options?.throwReceiptErrors) {
       throwReceiptErrorsFromOutcomes(outcomes);
@@ -136,10 +119,10 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
   }
 }
 
-export interface MultiSendAccountCallOptions<Value, Args> extends CallOptions<Value, Args> {}
+export type MultiSendAccountCallOptions<Value, Args> = CallOptions<Value, Args> & {};
 
-export interface MultiSendAccountCallRawOptions<Args> extends CallRawOptions<Args> {}
+export type MultiSendAccountCallRawOptions<Args> = CallRawOptions<Args> & {};
 
-export interface MultiSendAccountSendOptions<Value> extends SendOptions<Value> {}
+export type MultiSendAccountSendOptions<Value> = SendOptions<Value> & {};
 
-export interface MultiSendAccountSendRawOptions extends SendRawOptions {}
+export type MultiSendAccountSendRawOptions = SendRawOptions & {};

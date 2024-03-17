@@ -1,4 +1,4 @@
-export interface FungibleTokenMetadata {
+export type FungibleTokenMetadata = {
   spec: string;
   name: string;
   symbol: string;
@@ -6,4 +6,4 @@ export interface FungibleTokenMetadata {
   reference?: string;
   reference_hash?: string;
   decimals: number;
-}
+};

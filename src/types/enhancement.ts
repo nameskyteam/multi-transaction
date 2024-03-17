@@ -69,24 +69,24 @@ export interface WalletSelectorEnhancement extends View, Call, MultiSend {
   sendRaw(mTx: MultiTransaction, options?: MultiSendWalletSelectorSendRawOptions): Promise<FinalExecutionOutcome[]>;
 }
 
-export interface MultiSendWalletSelectorCallOptions<Value, Args> extends CallOptions<Value, Args> {
+export type MultiSendWalletSelectorCallOptions<Value, Args> = CallOptions<Value, Args> & {
   walletId?: string;
   callbackUrl?: string;
-}
+};
 
-export interface MultiSendWalletSelectorCallRawOptions<Args> extends CallRawOptions<Args> {
+export type MultiSendWalletSelectorCallRawOptions<Args> = CallRawOptions<Args> & {
   walletId?: string;
   callbackUrl?: string;
-}
+};
 
-export interface MultiSendWalletSelectorSendOptions<Value> extends SendOptions<Value> {
+export type MultiSendWalletSelectorSendOptions<Value> = SendOptions<Value> & {
   walletId?: string;
   callbackUrl?: string;
-}
+};
 
-export interface MultiSendWalletSelectorSendRawOptions extends SendRawOptions {
+export type MultiSendWalletSelectorSendRawOptions = SendRawOptions & {
   walletId?: string;
   callbackUrl?: string;
-}
+};
 
 export type MultiSendWalletSelectorOptions = WalletSelectorParams | WalletSelector;

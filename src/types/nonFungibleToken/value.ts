@@ -1,11 +1,11 @@
-export interface Token {
+export type Token = {
   token_id: string;
   owner_id: string;
   metadata?: TokenMetadata;
   approved_account_ids?: Record<string, number>;
-}
+};
 
-export interface TokenMetadata {
+export type TokenMetadata = {
   title?: string;
   description?: string;
   media?: string;
@@ -18,9 +18,9 @@ export interface TokenMetadata {
   extra?: string;
   reference?: string;
   reference_hash?: string;
-}
+};
 
-export interface NFTContractMetadata {
+export type NFTContractMetadata = {
   spec: string;
   name: string;
   symbol: string;
@@ -28,4 +28,4 @@ export interface NFTContractMetadata {
   base_uri?: string;
   reference?: string;
   reference_hash?: string;
-}
+};
