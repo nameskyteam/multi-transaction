@@ -1,11 +1,12 @@
 import { FtTransferArgs, FtTransferCallArgs } from './args';
+import { CamelCaseKeys } from 'camelcase-keys';
 
 export interface FtTransferOptions {
-  args: FtTransferArgs;
+  args: CamelCaseKeys<FtTransferArgs>;
   gas?: string;
 }
 
 export interface FtTransferCallOptions {
-  args: FtTransferCallArgs;
+  args: CamelCaseKeys<FtTransferCallArgs>;
   gas?: string;
 }

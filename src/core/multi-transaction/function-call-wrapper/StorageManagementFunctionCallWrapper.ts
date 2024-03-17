@@ -9,30 +9,31 @@ import {
 import { Amount } from '../../../utils';
 import { MultiTransaction } from '../MultiTransaction';
 import { FunctionCallWrapper } from './FunctionCallWrapper';
+import snakecaseKeys from 'snakecase-keys';
 
 export class StorageManagementFunctionCallWrapper extends FunctionCallWrapper {
-  storageDeposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
+  storageDeposit({ args = {}, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',
-      args,
+      args: snakecaseKeys(args),
       attachedDeposit,
       gas,
     });
   }
 
-  storageWithdraw({ args, gas }: StorageWithdrawOptions): MultiTransaction {
+  storageWithdraw({ args = {}, gas }: StorageWithdrawOptions): MultiTransaction {
     return this.functionCall<StorageWithdrawArgs>({
       methodName: 'storage_withdraw',
-      args,
+      args: snakecaseKeys(args),
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
   }
 
-  storageUnregister({ args, gas }: StorageUnregisterOptions): MultiTransaction {
+  storageUnregister({ args = {}, gas }: StorageUnregisterOptions): MultiTransaction {
     return this.functionCall<StorageUnregisterArgs>({
       methodName: 'storage_unregister',
-      args,
+      args: snakecaseKeys(args),
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });

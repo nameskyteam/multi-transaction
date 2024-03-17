@@ -1,27 +1,28 @@
 import { NftTransferArgs, NftTransferCallArgs, NftApproveArgs, NftRevokeArgs, NftRevokeAllArgs } from './args';
+import { CamelCaseKeys } from 'camelcase-keys';
 
 export interface NftTransferOptions {
-  args: NftTransferArgs;
+  args: CamelCaseKeys<NftTransferArgs>;
   gas?: string;
 }
 
 export interface NftTransferCallOptions {
-  args: NftTransferCallArgs;
+  args: CamelCaseKeys<NftTransferCallArgs>;
   gas?: string;
 }
 
 export interface NftApproveOptions {
-  args: NftApproveArgs;
+  args: CamelCaseKeys<NftApproveArgs>;
   attachedDeposit?: string;
   gas?: string;
 }
 
 export interface NftRevokeOptions {
-  args: NftRevokeArgs;
+  args: CamelCaseKeys<NftRevokeArgs>;
   gas?: string;
 }
 
 export interface NftRevokeAllOptions {
-  args: NftRevokeAllArgs;
+  args: CamelCaseKeys<NftRevokeAllArgs>;
   gas?: string;
 }

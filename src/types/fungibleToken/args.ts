@@ -1,20 +1,20 @@
-export interface FtTransferArgs {
+export type FtTransferArgs = {
   receiver_id: string;
   amount: string;
   memo?: string;
-}
+};
 
-export interface FtTransferCallArgs {
+export type FtTransferCallArgs = {
   receiver_id: string;
   amount: string;
   memo?: string;
   msg: string;
-}
+};
 
-export interface FtBalanceOfArgs {
+export type FtBalanceOfArgs = {
   account_id: string;
-}
+};
 
-export interface FtTotalSupplyArgs {}
+export type FtTotalSupplyArgs = {};
 
-export interface FtMetadataArgs {}
+export type FtMetadataArgs = {};

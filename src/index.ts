@@ -1,4 +1,6 @@
 import { BigNumber } from 'bignumber.js';
+import camelcaseKeys, { CamelCaseKeys } from 'camelcase-keys';
+import snakecaseKeys, { SnakeCaseKeys } from 'snakecase-keys';
 
 BigNumber.config({
   DECIMAL_PLACES: 100,
@@ -8,5 +10,5 @@ BigNumber.config({
 export * from './core';
 export * from './types';
 export * from './utils';
-export { BigNumber } from 'bignumber.js';
 export { borshSerialize, borshDeserialize, BorshSchema, EnumVariants, StructFields } from 'borsher';
+export { BigNumber, camelcaseKeys, CamelCaseKeys, snakecaseKeys, SnakeCaseKeys };

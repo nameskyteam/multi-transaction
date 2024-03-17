@@ -1,17 +1,18 @@
 import { StorageDepositArgs, StorageUnregisterArgs, StorageWithdrawArgs } from './args';
+import { CamelCaseKeys } from 'camelcase-keys';
 
 export interface StorageDepositOptions {
-  args?: StorageDepositArgs;
+  args?: CamelCaseKeys<StorageDepositArgs>;
   attachedDeposit: string;
   gas?: string;
 }
 
 export interface StorageWithdrawOptions {
-  args?: StorageWithdrawArgs;
+  args?: CamelCaseKeys<StorageWithdrawArgs>;
   gas?: string;
 }
 
 export interface StorageUnregisterOptions {
-  args?: StorageUnregisterArgs;
+  args?: CamelCaseKeys<StorageUnregisterArgs>;
   gas?: string;
 }
