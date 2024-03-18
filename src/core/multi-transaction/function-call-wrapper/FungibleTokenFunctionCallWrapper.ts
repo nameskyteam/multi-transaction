@@ -4,7 +4,7 @@ import { MultiTransaction } from '../MultiTransaction';
 import { FunctionCallWrapper } from './FunctionCallWrapper';
 
 export class FungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
-  ftTransfer({ args, gas }: FtTransferOptions): MultiTransaction {
+  ft_transfer({ args, gas }: FtTransferOptions): MultiTransaction {
     return this.functionCall<FtTransferArgs>({
       methodName: 'ft_transfer',
       args,
@@ -13,7 +13,7 @@ export class FungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  ftTransferCall({ args, gas }: FtTransferCallOptions): MultiTransaction {
+  ft_transfer_call({ args, gas }: FtTransferCallOptions): MultiTransaction {
     return this.functionCall<FtTransferCallArgs>({
       methodName: 'ft_transfer_call',
       args,
