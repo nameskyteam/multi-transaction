@@ -106,7 +106,7 @@ export async function setupMultiSendWalletSelector(
         return viewer.viewFunction({
           contractId,
           methodName,
-          args: args as any,
+          args: args as object,
           stringify: (args) => stringifier.stringifyOrSkip(args),
           parse: (buffer) => parser.parse(buffer),
           blockQuery,

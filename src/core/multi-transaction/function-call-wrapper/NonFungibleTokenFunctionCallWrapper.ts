@@ -14,8 +14,8 @@ import { Amount, Gas } from '../../../utils';
 import { MultiTransaction } from '../MultiTransaction';
 import { FunctionCallWrapper } from './FunctionCallWrapper';
 
-export class NonFubgibleTokenFunctionCallWrapper extends FunctionCallWrapper {
-  nftTransfer({ args, gas }: NftTransferOptions): MultiTransaction {
+export class NonFungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
+  nft_transfer({ args, gas }: NftTransferOptions): MultiTransaction {
     return this.functionCall<NftTransferArgs>({
       methodName: 'nft_transfer',
       args,
@@ -24,7 +24,7 @@ export class NonFubgibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  nftTransferCall({ args, gas }: NftTransferCallOptions): MultiTransaction {
+  nft_transfer_call({ args, gas }: NftTransferCallOptions): MultiTransaction {
     return this.functionCall<NftTransferCallArgs>({
       methodName: 'nft_transfer_call',
       args,
@@ -33,7 +33,7 @@ export class NonFubgibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  nftApprove({ args, attachedDeposit, gas }: NftApproveOptions): MultiTransaction {
+  nft_approve({ args, attachedDeposit, gas }: NftApproveOptions): MultiTransaction {
     return this.functionCall<NftApproveArgs>({
       methodName: 'nft_approve',
       args,
@@ -42,7 +42,7 @@ export class NonFubgibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  nftRevoke({ args, gas }: NftRevokeOptions): MultiTransaction {
+  nft_revoke({ args, gas }: NftRevokeOptions): MultiTransaction {
     return this.functionCall<NftRevokeArgs>({
       methodName: 'nft_revoke',
       args,
@@ -51,7 +51,7 @@ export class NonFubgibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  nftRevokeAll({ args, gas }: NftRevokeAllOptions): MultiTransaction {
+  nft_revoke_all({ args, gas }: NftRevokeAllOptions): MultiTransaction {
     return this.functionCall<NftRevokeAllArgs>({
       methodName: 'nft_revoke_all',
       args,

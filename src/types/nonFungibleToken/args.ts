@@ -1,58 +1,58 @@
-export interface NftTransferArgs {
+export type NftTransferArgs = {
   receiver_id: string;
   token_id: string;
   approval_id?: number;
   memo?: string;
-}
+};
 
-export interface NftTransferCallArgs {
+export type NftTransferCallArgs = {
   receiver_id: string;
   token_id: string;
   approval_id?: number;
   memo?: string;
   msg: string;
-}
+};
 
-export interface NftTokenArgs {
+export type NftTokenArgs = {
   token_id: string;
-}
+};
 
-export interface NftApproveArgs {
+export type NftApproveArgs = {
   token_id: string;
   account_id: string;
   msg?: string;
-}
+};
 
-export interface NftRevokeArgs {
+export type NftRevokeArgs = {
   token_id: string;
   account_id: string;
-}
+};
 
-export interface NftRevokeAllArgs {
+export type NftRevokeAllArgs = {
   token_id: string;
-}
+};
 
-export interface NftIsApprovedArgs {
+export type NftIsApprovedArgs = {
   token_id: string;
   approved_account_id: string;
   approval_id?: number;
-}
+};
 
-export interface NftMetadataArgs {}
+export type NftMetadataArgs = {};
 
-export interface NftTotalSupplyArgs {}
+export type NftTotalSupplyArgs = {};
 
-export interface NftTokensArgs {
+export type NftTokensArgs = {
   from_index?: string;
   limit?: number;
-}
+};
 
-export interface NftSupplyForOwnerArgs {
+export type NftSupplyForOwnerArgs = {
   account_id: string;
-}
+};
 
-export interface NftTokensForOwnerArgs {
+export type NftTokensForOwnerArgs = {
   account_id: string;
   from_index?: string;
   limit?: number;
-}
+};

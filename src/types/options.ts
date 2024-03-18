@@ -1,7 +1,7 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 import { Parser, Stringifier } from '../utils';
 
-export interface FunctionCallOptions<Args> {
+export type FunctionCallOptions<Args> = {
   /**
    * Method name
    */
@@ -26,9 +26,9 @@ export interface FunctionCallOptions<Args> {
    * Serialize args into bytes
    */
   stringifier?: Stringifier<Args>;
-}
+};
 
-export interface ViewOptions<Value, Args> {
+export type ViewOptions<Value, Args> = {
   /**
    * Contract id
    */
@@ -58,9 +58,9 @@ export interface ViewOptions<Value, Args> {
    * View contract method in the past block
    */
   blockQuery?: BlockQuery;
-}
+};
 
-export interface CallOptions<Value, Args> {
+export type CallOptions<Value, Args> = {
   /**
    * Contract id
    */
@@ -100,9 +100,9 @@ export interface CallOptions<Value, Args> {
    * Throw receipt errors if any
    */
   throwReceiptErrors?: boolean;
-}
+};
 
-export interface CallRawOptions<Args> {
+export type CallRawOptions<Args> = {
   /**
    * Contract id
    */
@@ -137,9 +137,9 @@ export interface CallRawOptions<Args> {
    * Throw receipt errors if any
    */
   throwReceiptErrors?: boolean;
-}
+};
 
-export interface SendOptions<Value> {
+export type SendOptions<Value> = {
   /**
    * Throw receipt errors if any
    */
@@ -149,15 +149,15 @@ export interface SendOptions<Value> {
    * Deserialize returned value from bytes
    */
   parser?: Parser<Value>;
-}
+};
 
-export interface SendRawOptions {
+export type SendRawOptions = {
   /**
    * Throw receipt errors if any
    */
   throwReceiptErrors?: boolean;
-}
+};
 
 export type BlockQuery = BlockReference;
 
-export interface EmptyArgs {}
+export type EmptyArgs = {};

@@ -40,9 +40,9 @@ function getReceiptErrorsFromOutcome(outcome: FinalExecutionOutcome): ReceiptErr
   return errors;
 }
 
-interface ReceiptErrorMessage {
+export type ReceiptErrorMessage = {
   index: number;
   kind: {
     ExecutionError: string;
   };
-}
+};

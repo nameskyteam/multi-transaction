@@ -1,9 +1,9 @@
-export interface StorageBalance {
+export type StorageBalance = {
   total: string;
   available: string;
-}
+};
 
-export interface StorageBalanceBounds {
+export type StorageBalanceBounds = {
   min: string;
   max?: string;
-}
+};

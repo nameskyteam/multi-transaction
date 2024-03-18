@@ -1,11 +1,11 @@
 import { FtTransferArgs, FtTransferCallArgs } from './args';
 
-export interface FtTransferOptions {
+export type FtTransferOptions = {
   args: FtTransferArgs;
   gas?: string;
-}
+};
 
-export interface FtTransferCallOptions {
+export type FtTransferCallOptions = {
   args: FtTransferCallArgs;
   gas?: string;
-}
+};

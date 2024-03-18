@@ -6,7 +6,7 @@ import { PublicKey } from 'near-api-js/lib/utils';
 import {
   FungibleTokenFunctionCallWrapper,
   StorageManagementFunctionCallWrapper,
-  NonFubgibleTokenFunctionCallWrapper,
+  NonFungibleTokenFunctionCallWrapper,
 } from './function-call-wrapper';
 
 /**
@@ -159,7 +159,7 @@ export class MultiTransaction {
 
   functionCall<Args = EmptyArgs>({
     methodName,
-    args = {} as any,
+    args = {} as Args,
     attachedDeposit = Amount.ZERO,
     gas = Gas.default(),
     stringifier = Stringifier.json(),
@@ -182,8 +182,8 @@ export class MultiTransaction {
     return new FungibleTokenFunctionCallWrapper(this);
   }
 
-  get nonFungibleToken(): NonFubgibleTokenFunctionCallWrapper {
-    return new NonFubgibleTokenFunctionCallWrapper(this);
+  get nonFungibleToken(): NonFungibleTokenFunctionCallWrapper {
+    return new NonFungibleTokenFunctionCallWrapper(this);
   }
 
   get storageManagement(): StorageManagementFunctionCallWrapper {

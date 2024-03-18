@@ -1,18 +1,18 @@
-export interface StorageDepositArgs {
+export type StorageDepositArgs = {
   account_id?: string;
   registration_only?: boolean;
-}
+};
 
-export interface StorageWithdrawArgs {
+export type StorageWithdrawArgs = {
   amount?: string;
-}
+};
 
-export interface StorageUnregisterArgs {
+export type StorageUnregisterArgs = {
   force?: boolean;
-}
+};
 
-export interface StorageBalanceOfArgs {
+export type StorageBalanceOfArgs = {
   account_id: string;
-}
+};
 
-export interface StorageBalanceBoundsArgs {}
+export type StorageBalanceBoundsArgs = {};

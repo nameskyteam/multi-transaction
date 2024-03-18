@@ -8,5 +8,5 @@ BigNumber.config({
 export * from './core';
 export * from './types';
 export * from './utils';
-export { BigNumber } from 'bignumber.js';
 export { borshSerialize, borshDeserialize, BorshSchema, EnumVariants, StructFields } from 'borsher';
+export { BigNumber };
