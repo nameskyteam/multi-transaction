@@ -125,7 +125,7 @@ export async function setupMultiSendWalletSelector(
         attachedDeposit,
         gas,
         stringifier,
-        ...sendOptions
+        ...options
       }: MultiSendWalletSelectorCallRawOptions<Args>): Promise<FinalExecutionOutcome> {
         const mTx = MultiTransaction.batch(contractId).functionCall({
           methodName,
@@ -134,7 +134,7 @@ export async function setupMultiSendWalletSelector(
           gas,
           stringifier,
         });
-        const outcomes = await this.sendRaw(mTx, sendOptions);
+        const outcomes = await this.sendRaw(mTx, options);
         return outcomes?.[0];
       },
 

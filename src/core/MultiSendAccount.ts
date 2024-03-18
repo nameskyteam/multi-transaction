@@ -72,7 +72,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
     attachedDeposit,
     gas,
     stringifier,
-    ...sendOptions
+    ...options
   }: MultiSendAccountCallRawOptions<Args>): Promise<FinalExecutionOutcome> {
     const mTx = MultiTransaction.batch(contractId).functionCall({
       methodName,
@@ -81,7 +81,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
       gas,
       stringifier,
     });
-    const outcomes = await this.sendRaw(mTx, sendOptions);
+    const outcomes = await this.sendRaw(mTx, options);
     return outcomes[0];
   }
 
