@@ -11,6 +11,10 @@ import { MultiTransaction } from '../MultiTransaction';
 import { FunctionCallWrapper } from './FunctionCallWrapper';
 
 export class StorageManagementFunctionCallWrapper extends FunctionCallWrapper {
+  constructor(mTx: MultiTransaction) {
+    super(mTx);
+  }
+
   storage_deposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',

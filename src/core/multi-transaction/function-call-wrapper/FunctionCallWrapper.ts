@@ -4,7 +4,7 @@ import { FunctionCallOptions } from '../../../types';
 export abstract class FunctionCallWrapper {
   private mTx: MultiTransaction;
 
-  constructor(mTx: MultiTransaction) {
+  protected constructor(mTx: MultiTransaction) {
     this.mTx = mTx;
   }
 

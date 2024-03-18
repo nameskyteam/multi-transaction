@@ -4,6 +4,10 @@ import { MultiTransaction } from '../MultiTransaction';
 import { FunctionCallWrapper } from './FunctionCallWrapper';
 
 export class FungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
+  constructor(mTx: MultiTransaction) {
+    super(mTx);
+  }
+
   ft_transfer({ args, gas }: FtTransferOptions): MultiTransaction {
     return this.functionCall<FtTransferArgs>({
       methodName: 'ft_transfer',

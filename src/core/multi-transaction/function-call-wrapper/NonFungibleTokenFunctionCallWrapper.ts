@@ -15,6 +15,10 @@ import { MultiTransaction } from '../MultiTransaction';
 import { FunctionCallWrapper } from './FunctionCallWrapper';
 
 export class NonFungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
+  constructor(mTx: MultiTransaction) {
+    super(mTx);
+  }
+
   nft_transfer({ args, gas }: NftTransferOptions): MultiTransaction {
     return this.functionCall<NftTransferArgs>({
       methodName: 'nft_transfer',
