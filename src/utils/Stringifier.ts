@@ -25,9 +25,9 @@ export class Stringifier<T> {
     return new Stringifier('custom', stringify);
   }
 
-  stringifyOrSkip(data: T | Uint8Array): Buffer {
-    if ('byteLength' in data && 'length' in data) {
-      return Buffer.from(data);
+  stringifyOrSkip(data: T): Buffer {
+    if ('byteLength' in data && 'length' in data && 'buffer' in data) {
+      return Buffer.from(data as Uint8Array);
     } else {
       return this.stringify(data);
     }

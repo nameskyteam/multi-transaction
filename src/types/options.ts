@@ -10,7 +10,7 @@ export type FunctionCallOptions<Args> = {
   /**
    * Method args
    */
-  args?: Args | Uint8Array;
+  args?: Args;
 
   /**
    * Attached yocto NEAR amount
@@ -42,7 +42,7 @@ export type ViewOptions<Value, Args> = {
   /**
    * Method args
    */
-  args?: Args | Uint8Array;
+  args?: Args;
 
   /**
    * Serialize args into bytes
@@ -74,7 +74,7 @@ export type CallOptions<Value, Args> = {
   /**
    * Method args
    */
-  args?: Args | Uint8Array;
+  args?: Args;
 
   /**
    * Attached yocto NEAR amount
@@ -116,7 +116,7 @@ export type CallRawOptions<Args> = {
   /**
    * Method args
    */
-  args?: Args | Uint8Array;
+  args?: Args;
 
   /**
    * Attached yocto NEAR amount
