@@ -10,7 +10,7 @@ export class Parser<T> {
   }
 
   static json<T>(): Parser<T> {
-    return new Parser<T>((buffer) => JSON.parse(Buffer.from(buffer).toString()));
+    return new Parser((buffer) => JSON.parse(Buffer.from(buffer).toString()));
   }
 
   static borsh<T>(schema: BorshSchema): Parser<T> {

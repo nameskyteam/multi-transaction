@@ -22,6 +22,9 @@ export class Stringifier<T> {
     return new Stringifier(stringify);
   }
 
+  /**
+   * Skip serialization if data is raw bytes
+   */
   stringifyOrSkip(data: T | Uint8Array): Buffer {
     if ('byteLength' in data && 'length' in data && 'buffer' in data) {
       return Buffer.from(data as Uint8Array);
