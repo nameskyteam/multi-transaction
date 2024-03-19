@@ -24,13 +24,6 @@ export class BlockQuery {
   }
 
   /**
-   * Query at final block
-   */
-  static get final(): BlockQuery {
-    return BlockQuery.from({ finality: 'final' });
-  }
-
-  /**
    * Query at doomslug final block
    */
   static get doomslug(): BlockQuery {
@@ -38,10 +31,10 @@ export class BlockQuery {
   }
 
   /**
-   * Query at genesis block
+   * Query at final block
    */
-  static get genesis(): BlockQuery {
-    return BlockQuery.from({ sync_checkpoint: 'genesis' });
+  static get final(): BlockQuery {
+    return BlockQuery.from({ finality: 'final' });
   }
 
   /**
@@ -52,17 +45,24 @@ export class BlockQuery {
   }
 
   /**
+   * Query at genesis block
+   */
+  static get genesis(): BlockQuery {
+    return BlockQuery.from({ sync_checkpoint: 'genesis' });
+  }
+
+  /**
    * Query at certain block with block height
    */
-  static height(h: number): BlockQuery {
-    return BlockQuery.from({ blockId: h });
+  static height(n: number): BlockQuery {
+    return BlockQuery.from({ blockId: n });
   }
 
   /**
    * Query at certain block with block hash
    */
-  static hash(h: string): BlockQuery {
-    return BlockQuery.from({ blockId: h });
+  static hash(s: string): BlockQuery {
+    return BlockQuery.from({ blockId: s });
   }
 
   /**
