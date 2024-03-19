@@ -1,5 +1,5 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
-import { Provider } from '@near-wallet-selector/core/src/lib/services';
+import { Provider } from 'near-api-js/lib/providers';
 
 export class BlockQuery {
   private readonly reference: BlockReference;
