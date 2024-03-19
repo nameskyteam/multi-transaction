@@ -1,5 +1,5 @@
-import { BlockReference } from 'near-api-js/lib/providers/provider';
 import { Parser, Stringifier } from '../utils';
+import { BlockQuery } from '../utils/BlockQuery';
 
 export type FunctionCallOptions<Args> = {
   /**
@@ -157,7 +157,5 @@ export type SendRawOptions = {
    */
   throwReceiptErrors?: boolean;
 };
-
-export type BlockQuery = BlockReference;
 
 export type EmptyArgs = {};

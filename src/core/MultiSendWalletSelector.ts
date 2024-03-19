@@ -109,7 +109,7 @@ export async function setupMultiSendWalletSelector(
           args: args as object,
           stringify: (args) => stringifier.stringifyOrSkip(args),
           parse: (buffer) => parser.parse(buffer),
-          blockQuery,
+          blockQuery: blockQuery?.into(),
         });
       },
 

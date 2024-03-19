@@ -50,7 +50,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
       args: args as object,
       stringify: (args) => stringifier.stringifyOrSkip(args),
       parse: (buffer) => parser.parse(buffer),
-      blockQuery,
+      blockQuery: blockQuery?.into(),
     });
   }
 
