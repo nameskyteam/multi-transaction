@@ -17,6 +17,7 @@ import {
   Stringifier,
   Parser,
   parseOutcomeValue,
+  BlockQuery,
 } from '../utils';
 import { MultiTransaction } from './multi-transaction';
 
@@ -42,7 +43,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
     args,
     stringifier = Stringifier.json(),
     parser = Parser.json(),
-    blockQuery,
+    blockQuery = BlockQuery.optimistic,
   }: ViewOptions<Value, Args>): Promise<Value> {
     return this.viewFunction({
       contractId,
@@ -50,7 +51,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
       args: args as object,
       stringify: (args) => stringifier.stringifyOrSkip(args),
       parse: (buffer) => parser.parse(buffer),
-      blockQuery: blockQuery?.into(),
+      blockQuery: blockQuery.into(),
     });
   }
 

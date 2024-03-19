@@ -20,6 +20,7 @@ import {
   throwReceiptErrorsFromOutcomes,
   endless,
   parseOutcomeValue,
+  BlockQuery,
 } from '../utils';
 import { MultiSendWalletSelectorSendOptions } from '../types';
 import { BigNumber } from 'bignumber.js';
@@ -100,7 +101,7 @@ export async function setupMultiSendWalletSelector(
         args,
         stringifier = Stringifier.json(),
         parser = Parser.json(),
-        blockQuery,
+        blockQuery = BlockQuery.optimistic,
       }: ViewOptions<Value, Args>): Promise<Value> {
         const viewer = await near.account('');
         return viewer.viewFunction({
@@ -109,7 +110,7 @@ export async function setupMultiSendWalletSelector(
           args: args as object,
           stringify: (args) => stringifier.stringifyOrSkip(args),
           parse: (buffer) => parser.parse(buffer),
-          blockQuery: blockQuery?.into(),
+          blockQuery: blockQuery.into(),
         });
       },
 
