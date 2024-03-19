@@ -6,3 +6,4 @@ export * from './outcome';
 export * from './transform';
 export * from './Stringifier';
 export * from './Parser';
+export * from './BlockQuery';
