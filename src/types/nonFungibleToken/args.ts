@@ -1,3 +1,5 @@
+import { EmptyArgs } from '../../core';
+
 export type NftTransferArgs = {
   receiver_id: string;
   token_id: string;
@@ -38,9 +40,9 @@ export type NftIsApprovedArgs = {
   approval_id?: number;
 };
 
-export type NftMetadataArgs = {};
+export type NftMetadataArgs = EmptyArgs;
 
-export type NftTotalSupplyArgs = {};
+export type NftTotalSupplyArgs = EmptyArgs;
 
 export type NftTokensArgs = {
   from_index?: string;

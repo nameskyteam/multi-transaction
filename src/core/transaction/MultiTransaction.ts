@@ -1,13 +1,9 @@
-import { FunctionCallOptions, EmptyArgs } from '../../types';
 import { Actions } from './Actions';
 import { Transaction, AccessKey, Action } from '../../types';
 import { Amount, Gas, Stringifier } from '../../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { FungibleTokenFunctionCall, StorageManagementFunctionCall, NonFungibleTokenFunctionCall } from './functioncall';
 
-/**
- * Helper for creating transaction(s).
- */
 export class MultiTransaction {
   private readonly transactions: Transaction[];
 
@@ -186,3 +182,13 @@ export class MultiTransaction {
     return new StorageManagementFunctionCall(this);
   }
 }
+
+export type FunctionCallOptions<Args> = {
+  methodName: string;
+  args?: Args;
+  attachedDeposit?: string;
+  gas?: string;
+  stringifier?: Stringifier<Args>;
+};
+
+export type EmptyArgs = Record<string, never>;

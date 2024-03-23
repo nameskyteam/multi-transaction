@@ -3,7 +3,6 @@ import { Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
 import {
-  EmptyArgs,
   MultiSendWalletSelector,
   MultiSendWalletSelectorCallOptions,
   MultiSendWalletSelectorCallRawOptions,
@@ -11,7 +10,7 @@ import {
 } from '../types';
 import { MultiSendWalletSelectorOptions } from '../types';
 import { ViewOptions } from '../types';
-import { MultiTransaction } from './transaction';
+import { MultiTransaction, EmptyArgs } from './transaction';
 import {
   Amount,
   parseNearWalletSelectorTransactions,

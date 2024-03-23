@@ -1,3 +1,5 @@
+import { EmptyArgs } from '../../core';
+
 export type StorageDepositArgs = {
   account_id?: string;
   registration_only?: boolean;
@@ -15,4 +17,4 @@ export type StorageBalanceOfArgs = {
   account_id: string;
 };
 
-export type StorageBalanceBoundsArgs = {};
+export type StorageBalanceBoundsArgs = Record<string, never>;

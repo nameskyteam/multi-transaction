@@ -1,3 +1,5 @@
+import { EmptyArgs } from '../../core';
+
 export type FtTransferArgs = {
   receiver_id: string;
   amount: string;
@@ -15,6 +17,6 @@ export type FtBalanceOfArgs = {
   account_id: string;
 };
 
-export type FtTotalSupplyArgs = {};
+export type FtTotalSupplyArgs = EmptyArgs;
 
-export type FtMetadataArgs = {};
+export type FtMetadataArgs = EmptyArgs;

@@ -1,4 +1,3 @@
-export * from './options';
 export * from './transaction';
 export * from './fungibleToken';
 export * from './storageManagement';

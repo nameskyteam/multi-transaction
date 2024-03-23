@@ -54,9 +54,7 @@ export type TransferAction = {
   params: TransferParams;
 };
 
-export type CreateAccountParams = {
-  [k: string]: never;
-};
+export type CreateAccountParams = Record<string, never>;
 
 export type DeleteAccountParams = {
   beneficiaryId: string;
