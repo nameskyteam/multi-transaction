@@ -1,68 +1,120 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 import { Provider } from 'near-api-js/lib/providers';
 
+type BlockQueryInternal =
+  | { kind: 'optimistic' }
+  | { kind: 'doomslug' }
+  | { kind: 'final' }
+  | { kind: 'earliest' }
+  | { kind: 'genesis' }
+  | { kind: 'height'; height: number }
+  | { kind: 'hash'; hash: string };
+
 export class BlockQuery {
-  private readonly reference: BlockReference;
+  private readonly query: BlockQueryInternal;
 
-  private constructor(reference: BlockReference) {
-    this.reference = reference;
+  private constructor(query: BlockQueryInternal) {
+    this.query = query;
   }
 
-  static from(reference: BlockReference) {
-    return new BlockQuery(reference);
+  static fromReference(reference: BlockReference): BlockQuery {
+    if ('finality' in reference && reference.finality === 'optimistic') {
+      return BlockQuery.optimistic();
+    }
+
+    if ('finality' in reference && reference.finality === 'near-final') {
+      return BlockQuery.doomslug();
+    }
+
+    if ('finality' in reference && reference.finality === 'final') {
+      return BlockQuery.final();
+    }
+
+    if ('sync_checkpoint' in reference && reference.sync_checkpoint === 'earliest_available') {
+      return BlockQuery.earliest();
+    }
+
+    if ('sync_checkpoint' in reference && reference.sync_checkpoint === 'genesis') {
+      return BlockQuery.genesis();
+    }
+
+    if ('blockId' in reference && typeof reference.blockId === 'number') {
+      return BlockQuery.height(reference.blockId);
+    }
+
+    if ('blockId' in reference && typeof reference.blockId === 'string') {
+      return BlockQuery.hash(reference.blockId);
+    }
+
+    throw Error(`Invalid block reference: ${JSON.stringify(reference)}`);
   }
 
-  into(): BlockReference {
-    return this.reference;
+  toReference(): BlockReference {
+    switch (this.query.kind) {
+      case 'optimistic':
+        return { finality: 'optimistic' };
+      case 'doomslug':
+        return { finality: 'near-final' };
+      case 'final':
+        return { finality: 'final' };
+      case 'earliest':
+        return { sync_checkpoint: 'earliest_available' };
+      case 'genesis':
+        return { sync_checkpoint: 'genesis' };
+      case 'height':
+        return { blockId: this.query.height };
+      case 'hash':
+        return { blockId: this.query.hash };
+    }
   }
 
   /**
    * Query at optimistic block
    */
-  static get optimistic(): BlockQuery {
-    return BlockQuery.from({ finality: 'optimistic' });
+  static optimistic(): BlockQuery {
+    return new BlockQuery({ kind: 'optimistic' });
   }
 
   /**
    * Query at doomslug final block
    */
-  static get doomslug(): BlockQuery {
-    return BlockQuery.from({ finality: 'near-final' });
+  static doomslug(): BlockQuery {
+    return new BlockQuery({ kind: 'doomslug' });
   }
 
   /**
    * Query at final block
    */
-  static get final(): BlockQuery {
-    return BlockQuery.from({ finality: 'final' });
+  static final(): BlockQuery {
+    return new BlockQuery({ kind: 'final' });
   }
 
   /**
    * Query at earliest available block
    */
-  static get earliest(): BlockQuery {
-    return BlockQuery.from({ sync_checkpoint: 'earliest_available' });
+  static earliest(): BlockQuery {
+    return new BlockQuery({ kind: 'earliest' });
   }
 
   /**
    * Query at genesis block
    */
-  static get genesis(): BlockQuery {
-    return BlockQuery.from({ sync_checkpoint: 'genesis' });
+  static genesis(): BlockQuery {
+    return new BlockQuery({ kind: 'genesis' });
   }
 
   /**
    * Query at certain block with block height
    */
-  static height(n: number): BlockQuery {
-    return BlockQuery.from({ blockId: n });
+  static height(height: number): BlockQuery {
+    return new BlockQuery({ kind: 'height', height });
   }
 
   /**
    * Query at certain block with block hash
    */
-  static hash(s: string): BlockQuery {
-    return BlockQuery.from({ blockId: s });
+  static hash(hash: string): BlockQuery {
+    return new BlockQuery({ kind: 'hash', hash });
   }
 
   /**
@@ -102,11 +154,10 @@ export class BlockQuery {
    * });
    */
   async height(provider: Provider): Promise<BlockQuery> {
-    if ('blockId' in this.reference && typeof this.reference.blockId === 'number') {
-      return BlockQuery.height(this.reference.blockId);
+    if (this.query.kind === 'height') {
+      return BlockQuery.height(this.query.height);
     }
-
-    const block = await provider.block(this.reference);
+    const block = await provider.block(this.toReference());
     return BlockQuery.height(block.header.height);
   }
 
@@ -147,11 +198,10 @@ export class BlockQuery {
    * });
    */
   async hash(provider: Provider): Promise<BlockQuery> {
-    if ('blockId' in this.reference && typeof this.reference.blockId === 'string') {
-      return BlockQuery.hash(this.reference.blockId);
+    if (this.query.kind === 'hash') {
+      return BlockQuery.hash(this.query.hash);
     }
-
-    const block = await provider.block(this.reference);
+    const block = await provider.block(this.toReference());
     return BlockQuery.hash(block.header.hash);
   }
 }
