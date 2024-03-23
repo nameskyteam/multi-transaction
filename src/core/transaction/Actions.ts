@@ -24,7 +24,6 @@ export class Actions {
   static createAccount(): CreateAccountAction {
     return {
       type: 'CreateAccount',
-      params: {},
     };
   }
 

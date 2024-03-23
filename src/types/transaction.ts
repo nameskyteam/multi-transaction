@@ -16,7 +16,6 @@ export type Action =
 
 export type CreateAccountAction = {
   type: 'CreateAccount';
-  params: CreateAccountParams;
 };
 
 export type DeleteAccountAction = {
@@ -53,8 +52,6 @@ export type TransferAction = {
   type: 'Transfer';
   params: TransferParams;
 };
-
-export type CreateAccountParams = Record<string, never>;
 
 export type DeleteAccountParams = {
   beneficiaryId: string;

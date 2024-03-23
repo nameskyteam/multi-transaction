@@ -1,7 +1,7 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 import { Provider } from 'near-api-js/lib/providers';
 
-type EnumerableBlockQuery =
+type InternalBlockQuery =
   | { kind: 'optimistic' }
   | { kind: 'doomslug' }
   | { kind: 'final' }
@@ -11,9 +11,9 @@ type EnumerableBlockQuery =
   | { kind: 'hash'; hash: string };
 
 export class BlockQuery {
-  private readonly query: EnumerableBlockQuery;
+  private readonly query: InternalBlockQuery;
 
-  private constructor(query: EnumerableBlockQuery) {
+  private constructor(query: InternalBlockQuery) {
     this.query = query;
   }
 
