@@ -122,7 +122,7 @@ export class BlockQuery {
    * This is useful when need multiple queries at the same block
    *
    * @example
-   * const blockQuery = BlockQuery.final;
+   * const blockQuery = BlockQuery.FINAL;
    *
    * const supply1 = await account.view({
    *   contractId: 'wrap.near',
@@ -138,7 +138,7 @@ export class BlockQuery {
    * });
    *
    *@example
-   * const blockQuery = await BlockQuery.final.height(provider);
+   * const blockQuery = await BlockQuery.FINAL.height(provider);
    *
    * const supply1 = await account.view({
    *   contractId: 'wrap.near',
@@ -166,7 +166,7 @@ export class BlockQuery {
    * This is useful when need multiple queries at the same block
    *
    * @example
-   * const blockQuery = BlockQuery.final;
+   * const blockQuery = BlockQuery.FINAL;
    *
    * const supply1 = await account.view({
    *   contractId: 'wrap.near',
@@ -182,7 +182,7 @@ export class BlockQuery {
    * });
    *
    *@example
-   * const blockQuery = await BlockQuery.final.hash(provider);
+   * const blockQuery = await BlockQuery.FINAL.hash(provider);
    *
    * const supply1 = await account.view({
    *   contractId: 'wrap.near',

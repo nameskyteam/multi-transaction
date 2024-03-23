@@ -22,35 +22,36 @@ function parseNearApiJsAction(action: Action): NearApiJsActionLike {
       return nearApiJs.transactions.createAccount();
     }
     case 'DeleteAccount': {
-      const { beneficiaryId } = action.params;
-      return nearApiJs.transactions.deleteAccount(beneficiaryId);
+      return nearApiJs.transactions.deleteAccount(action.params.beneficiaryId);
     }
     case 'AddKey': {
-      const { publicKey, accessKey } = action.params;
       return nearApiJs.transactions.addKey(
-        nearApiJs.utils.PublicKey.fromString(publicKey),
-        parseNearApiJsAccessKey(accessKey)
+        nearApiJs.utils.PublicKey.fromString(action.params.publicKey),
+        parseNearApiJsAccessKey(action.params.accessKey)
       );
     }
     case 'DeleteKey': {
-      const { publicKey } = action.params;
-      return nearApiJs.transactions.deleteKey(nearApiJs.utils.PublicKey.fromString(publicKey));
+      return nearApiJs.transactions.deleteKey(nearApiJs.utils.PublicKey.fromString(action.params.publicKey));
     }
     case 'DeployContract': {
-      const { code } = action.params;
-      return nearApiJs.transactions.deployContract(code);
+      return nearApiJs.transactions.deployContract(action.params.code);
     }
     case 'Stake': {
-      const { amount, publicKey } = action.params;
-      return nearApiJs.transactions.stake(new BN(amount), nearApiJs.utils.PublicKey.fromString(publicKey));
+      return nearApiJs.transactions.stake(
+        new BN(action.params.amount),
+        nearApiJs.utils.PublicKey.fromString(action.params.publicKey)
+      );
     }
     case 'FunctionCall': {
-      const { methodName, args, gas, attachedDeposit } = action.params;
-      return nearApiJs.transactions.functionCall(methodName, args, new BN(gas), new BN(attachedDeposit));
+      return nearApiJs.transactions.functionCall(
+        action.params.methodName,
+        action.params.args,
+        new BN(action.params.gas),
+        new BN(action.params.attachedDeposit)
+      );
     }
     case 'Transfer': {
-      const { amount } = action.params;
-      return nearApiJs.transactions.transfer(new BN(amount));
+      return nearApiJs.transactions.transfer(new BN(action.params.amount));
     }
   }
 }
