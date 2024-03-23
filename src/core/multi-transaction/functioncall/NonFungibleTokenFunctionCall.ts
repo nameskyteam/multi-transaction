@@ -12,14 +12,14 @@ import {
 } from '../../../types';
 import { Amount, Gas } from '../../../utils';
 import { MultiTransaction } from '../MultiTransaction';
-import { FunctionCallWrapper } from './FunctionCallWrapper';
+import { FunctionCall } from './FunctionCall';
 
-export class NonFungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
+export class NonFungibleTokenFunctionCall extends FunctionCall {
   constructor(mTx: MultiTransaction) {
     super(mTx);
   }
 
-  nft_transfer({ args, gas }: NftTransferOptions): MultiTransaction {
+  transfer({ args, gas }: NftTransferOptions): MultiTransaction {
     return this.functionCall<NftTransferArgs>({
       methodName: 'nft_transfer',
       args,
@@ -28,7 +28,7 @@ export class NonFungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  nft_transfer_call({ args, gas }: NftTransferCallOptions): MultiTransaction {
+  transfer_call({ args, gas }: NftTransferCallOptions): MultiTransaction {
     return this.functionCall<NftTransferCallArgs>({
       methodName: 'nft_transfer_call',
       args,
@@ -37,7 +37,7 @@ export class NonFungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  nft_approve({ args, attachedDeposit, gas }: NftApproveOptions): MultiTransaction {
+  approve({ args, attachedDeposit, gas }: NftApproveOptions): MultiTransaction {
     return this.functionCall<NftApproveArgs>({
       methodName: 'nft_approve',
       args,
@@ -46,7 +46,7 @@ export class NonFungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  nft_revoke({ args, gas }: NftRevokeOptions): MultiTransaction {
+  revoke({ args, gas }: NftRevokeOptions): MultiTransaction {
     return this.functionCall<NftRevokeArgs>({
       methodName: 'nft_revoke',
       args,
@@ -55,7 +55,7 @@ export class NonFungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  nft_revoke_all({ args, gas }: NftRevokeAllOptions): MultiTransaction {
+  revoke_all({ args, gas }: NftRevokeAllOptions): MultiTransaction {
     return this.functionCall<NftRevokeAllArgs>({
       methodName: 'nft_revoke_all',
       args,

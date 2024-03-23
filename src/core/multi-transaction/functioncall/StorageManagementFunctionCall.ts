@@ -8,14 +8,14 @@ import {
 } from '../../../types';
 import { Amount } from '../../../utils';
 import { MultiTransaction } from '../MultiTransaction';
-import { FunctionCallWrapper } from './FunctionCallWrapper';
+import { FunctionCall } from './FunctionCall';
 
-export class StorageManagementFunctionCallWrapper extends FunctionCallWrapper {
+export class StorageManagementFunctionCall extends FunctionCall {
   constructor(mTx: MultiTransaction) {
     super(mTx);
   }
 
-  storage_deposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
+  deposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',
       args,
@@ -24,7 +24,7 @@ export class StorageManagementFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  storage_withdraw({ args, gas }: StorageWithdrawOptions): MultiTransaction {
+  withdraw({ args, gas }: StorageWithdrawOptions): MultiTransaction {
     return this.functionCall<StorageWithdrawArgs>({
       methodName: 'storage_withdraw',
       args,
@@ -33,7 +33,7 @@ export class StorageManagementFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  storage_unregister({ args, gas }: StorageUnregisterOptions): MultiTransaction {
+  unregister({ args, gas }: StorageUnregisterOptions): MultiTransaction {
     return this.functionCall<StorageUnregisterArgs>({
       methodName: 'storage_unregister',
       args,

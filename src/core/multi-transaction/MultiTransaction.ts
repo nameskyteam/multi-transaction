@@ -3,11 +3,7 @@ import { Actions } from './Actions';
 import { Transaction, AccessKey, Action } from '../../types';
 import { Amount, Gas, Stringifier } from '../../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
-import {
-  FungibleTokenFunctionCallWrapper,
-  StorageManagementFunctionCallWrapper,
-  NonFungibleTokenFunctionCallWrapper,
-} from './function-call-wrapper';
+import { FungibleTokenFunctionCall, StorageManagementFunctionCall, NonFungibleTokenFunctionCall } from './functioncall';
 
 /**
  * Helper for creating transaction(s).
@@ -178,15 +174,15 @@ export class MultiTransaction {
     return this.addActions([Actions.transfer({ amount })]);
   }
 
-  get fungibleToken(): FungibleTokenFunctionCallWrapper {
-    return new FungibleTokenFunctionCallWrapper(this);
+  get ft(): FungibleTokenFunctionCall {
+    return new FungibleTokenFunctionCall(this);
   }
 
-  get nonFungibleToken(): NonFungibleTokenFunctionCallWrapper {
-    return new NonFungibleTokenFunctionCallWrapper(this);
+  get nft(): NonFungibleTokenFunctionCall {
+    return new NonFungibleTokenFunctionCall(this);
   }
 
-  get storageManagement(): StorageManagementFunctionCallWrapper {
-    return new StorageManagementFunctionCallWrapper(this);
+  get storage(): StorageManagementFunctionCall {
+    return new StorageManagementFunctionCall(this);
   }
 }

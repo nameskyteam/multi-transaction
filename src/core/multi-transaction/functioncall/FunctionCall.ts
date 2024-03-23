@@ -1,7 +1,7 @@
 import { MultiTransaction } from '../MultiTransaction';
 import { FunctionCallOptions } from '../../../types';
 
-export abstract class FunctionCallWrapper {
+export abstract class FunctionCall {
   private mTx: MultiTransaction;
 
   protected constructor(mTx: MultiTransaction) {
