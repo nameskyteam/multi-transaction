@@ -17,4 +17,4 @@ export type StorageBalanceOfArgs = {
   account_id: string;
 };
 
-export type StorageBalanceBoundsArgs = Record<string, never>;
+export type StorageBalanceBoundsArgs = EmptyArgs;
