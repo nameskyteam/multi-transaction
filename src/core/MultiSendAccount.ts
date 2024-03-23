@@ -43,7 +43,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
     args,
     stringifier = Stringifier.json(),
     parser = Parser.json(),
-    blockQuery = BlockQuery.optimistic,
+    blockQuery = BlockQuery.OPTIMISTIC,
   }: ViewOptions<Value, Args>): Promise<Value> {
     return this.viewFunction({
       contractId,
@@ -51,7 +51,7 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
       args: args as object,
       stringify: (args) => stringifier.stringifyOrSkip(args),
       parse: (buffer) => parser.parse(buffer),
-      blockQuery: blockQuery.into(),
+      blockQuery: blockQuery.toReference(),
     });
   }
 

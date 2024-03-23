@@ -1,3 +1,3 @@
 export * from './Actions';
 export * from './MultiTransaction';
-export * from './function-call-wrapper';
+export * from './functioncall';

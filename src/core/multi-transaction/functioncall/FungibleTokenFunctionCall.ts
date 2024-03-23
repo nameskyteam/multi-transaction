@@ -1,14 +1,14 @@
 import { FtTransferArgs, FtTransferCallArgs, FtTransferCallOptions, FtTransferOptions } from '../../../types';
 import { Amount, Gas } from '../../../utils';
 import { MultiTransaction } from '../MultiTransaction';
-import { FunctionCallWrapper } from './FunctionCallWrapper';
+import { FunctionCall } from './FunctionCall';
 
-export class FungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
+export class FungibleTokenFunctionCall extends FunctionCall {
   constructor(mTx: MultiTransaction) {
     super(mTx);
   }
 
-  ft_transfer({ args, gas }: FtTransferOptions): MultiTransaction {
+  transfer({ args, gas }: FtTransferOptions): MultiTransaction {
     return this.functionCall<FtTransferArgs>({
       methodName: 'ft_transfer',
       args,
@@ -17,7 +17,7 @@ export class FungibleTokenFunctionCallWrapper extends FunctionCallWrapper {
     });
   }
 
-  ft_transfer_call({ args, gas }: FtTransferCallOptions): MultiTransaction {
+  transfer_call({ args, gas }: FtTransferCallOptions): MultiTransaction {
     return this.functionCall<FtTransferCallArgs>({
       methodName: 'ft_transfer_call',
       args,
