@@ -101,7 +101,7 @@ export async function setupMultiSendWalletSelector(
         args,
         stringifier = Stringifier.json(),
         parser = Parser.json(),
-        blockQuery = BlockQuery.optimistic(),
+        blockQuery = BlockQuery.OPTIMISTIC,
       }: ViewOptions<Value, Args>): Promise<Value> {
         const viewer = await near.account('');
         return viewer.viewFunction({

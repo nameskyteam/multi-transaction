@@ -1,7 +1,7 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 import { Provider } from 'near-api-js/lib/providers';
 
-type BlockQueryInternal =
+type EnumerableBlockQuery =
   | { kind: 'optimistic' }
   | { kind: 'doomslug' }
   | { kind: 'final' }
@@ -11,31 +11,31 @@ type BlockQueryInternal =
   | { kind: 'hash'; hash: string };
 
 export class BlockQuery {
-  private readonly query: BlockQueryInternal;
+  private readonly query: EnumerableBlockQuery;
 
-  private constructor(query: BlockQueryInternal) {
+  private constructor(query: EnumerableBlockQuery) {
     this.query = query;
   }
 
   static fromReference(reference: BlockReference): BlockQuery {
     if ('finality' in reference && reference.finality === 'optimistic') {
-      return BlockQuery.optimistic();
+      return BlockQuery.OPTIMISTIC;
     }
 
     if ('finality' in reference && reference.finality === 'near-final') {
-      return BlockQuery.doomslug();
+      return BlockQuery.DOOMSLUG;
     }
 
     if ('finality' in reference && reference.finality === 'final') {
-      return BlockQuery.final();
+      return BlockQuery.FINAL;
     }
 
     if ('sync_checkpoint' in reference && reference.sync_checkpoint === 'earliest_available') {
-      return BlockQuery.earliest();
+      return BlockQuery.EARLIEST;
     }
 
     if ('sync_checkpoint' in reference && reference.sync_checkpoint === 'genesis') {
-      return BlockQuery.genesis();
+      return BlockQuery.GENESIS;
     }
 
     if ('blockId' in reference && typeof reference.blockId === 'number') {
@@ -46,7 +46,7 @@ export class BlockQuery {
       return BlockQuery.hash(reference.blockId);
     }
 
-    throw Error(`Invalid block reference: ${JSON.stringify(reference)}`);
+    throw Error(`Unreachable`);
   }
 
   toReference(): BlockReference {
@@ -71,35 +71,35 @@ export class BlockQuery {
   /**
    * Query at optimistic block
    */
-  static optimistic(): BlockQuery {
+  static get OPTIMISTIC(): BlockQuery {
     return new BlockQuery({ kind: 'optimistic' });
   }
 
   /**
    * Query at doomslug final block
    */
-  static doomslug(): BlockQuery {
+  static get DOOMSLUG(): BlockQuery {
     return new BlockQuery({ kind: 'doomslug' });
   }
 
   /**
    * Query at final block
    */
-  static final(): BlockQuery {
+  static get FINAL(): BlockQuery {
     return new BlockQuery({ kind: 'final' });
   }
 
   /**
    * Query at earliest available block
    */
-  static earliest(): BlockQuery {
+  static get EARLIEST(): BlockQuery {
     return new BlockQuery({ kind: 'earliest' });
   }
 
   /**
    * Query at genesis block
    */
-  static genesis(): BlockQuery {
+  static get GENESIS(): BlockQuery {
     return new BlockQuery({ kind: 'genesis' });
   }
 
