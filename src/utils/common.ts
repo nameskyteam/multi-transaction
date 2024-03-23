@@ -1,3 +1,5 @@
 export function endless(): never {
-  while (true) {}
+  while (true) {
+    // endless loop
+  }
 }

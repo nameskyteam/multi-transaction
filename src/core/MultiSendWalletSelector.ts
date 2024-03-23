@@ -11,7 +11,7 @@ import {
 } from '../types';
 import { MultiSendWalletSelectorOptions } from '../types';
 import { ViewOptions } from '../types';
-import { MultiTransaction } from './multi-transaction';
+import { MultiTransaction } from './transaction';
 import {
   Amount,
   parseNearWalletSelectorTransactions,

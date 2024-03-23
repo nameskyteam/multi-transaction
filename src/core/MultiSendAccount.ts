@@ -4,7 +4,7 @@ import {
   CallOptions,
   CallRawOptions,
   EmptyArgs,
-  MultiSend,
+  Send,
   SendOptions,
   SendRawOptions,
   View,
@@ -19,9 +19,9 @@ import {
   parseOutcomeValue,
   BlockQuery,
 } from '../utils';
-import { MultiTransaction } from './multi-transaction';
+import { MultiTransaction } from './transaction';
 
-export class MultiSendAccount extends Account implements View, Call, MultiSend {
+export class MultiSendAccount extends Account implements View, Call, Send {
   private constructor(connection: Connection, accountId: string) {
     super(connection, accountId);
   }
@@ -120,10 +120,10 @@ export class MultiSendAccount extends Account implements View, Call, MultiSend {
   }
 }
 
-export type MultiSendAccountCallOptions<Value, Args> = CallOptions<Value, Args> & {};
+export type MultiSendAccountCallOptions<Value, Args> = CallOptions<Value, Args>;
 
-export type MultiSendAccountCallRawOptions<Args> = CallRawOptions<Args> & {};
+export type MultiSendAccountCallRawOptions<Args> = CallRawOptions<Args>;
 
-export type MultiSendAccountSendOptions<Value> = SendOptions<Value> & {};
+export type MultiSendAccountSendOptions<Value> = SendOptions<Value>;
 
-export type MultiSendAccountSendRawOptions = SendRawOptions & {};
+export type MultiSendAccountSendRawOptions = SendRawOptions;

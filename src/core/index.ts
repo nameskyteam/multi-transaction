@@ -1,3 +1,3 @@
-export * from './multi-transaction';
-export { MultiSendAccount } from './MultiSendAccount';
+export * from './transaction';
+export * from './MultiSendAccount';
 export * from './MultiSendWalletSelector';

@@ -11,15 +11,8 @@
   ],
   "rules": {
     "eol-last": 2,
-    "no-empty": "off",
     "no-constant-condition": "off",
-    "@typescript-eslint/no-empty-interface": [
-      "off"
-    ],
     "@typescript-eslint/no-empty-function": [
-      "off"
-    ],
-    "@typescript-eslint/ban-types": [
       "off"
     ]
   }

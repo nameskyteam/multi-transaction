@@ -11,7 +11,7 @@ export interface Call {
   callRaw<Args>(options: CallRawOptions<Args>): Promise<FinalExecutionOutcome>;
 }
 
-export interface MultiSend {
+export interface Send {
   send<Value>(mTx: MultiTransaction, options?: SendOptions<Value>): Promise<Value>;
   sendRaw(mTx: MultiTransaction, options?: SendRawOptions): Promise<FinalExecutionOutcome[]>;
 }

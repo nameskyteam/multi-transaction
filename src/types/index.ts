@@ -5,4 +5,4 @@ export * from './storageManagement';
 export * from './nonFungibleToken';
 export * from './enhancement';
 export * from './common';
-export * from './multi-send';
+export * from './send';

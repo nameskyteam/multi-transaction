@@ -1,5 +1,5 @@
 import { Parser, Stringifier } from '../utils';
-import { BlockQuery } from '../utils/BlockQuery';
+import { BlockQuery } from '../utils';
 
 export type FunctionCallOptions<Args> = {
   /**
@@ -158,4 +158,6 @@ export type SendRawOptions = {
   throwReceiptErrors?: boolean;
 };
 
-export type EmptyArgs = {};
+export type EmptyArgs = {
+  [k: string]: never;
+};

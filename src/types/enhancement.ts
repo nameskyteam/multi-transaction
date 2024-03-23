@@ -5,7 +5,7 @@ import {
   CallOptions,
   CallRawOptions,
   EmptyArgs,
-  MultiSend,
+  Send,
   SendOptions,
   SendRawOptions,
   View,
@@ -17,7 +17,7 @@ import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 
 export interface MultiSendWalletSelector extends WalletSelector, WalletSelectorEnhancement {}
 
-export interface WalletSelectorEnhancement extends View, Call, MultiSend {
+export interface WalletSelectorEnhancement extends View, Call, Send {
   near: Near;
 
   /**
