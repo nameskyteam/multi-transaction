@@ -27,15 +27,16 @@ export class MultiTransaction {
    * Create a `MultiTransaction` that contains one transaction.
    * @param options options
    */
-  static batch(options: BatchOptions): MultiTransaction {
+  static batch(options?: BatchOptions): MultiTransaction {
     return MultiTransaction.new().batch(options);
   }
 
   /**
    * Add a transaction following the previous one.
+   * @param options options
    */
-  batch({ signerId, receiverId }: BatchOptions): this {
-    return this.addTransactions([{ signerId, receiverId, actions: [] }]);
+  batch(options?: BatchOptions): this {
+    return this.addTransactions([{ signerId: options?.signerId, receiverId: options?.receiverId, actions: [] }]);
   }
 
   /**
