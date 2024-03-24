@@ -27,7 +27,7 @@ function parseNearApiJsAction(action: Action): NearApiJsActionLike {
     case 'AddKey': {
       return nearApiJs.transactions.addKey(
         nearApiJs.utils.PublicKey.fromString(action.params.publicKey),
-        parseNearApiJsAccessKey(action.params.accessKey)
+        parseNearApiJsAccessKey(action.params.accessKey),
       );
     }
     case 'DeleteKey': {
@@ -39,7 +39,7 @@ function parseNearApiJsAction(action: Action): NearApiJsActionLike {
     case 'Stake': {
       return nearApiJs.transactions.stake(
         new BN(action.params.amount),
-        nearApiJs.utils.PublicKey.fromString(action.params.publicKey)
+        nearApiJs.utils.PublicKey.fromString(action.params.publicKey),
       );
     }
     case 'FunctionCall': {
@@ -47,7 +47,7 @@ function parseNearApiJsAction(action: Action): NearApiJsActionLike {
         action.params.methodName,
         action.params.args,
         new BN(action.params.gas),
-        new BN(action.params.attachedDeposit)
+        new BN(action.params.attachedDeposit),
       );
     }
     case 'Transfer': {
@@ -65,7 +65,7 @@ function parseNearApiJsAccessKey(accessKey: AccessKey): nearApiJs.transactions.A
     return nearApiJs.transactions.functionCallAccessKey(
       receiverId,
       methodNames,
-      allowance ? new BN(allowance) : undefined
+      allowance ? new BN(allowance) : undefined,
     );
   }
 }

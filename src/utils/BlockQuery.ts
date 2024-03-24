@@ -1,7 +1,7 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 import { Provider } from 'near-api-js/lib/providers';
 
-type InternalBlockQuery =
+type BlockQueryInternal =
   | { kind: 'optimistic' }
   | { kind: 'doomslug' }
   | { kind: 'final' }
@@ -11,10 +11,14 @@ type InternalBlockQuery =
   | { kind: 'hash'; hash: string };
 
 export class BlockQuery {
-  private readonly query: InternalBlockQuery;
+  private readonly internal: BlockQueryInternal;
 
-  private constructor(query: InternalBlockQuery) {
-    this.query = query;
+  private constructor(internal: BlockQueryInternal) {
+    this.internal = internal;
+  }
+
+  private unexpectedKind(): never {
+    throw Error(`Unexpected kind: ${this.internal.kind}`);
   }
 
   static fromReference(reference: BlockReference): BlockQuery {
@@ -46,26 +50,39 @@ export class BlockQuery {
       return BlockQuery.hash(reference.blockId);
     }
 
-    throw Error(`Unreachable`);
+    throw Error(`Unexpected reference: ${JSON.stringify(reference)}`);
   }
 
   toReference(): BlockReference {
-    switch (this.query.kind) {
-      case 'optimistic':
-        return { finality: 'optimistic' };
-      case 'doomslug':
-        return { finality: 'near-final' };
-      case 'final':
-        return { finality: 'final' };
-      case 'earliest':
-        return { sync_checkpoint: 'earliest_available' };
-      case 'genesis':
-        return { sync_checkpoint: 'genesis' };
-      case 'height':
-        return { blockId: this.query.height };
-      case 'hash':
-        return { blockId: this.query.hash };
+    if (this.internal.kind === 'optimistic') {
+      return { finality: 'optimistic' };
     }
+
+    if (this.internal.kind === 'doomslug') {
+      return { finality: 'near-final' };
+    }
+
+    if (this.internal.kind === 'final') {
+      return { finality: 'final' };
+    }
+
+    if (this.internal.kind === 'earliest') {
+      return { sync_checkpoint: 'earliest_available' };
+    }
+
+    if (this.internal.kind === 'genesis') {
+      return { sync_checkpoint: 'genesis' };
+    }
+
+    if (this.internal.kind === 'height') {
+      return { blockId: this.internal.height };
+    }
+
+    if (this.internal.kind === 'hash') {
+      return { blockId: this.internal.hash };
+    }
+
+    this.unexpectedKind();
   }
 
   /**
@@ -154,8 +171,8 @@ export class BlockQuery {
    * });
    */
   async height(provider: Provider): Promise<BlockQuery> {
-    if (this.query.kind === 'height') {
-      return BlockQuery.height(this.query.height);
+    if (this.internal.kind === 'height') {
+      return BlockQuery.height(this.internal.height);
     }
     const block = await provider.block(this.toReference());
     return BlockQuery.height(block.header.height);
@@ -198,8 +215,8 @@ export class BlockQuery {
    * });
    */
   async hash(provider: Provider): Promise<BlockQuery> {
-    if (this.query.kind === 'hash') {
-      return BlockQuery.hash(this.query.hash);
+    if (this.internal.kind === 'hash') {
+      return BlockQuery.hash(this.internal.hash);
     }
     const block = await provider.block(this.toReference());
     return BlockQuery.hash(block.header.hash);
