@@ -25,19 +25,16 @@ export class MultiTransaction {
 
   /**
    * Create a `MultiTransaction` that contains one transaction.
-   * @param receiverId receiver id
-   * @param signerId signer id
+   * @param options options
    */
-  static batch(receiverId: string, signerId?: string): MultiTransaction {
-    return MultiTransaction.new().batch(receiverId, signerId);
+  static batch(options: BatchOptions): MultiTransaction {
+    return MultiTransaction.new().batch(options);
   }
 
   /**
    * Add a transaction following the previous one.
-   * @param receiverId receiver id
-   * @param signerId signer id
    */
-  batch(receiverId: string, signerId?: string): this {
+  batch({ signerId, receiverId }: BatchOptions): this {
     return this.addTransactions([{ signerId, receiverId, actions: [] }]);
   }
 
@@ -50,32 +47,29 @@ export class MultiTransaction {
   }
 
   /**
-   * Extend actions.
-   * This requires that the other `MultiTransaction` should contain ONLY one transaction and with the same `receiverId` & `signerId` as CURRENT transaction.
-   * Actions will be added into CURRENT transaction.
+   * Extend actions into CURRENT transaction.
    * @param mTx mTx
    */
   extendActions(mTx: MultiTransaction): this {
     const otherTransactions = mTx.toTransactions();
 
+    if (otherTransactions.length > 1) {
+      throw new MultiTransactionError('Other `mTx` should contain up to one transaction');
+    }
+
     if (otherTransactions.length === 0) {
       return this;
     }
 
-    if (otherTransactions.length > 1) {
-      throw new MultiTransactionError('Other should contain ONLY one transaction');
-    }
-
     const otherTransaction = otherTransactions[0];
+    const currentTransaction = this.getCurrentTransaction();
 
-    const transaction = this.getCurrentTransaction();
-
-    if (otherTransaction.receiverId !== transaction.receiverId) {
-      throw new MultiTransactionError('Other should contain the same `receiverId`');
+    if (otherTransaction.signerId && otherTransaction.signerId !== currentTransaction.signerId) {
+      throw new MultiTransactionError('Other transaction should have the same `signerId`');
     }
 
-    if (otherTransaction.signerId !== transaction.signerId) {
-      throw new MultiTransactionError('Other should contain the same `signerId`');
+    if (otherTransaction.receiverId && otherTransaction.receiverId !== currentTransaction.receiverId) {
+      throw new MultiTransactionError('Other transaction should have the same `receiverId`');
     }
 
     return this.addActions(otherTransaction.actions);
@@ -234,6 +228,8 @@ export class MultiTransaction {
     return new StorageManagementFunctionCall(this);
   }
 }
+
+export type BatchOptions = Pick<Transaction, 'signerId' | 'receiverId'>;
 
 export type FunctionCallOptions<Args> = {
   methodName: string;

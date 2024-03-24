@@ -10,7 +10,7 @@ import {
   BlockQuery,
 } from '../utils';
 import { MultiTransaction, EmptyArgs } from './transaction';
-import { MultiSendAccountError } from '../errors';
+import { SendError } from '../errors';
 
 export class MultiSendAccount extends Account implements View, Call, Send {
   private constructor(connection: Connection, accountId: string) {
@@ -66,7 +66,7 @@ export class MultiSendAccount extends Account implements View, Call, Send {
     stringifier,
     ...options
   }: MultiSendAccountCallRawOptions<Args>): Promise<FinalExecutionOutcome> {
-    const mTx = MultiTransaction.batch(contractId).functionCall({
+    const mTx = MultiTransaction.batch({ receiverId: contractId }).functionCall({
       methodName,
       args,
       attachedDeposit,
@@ -97,7 +97,7 @@ export class MultiSendAccount extends Account implements View, Call, Send {
     const transactions = parseNearApiJsTransactions(mTx);
 
     if (transactions.length === 0) {
-      throw new MultiSendAccountError('Transaction not found.');
+      throw new SendError('Transaction not found.');
     }
 
     const outcomes: FinalExecutionOutcome[] = [];

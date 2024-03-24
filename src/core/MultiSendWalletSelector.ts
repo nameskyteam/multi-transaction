@@ -23,7 +23,7 @@ import {
 } from '../utils';
 import { MultiSendWalletSelectorSendOptions } from '../types';
 import { BigNumber } from 'bignumber.js';
-import { MultiSendWalletSelectorError } from '../errors';
+import { SendError } from '../errors';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 
@@ -128,7 +128,7 @@ export async function setupMultiSendWalletSelector(
         stringifier,
         ...options
       }: MultiSendWalletSelectorCallRawOptions<Args>): Promise<FinalExecutionOutcome> {
-        const mTx = MultiTransaction.batch(contractId).functionCall({
+        const mTx = MultiTransaction.batch({ receiverId: contractId }).functionCall({
           methodName,
           args,
           attachedDeposit,
@@ -152,7 +152,7 @@ export async function setupMultiSendWalletSelector(
         const transactions = parseNearWalletSelectorTransactions(mTx);
 
         if (transactions.length === 0) {
-          throw new MultiSendWalletSelectorError('Transaction not found.');
+          throw new SendError('Transaction not found.');
         }
 
         const wallet = await this.wallet(options?.walletId);

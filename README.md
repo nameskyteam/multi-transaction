@@ -55,7 +55,7 @@ const msAccount = MultiSendAccount.fromAccount(account);
 
 // one transaction that contains two actions
 const mTx = MultiTransaction
-  .batch('wrap.near')
+  .batch({ receiverId: 'wrap.near' })
   .functionCall({
     methodName: 'ft_transfer',
     args: {
@@ -88,7 +88,7 @@ const msAccount = MultiSendAccount.fromAccount(account);
 
 // two transactions, each contains one action
 const mTx = MultiTransaction
-  .batch('wrap.near')
+  .batch({ receiverId: 'wrap.near' })
   .functionCall({
     methodName: 'ft_transfer',
     args: {
@@ -98,7 +98,7 @@ const mTx = MultiTransaction
     attachedDeposit: Amount.ONE_YOCTO,
     gas: Gas.parse('10', 'T')
   })
-  .batch('usdt.tether-token.near')
+  .batch({ receiverId: 'usdt.tether-token.near' })
   .functionCall({
     methodName: 'ft_transfer',
     args: {
