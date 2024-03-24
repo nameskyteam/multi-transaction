@@ -12,7 +12,7 @@ export function parseNearApiJsTransactions(mTx: MultiTransaction): NearApiJsTran
 
 function parseNearApiJsTransaction({ receiverId, actions }: Transaction): NearApiJsTransactionLike {
   if (!receiverId) {
-    throw new ParseTransactionError('`receiverId` not found');
+    throw new ParseTransactionError('Transaction must have `receiverId`');
   }
 
   return {
@@ -85,7 +85,7 @@ function parseNearWalletSelectorTransaction({
   actions,
 }: Transaction): NearWalletSelectorTransactionLike {
   if (!receiverId) {
-    throw new ParseTransactionError('`receiverId` not found');
+    throw new ParseTransactionError('Transaction must have `receiverId`');
   }
 
   return {
