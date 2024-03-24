@@ -10,7 +10,7 @@ import {
   BlockQuery,
 } from '../utils';
 import { MultiTransaction, EmptyArgs } from './transaction';
-import { SendError } from '../errors';
+import { SendTransactionError } from '../errors';
 
 export class MultiSendAccount extends Account implements View, Call, Send {
   private constructor(connection: Connection, accountId: string) {
@@ -97,7 +97,7 @@ export class MultiSendAccount extends Account implements View, Call, Send {
     const transactions = parseNearApiJsTransactions(mTx);
 
     if (transactions.length === 0) {
-      throw new SendError('Transaction not found.');
+      throw new SendTransactionError('Transaction not found.');
     }
 
     const outcomes: FinalExecutionOutcome[] = [];

@@ -9,7 +9,7 @@ export class FungibleTokenFunctionCall extends FunctionCall {
   }
 
   /**
-   * Add a FunctionCall action with method `ft_transfer` into CURRENT transaction.
+   * Add a FunctionCall Action with method `ft_transfer` into CURRENT transaction.
    * @param args args
    * @param gas gas
    */
@@ -23,7 +23,7 @@ export class FungibleTokenFunctionCall extends FunctionCall {
   }
 
   /**
-   * Add a FunctionCall action with method `ft_transfer_call` into CURRENT transaction.
+   * Add a FunctionCall Action with method `ft_transfer_call` into CURRENT transaction.
    * @param args args
    * @param gas gas
    */

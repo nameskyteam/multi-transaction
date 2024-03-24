@@ -23,7 +23,7 @@ import {
 } from '../utils';
 import { MultiSendWalletSelectorSendOptions } from '../types';
 import { BigNumber } from 'bignumber.js';
-import { SendError } from '../errors';
+import { SendTransactionError } from '../errors';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 
@@ -152,7 +152,7 @@ export async function setupMultiSendWalletSelector(
         const transactions = parseNearWalletSelectorTransactions(mTx);
 
         if (transactions.length === 0) {
-          throw new SendError('Transaction not found.');
+          throw new SendTransactionError('Transaction not found.');
         }
 
         const wallet = await this.wallet(options?.walletId);

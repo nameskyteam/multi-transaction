@@ -122,14 +122,14 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a CreateAccount action into CURRENT transaction.
+   * Add a CreateAccount Action into CURRENT transaction.
    */
   createAccount(): this {
     return this.addActions([Actions.createAccount()]);
   }
 
   /**
-   * Add a DeleteAccount action into CURRENT transaction.
+   * Add a DeleteAccount Action into CURRENT transaction.
    * @param beneficiaryId beneficiary id
    */
   deleteAccount(beneficiaryId: string): this {
@@ -137,7 +137,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a AddKey action into CURRENT transaction.
+   * Add a AddKey Action into CURRENT transaction.
    * @param publicKey public key
    * @param accessKey access key
    */
@@ -151,7 +151,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a DeleteKey action into CURRENT transaction.
+   * Add a DeleteKey Action into CURRENT transaction.
    * @param publicKey public key
    */
   deleteKey(publicKey: string): this {
@@ -159,7 +159,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a DeployContract action into CURRENT transaction.
+   * Add a DeployContract Action into CURRENT transaction.
    * @param code code
    */
   deployContract(code: Uint8Array): this {
@@ -167,7 +167,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a Stake action into CURRENT transaction.
+   * Add a Stake Action into CURRENT transaction.
    * @param amount amount
    * @param publicKey public key
    */
@@ -176,7 +176,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a FunctionCall action into CURRENT transaction.
+   * Add a FunctionCall Action into CURRENT transaction.
    * @param methodName method name
    * @param args args
    * @param attachedDeposit attached deposit
@@ -201,7 +201,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a Transfer action into CURRENT transaction.
+   * Add a Transfer Action into CURRENT transaction.
    * @param amount amount
    */
   transfer(amount: string): this {
