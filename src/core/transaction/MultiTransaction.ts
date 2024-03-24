@@ -17,38 +17,46 @@ export class MultiTransaction {
   }
 
   /**
-   * Create an instance that contains no transaction.
+   * Create an empty `MultiTransaction`.
    */
   static new(): MultiTransaction {
     return new MultiTransaction();
   }
 
   /**
-   * Create a transaction.
-   * @param receiverId Transaction receiver id
-   * @param signerId Transaction signer id
+   * Create a `MultiTransaction` that contains one transaction.
+   * @param receiverId receiver id
+   * @param signerId signer id
    */
   static batch(receiverId: string, signerId?: string): MultiTransaction {
     return MultiTransaction.new().batch(receiverId, signerId);
   }
 
   /**
-   * Create a transaction.
-   * @param receiverId Transaction receiver id
-   * @param signerId Transaction signer id
+   * Add a transaction following the previous one.
+   * @param receiverId receiver id
+   * @param signerId signer id
    */
   batch(receiverId: string, signerId?: string): this {
     return this.addTransactions([{ signerId, receiverId, actions: [] }]);
   }
 
   /**
-   * Extend other actions
-   * This requires that the other should contain ONLY one transaction and with the same receiver id & signer id as current transaction.
-   * Actions will be merged into current transaction.
-   * @param other Other
+   * Extend transactions.
+   * @param mTx multi transaction
    */
-  extendActions(other: MultiTransaction): this {
-    const otherTransactions = other.toTransactions();
+  extendTransactions(mTx: MultiTransaction): this {
+    return this.addTransactions(mTx.toTransactions());
+  }
+
+  /**
+   * Extend actions.
+   * This requires that the other `MultiTransaction` should contain ONLY one transaction and with the same `receiverId` & `signerId` as current transaction.
+   * Actions will be merged into current transaction.
+   * @param mTx multi transaction
+   */
+  extendActions(mTx: MultiTransaction): this {
+    const otherTransactions = mTx.toTransactions();
 
     if (otherTransactions.length === 0) {
       return this;
@@ -73,17 +81,6 @@ export class MultiTransaction {
     return this.addActions(otherTransaction.actions);
   }
 
-  /**
-   * Extend other.
-   * @param other Other
-   */
-  extend(other: MultiTransaction): this {
-    return this.addTransactions(other.toTransactions());
-  }
-
-  /**
-   * Whether it contains any transaction.
-   */
   isEmpty(): boolean {
     return this.transactions.length === 0;
   }
@@ -96,7 +93,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Count actions of current transaction.
+   * Count actions of CURRENT transaction.
    */
   countActions(): number {
     const transaction = this.getCurrentTransaction();
@@ -129,14 +126,26 @@ export class MultiTransaction {
     return this.transactions[this.transactions.length - 1];
   }
 
+  /**
+   * Add a CreateAccount action into CURRENT transaction.
+   */
   createAccount(): this {
     return this.addActions([Actions.createAccount()]);
   }
 
+  /**
+   * Add a DeleteAccount action into CURRENT transaction.
+   * @param beneficiaryId beneficiary id
+   */
   deleteAccount(beneficiaryId: string): this {
     return this.addActions([Actions.deleteAccount({ beneficiaryId })]);
   }
 
+  /**
+   * Add a AddKey action into CURRENT transaction.
+   * @param publicKey public key
+   * @param accessKey access key
+   */
   addKey(publicKey: string, accessKey: AccessKey): this {
     return this.addActions([
       Actions.addKey({
@@ -146,18 +155,39 @@ export class MultiTransaction {
     ]);
   }
 
+  /**
+   * Add a DeleteKey action into CURRENT transaction.
+   * @param publicKey public key
+   */
   deleteKey(publicKey: string): this {
     return this.addActions([Actions.deleteKey({ publicKey: PublicKey.fromString(publicKey).toString() })]);
   }
 
+  /**
+   * Add a DeployContract action into CURRENT transaction.
+   * @param code code
+   */
   deployContract(code: Uint8Array): this {
     return this.addActions([Actions.deployContract({ code })]);
   }
 
+  /**
+   * Add a Stake action into CURRENT transaction.
+   * @param amount amount
+   * @param publicKey public key
+   */
   stake(amount: string, publicKey: string): this {
     return this.addActions([Actions.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() })]);
   }
 
+  /**
+   * Add a FunctionCall action into CURRENT transaction.
+   * @param methodName method name
+   * @param args args
+   * @param attachedDeposit attached deposit
+   * @param gas gas
+   * @param stringifier stringifier
+   */
   functionCall<Args = EmptyArgs>({
     methodName,
     args = {} as Args,
@@ -175,18 +205,31 @@ export class MultiTransaction {
     ]);
   }
 
+  /**
+   * Add a Transfer action into CURRENT transaction.
+   * @param amount amount
+   */
   transfer(amount: string): this {
     return this.addActions([Actions.transfer({ amount })]);
   }
 
+  /**
+   * FungibleToken Helper
+   */
   get ft(): FungibleTokenFunctionCall {
     return new FungibleTokenFunctionCall(this);
   }
 
+  /**
+   * NonFungibleToken Helper
+   */
   get nft(): NonFungibleTokenFunctionCall {
     return new NonFungibleTokenFunctionCall(this);
   }
 
+  /**
+   * StorageManagement Helper
+   */
   get storage(): StorageManagementFunctionCall {
     return new StorageManagementFunctionCall(this);
   }

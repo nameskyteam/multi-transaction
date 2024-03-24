@@ -29,8 +29,8 @@ export class Gas {
    * Parse from specific units and return a fixed string.
    * @example
    * const rawGas = Gas.parse('30', 'T'); // '30000000000000'
-   * @param gas Human readable gas
-   * @param units Units decimals
+   * @param gas human readable gas
+   * @param units units
    */
   static parse(gas: BigNumberLike, units: GasUnits): string {
     return Units.parse(gas, Gas.unitsToDecimals(units)).toFixed(0);
@@ -40,9 +40,9 @@ export class Gas {
    * Format in specific units and return a fixed string.
    * @example
    * const humanReadableGas = Gas.format('30000000000000', 'T'); // '30'
-   * @param gas Raw gas
-   * @param units Units decimals
-   * @param decimalPlaces Decimal places
+   * @param gas raw gas
+   * @param units units
+   * @param decimalPlaces decimal places
    */
   static format(gas: BigNumberLike, units: GasUnits, decimalPlaces?: number): string {
     gas = Units.format(gas, Gas.unitsToDecimals(units));

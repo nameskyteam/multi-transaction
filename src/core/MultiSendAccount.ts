@@ -79,8 +79,8 @@ export class MultiSendAccount extends Account implements View, Call, Send {
 
   /**
    * Send multiple transactions and return success value of last transaction
-   * @param mTx Multiple transactions
-   * @param options Options
+   * @param mTx mTx
+   * @param options options
    */
   async send<Value>(mTx: MultiTransaction, options?: MultiSendAccountSendOptions<Value>): Promise<Value> {
     const outcomes = await this.sendRaw(mTx, options);
@@ -90,8 +90,8 @@ export class MultiSendAccount extends Account implements View, Call, Send {
 
   /**
    * Send multiple transactions
-   * @param mTx Multiple transactions
-   * @param options Options
+   * @param mTx mTx
+   * @param options options
    */
   async sendRaw(mTx: MultiTransaction, options?: MultiSendAccountSendRawOptions): Promise<FinalExecutionOutcome[]> {
     const transactions = parseNearApiJsTransactions(mTx);

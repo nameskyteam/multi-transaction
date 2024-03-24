@@ -7,8 +7,8 @@ import { TransactionReceiptError } from '../errors/TransactionReceiptError';
 
 /**
  * Parse success value from outcome.
- * @param outcome Transaction outcome
- * @param parser Parser
+ * @param outcome outcome
+ * @param parser parser
  */
 export function parseOutcome<Value>(outcome: FinalExecutionOutcome, parser: Parser<Value> = Parser.json()): Value {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;

@@ -6,8 +6,8 @@ export class Units {
 
   /**
    * Parse from specific units and return a BigNumber.
-   * @param n Number
-   * @param decimals Units decimals
+   * @param n n
+   * @param decimals decimals
    */
   static parse(n: BigNumberLike, decimals: number): BigNumber {
     return BigNumber(n).shiftedBy(decimals);
@@ -15,8 +15,8 @@ export class Units {
 
   /**
    * Format in specific units and return a BigNumber.
-   * @param n Number
-   * @param decimals Units decimals
+   * @param n n
+   * @param decimals decimals
    */
   static format(n: BigNumberLike, decimals: number): BigNumber {
     return BigNumber(n).shiftedBy(-decimals);

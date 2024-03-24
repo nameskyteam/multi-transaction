@@ -24,8 +24,8 @@ export interface WalletSelectorEnhancement extends View, Call, Send {
    * Is login access key active
    * If the key is FullAccess, when key exists on chain, it is active
    * If the key is FunctionCall, when key exists on chain and allowance is greater than min allowance, it is active
-   * @param accountId Account id
-   * @param requiredMinAllowance Required min allowance
+   * @param accountId account id
+   * @param requiredMinAllowance required min allowance
    */
   isLoginAccessKeyActive(accountId?: string, requiredMinAllowance?: string): Promise<boolean>;
 
@@ -46,15 +46,15 @@ export interface WalletSelectorEnhancement extends View, Call, Send {
 
   /**
    * Send multiple transactions and return success value of last transaction
-   * @param mTx Multiple transactions
-   * @param options Options
+   * @param mTx mTx
+   * @param options options
    */
   send<Value>(mTx: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value>;
 
   /**
    * Send multiple transactions
-   * @param mTx Multiple transactions
-   * @param options Options
+   * @param mTx mTx
+   * @param options options
    */
   sendRaw(mTx: MultiTransaction, options?: MultiSendWalletSelectorSendRawOptions): Promise<FinalExecutionOutcome[]>;
 }
