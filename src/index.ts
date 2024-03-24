@@ -1,7 +1,8 @@
 import { BigNumber } from 'bignumber.js';
 import {
-  EmptyArgs,
+  BatchOptions,
   FunctionCallOptions,
+  EmptyArgs,
   MultiTransaction,
   MultiSendAccount,
   MultiSendAccountCallOptions,
@@ -34,7 +35,7 @@ BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_DOWN,
 });
 
-export { EmptyArgs, FunctionCallOptions, MultiTransaction };
+export { BatchOptions, FunctionCallOptions, EmptyArgs, MultiTransaction };
 export {
   MultiSendAccount,
   MultiSendAccountCallOptions,
