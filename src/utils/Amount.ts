@@ -36,8 +36,8 @@ export class Amount {
    * Parse from specific units and return a fixed string.
    * @example
    * const rawAmount = Amount.parse('5', 'NEAR'); // '5000000000000000000000000'
-   * @param amount Human readable amount
-   * @param units Units decimals
+   * @param amount human readable amount
+   * @param units units
    */
   static parse(amount: BigNumberLike, units: AmountUnits): string {
     return Units.parse(amount, Amount.unitsToDecimals(units)).toFixed(0);
@@ -47,9 +47,9 @@ export class Amount {
    * Format in specific units and return a fixed string.
    * @example
    * const humanReadableAmount = Amount.format('5000000000000000000000000', 'NEAR'); // '5'
-   * @param amount Raw amount
-   * @param units Units decimals
-   * @param decimalPlaces Decimal places
+   * @param amount raw amount
+   * @param units units
+   * @param decimalPlaces decimal places
    */
   static format(amount: BigNumberLike, units: AmountUnits, decimalPlaces?: number): string {
     amount = Units.format(amount, Amount.unitsToDecimals(units));

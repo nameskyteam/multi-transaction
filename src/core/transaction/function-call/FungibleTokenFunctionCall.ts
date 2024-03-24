@@ -8,6 +8,11 @@ export class FungibleTokenFunctionCall extends FunctionCall {
     super(mTx);
   }
 
+  /**
+   * Add a FunctionCall action with method `ft_transfer` into CURRENT transaction.
+   * @param args args
+   * @param gas gas
+   */
   transfer({ args, gas }: FtTransferOptions): MultiTransaction {
     return this.functionCall<FtTransferArgs>({
       methodName: 'ft_transfer',
@@ -17,6 +22,11 @@ export class FungibleTokenFunctionCall extends FunctionCall {
     });
   }
 
+  /**
+   * Add a FunctionCall action with method `ft_transfer_call` into CURRENT transaction.
+   * @param args args
+   * @param gas gas
+   */
   transfer_call({ args, gas }: FtTransferCallOptions): MultiTransaction {
     return this.functionCall<FtTransferCallArgs>({
       methodName: 'ft_transfer_call',

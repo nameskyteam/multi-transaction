@@ -7,6 +7,7 @@ import {
   StorageManagementFunctionCall,
   NonFungibleTokenFunctionCall,
 } from './function-call';
+import { MultiTransactionError } from '../../errors';
 
 export class MultiTransaction {
   private readonly transactions: Transaction[];
@@ -16,72 +17,65 @@ export class MultiTransaction {
   }
 
   /**
-   * Create an instance that contains no transaction.
+   * Create an empty `MultiTransaction`.
    */
   static new(): MultiTransaction {
     return new MultiTransaction();
   }
 
   /**
-   * Create a transaction.
-   * @param receiverId Transaction receiver id
-   * @param signerId Transaction signer id
+   * Create a `MultiTransaction` that contains one transaction.
+   * @param options options
    */
-  static batch(receiverId: string, signerId?: string): MultiTransaction {
-    return MultiTransaction.new().batch(receiverId, signerId);
+  static batch(options?: BatchOptions): MultiTransaction {
+    return MultiTransaction.new().batch(options);
   }
 
   /**
-   * Create a transaction.
-   * @param receiverId Transaction receiver id
-   * @param signerId Transaction signer id
+   * Add a transaction following the previous one.
+   * @param options options
    */
-  batch(receiverId: string, signerId?: string): this {
-    return this.addTransactions([{ signerId, receiverId, actions: [] }]);
+  batch(options?: BatchOptions): this {
+    return this.addTransactions([{ signerId: options?.signerId, receiverId: options?.receiverId, actions: [] }]);
   }
 
   /**
-   * Merge other.
-   * This requires that the other should contain ONLY one transaction and with the same receiver id & signer id as current transaction.
-   * Actions will be merged into current transaction.
-   * @param other Other
+   * Extend transactions.
+   * @param mTx mTx
    */
-  merge(other: MultiTransaction): this {
-    const otherTransactions = other.toTransactions();
+  extendTransactions(mTx: MultiTransaction): this {
+    return this.addTransactions(mTx.toTransactions());
+  }
+
+  /**
+   * Extend actions into CURRENT transaction.
+   * @param mTx mTx
+   */
+  extendActions(mTx: MultiTransaction): this {
+    const otherTransactions = mTx.toTransactions();
+
+    if (otherTransactions.length > 1) {
+      throw new MultiTransactionError('Other `mTx` should contain up to one transaction');
+    }
 
     if (otherTransactions.length === 0) {
       return this;
     }
 
-    if (otherTransactions.length > 1) {
-      throw Error('Merging multiple transactions is not allowed');
-    }
-
     const otherTransaction = otherTransactions[0];
-    const transaction = this.getCurrentTransaction();
+    const currentTransaction = this.getCurrentTransaction();
 
-    if (otherTransaction.receiverId !== transaction.receiverId) {
-      throw Error('Merging transaction with different receiver id is not allowed');
+    if (otherTransaction.signerId && otherTransaction.signerId !== currentTransaction.signerId) {
+      throw new MultiTransactionError('Other transaction should have the same `signerId`');
     }
 
-    if (otherTransaction.signerId !== transaction.signerId) {
-      throw Error('Merging transaction with different signer id is not allowed');
+    if (otherTransaction.receiverId && otherTransaction.receiverId !== currentTransaction.receiverId) {
+      throw new MultiTransactionError('Other transaction should have the same `receiverId`');
     }
 
     return this.addActions(otherTransaction.actions);
   }
 
-  /**
-   * Extend other.
-   * @param other Other
-   */
-  extend(other: MultiTransaction): this {
-    return this.addTransactions(other.toTransactions());
-  }
-
-  /**
-   * Whether it contains any transaction.
-   */
   isEmpty(): boolean {
     return this.transactions.length === 0;
   }
@@ -94,7 +88,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Count actions of current transaction.
+   * Count actions of CURRENT transaction.
    */
   countActions(): number {
     const transaction = this.getCurrentTransaction();
@@ -121,17 +115,32 @@ export class MultiTransaction {
   }
 
   private getCurrentTransaction(): Transaction {
+    if (this.isEmpty()) {
+      throw new MultiTransactionError('Transaction not found');
+    }
     return this.transactions[this.transactions.length - 1];
   }
 
+  /**
+   * Add a CreateAccount action into CURRENT transaction.
+   */
   createAccount(): this {
     return this.addActions([Actions.createAccount()]);
   }
 
+  /**
+   * Add a DeleteAccount action into CURRENT transaction.
+   * @param beneficiaryId beneficiary id
+   */
   deleteAccount(beneficiaryId: string): this {
     return this.addActions([Actions.deleteAccount({ beneficiaryId })]);
   }
 
+  /**
+   * Add a AddKey action into CURRENT transaction.
+   * @param publicKey public key
+   * @param accessKey access key
+   */
   addKey(publicKey: string, accessKey: AccessKey): this {
     return this.addActions([
       Actions.addKey({
@@ -141,18 +150,39 @@ export class MultiTransaction {
     ]);
   }
 
+  /**
+   * Add a DeleteKey action into CURRENT transaction.
+   * @param publicKey public key
+   */
   deleteKey(publicKey: string): this {
     return this.addActions([Actions.deleteKey({ publicKey: PublicKey.fromString(publicKey).toString() })]);
   }
 
+  /**
+   * Add a DeployContract action into CURRENT transaction.
+   * @param code code
+   */
   deployContract(code: Uint8Array): this {
     return this.addActions([Actions.deployContract({ code })]);
   }
 
+  /**
+   * Add a Stake action into CURRENT transaction.
+   * @param amount amount
+   * @param publicKey public key
+   */
   stake(amount: string, publicKey: string): this {
     return this.addActions([Actions.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() })]);
   }
 
+  /**
+   * Add a FunctionCall action into CURRENT transaction.
+   * @param methodName method name
+   * @param args args
+   * @param attachedDeposit attached deposit
+   * @param gas gas
+   * @param stringifier stringifier
+   */
   functionCall<Args = EmptyArgs>({
     methodName,
     args = {} as Args,
@@ -170,22 +200,37 @@ export class MultiTransaction {
     ]);
   }
 
+  /**
+   * Add a Transfer action into CURRENT transaction.
+   * @param amount amount
+   */
   transfer(amount: string): this {
     return this.addActions([Actions.transfer({ amount })]);
   }
 
+  /**
+   * FungibleToken Helper
+   */
   get ft(): FungibleTokenFunctionCall {
     return new FungibleTokenFunctionCall(this);
   }
 
+  /**
+   * NonFungibleToken Helper
+   */
   get nft(): NonFungibleTokenFunctionCall {
     return new NonFungibleTokenFunctionCall(this);
   }
 
+  /**
+   * StorageManagement Helper
+   */
   get storage(): StorageManagementFunctionCall {
     return new StorageManagementFunctionCall(this);
   }
 }
+
+export type BatchOptions = Pick<Transaction, 'signerId' | 'receiverId'>;
 
 export type FunctionCallOptions<Args> = {
   methodName: string;

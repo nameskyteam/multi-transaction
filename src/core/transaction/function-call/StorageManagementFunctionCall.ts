@@ -15,6 +15,12 @@ export class StorageManagementFunctionCall extends FunctionCall {
     super(mTx);
   }
 
+  /**
+   * Add a FunctionCall action with method `storage_deposit` into CURRENT transaction.
+   * @param args args
+   * @param attachedDeposit attached deposit
+   * @param gas gas
+   */
   deposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',
@@ -24,6 +30,11 @@ export class StorageManagementFunctionCall extends FunctionCall {
     });
   }
 
+  /**
+   * Add a FunctionCall action with method `storage_withdraw` into CURRENT transaction.
+   * @param args args
+   * @param gas gas
+   */
   withdraw({ args, gas }: StorageWithdrawOptions): MultiTransaction {
     return this.functionCall<StorageWithdrawArgs>({
       methodName: 'storage_withdraw',
@@ -33,6 +44,11 @@ export class StorageManagementFunctionCall extends FunctionCall {
     });
   }
 
+  /**
+   * Add a FunctionCall action with method `storage_unregister` into CURRENT transaction.
+   * @param args args
+   * @param gas gas
+   */
   unregister({ args, gas }: StorageUnregisterOptions): MultiTransaction {
     return this.functionCall<StorageUnregisterArgs>({
       methodName: 'storage_unregister',
