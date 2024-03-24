@@ -14,7 +14,7 @@ import { MultiSendAccount, Amount } from 'multi-transaction';
 ```ts
 const msAccount = MultiSendAccount.fromAccount(account);
 
-const amount = await msAccount.view<string>({
+const amount: string = await msAccount.view({
   contractId: 'wrap.near',
   methodName: 'ft_balance_of',
   args: {

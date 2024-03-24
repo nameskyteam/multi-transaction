@@ -26,8 +26,11 @@ export class Stringifier<T> {
    * Skip serialization if data is raw bytes
    */
   stringifyOrSkip(data: T | Uint8Array): Buffer {
-    if ('byteLength' in data && 'length' in data && 'buffer' in data) {
-      return Buffer.from(data as Uint8Array);
+    const isUint8Array =
+      typeof data === 'object' && data !== null && 'byteLength' in data && 'length' in data && 'buffer' in data;
+
+    if (isUint8Array) {
+      return Buffer.from(data);
     } else {
       return this.stringify(data);
     }

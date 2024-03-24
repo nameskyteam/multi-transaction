@@ -3,7 +3,7 @@ export * from './Units';
 export * from './Amount';
 export * from './Gas';
 export * from './outcome';
-export * from './transform';
+export * from './conversion';
 export * from './Stringifier';
 export * from './Parser';
 export * from './BlockQuery';
