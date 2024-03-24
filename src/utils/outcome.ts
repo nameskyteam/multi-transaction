@@ -2,8 +2,7 @@ import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/pro
 import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
 import { Buffer } from 'buffer';
 import { Parser } from './Parser';
-import { ParseOutcomeError } from '../errors/ParseOutcomeError';
-import { TransactionReceiptError } from '../errors/TransactionReceiptError';
+import { ParseOutcomeError, TransactionReceiptError } from '../errors';
 
 /**
  * Parse success value from outcome.

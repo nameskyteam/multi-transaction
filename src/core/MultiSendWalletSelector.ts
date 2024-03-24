@@ -23,7 +23,7 @@ import {
 } from '../utils';
 import { MultiSendWalletSelectorSendOptions } from '../types';
 import { BigNumber } from 'bignumber.js';
-import { MultiSendWalletSelectorError } from '../errors/MultiSendWalletSelectorError';
+import { MultiSendWalletSelectorError } from '../errors';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 

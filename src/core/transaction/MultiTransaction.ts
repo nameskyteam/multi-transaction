@@ -7,7 +7,7 @@ import {
   StorageManagementFunctionCall,
   NonFungibleTokenFunctionCall,
 } from './function-call';
-import { MultiTransactionError } from '../../errors/MultiTransactionError';
+import { MultiTransactionError } from '../../errors';
 
 export class MultiTransaction {
   private readonly transactions: Transaction[];
@@ -43,7 +43,7 @@ export class MultiTransaction {
 
   /**
    * Extend transactions.
-   * @param mTx multi transaction
+   * @param mTx mTx
    */
   extendTransactions(mTx: MultiTransaction): this {
     return this.addTransactions(mTx.toTransactions());
@@ -51,9 +51,9 @@ export class MultiTransaction {
 
   /**
    * Extend actions.
-   * This requires that the other `MultiTransaction` should contain ONLY one transaction and with the same `receiverId` & `signerId` as current transaction.
-   * Actions will be merged into current transaction.
-   * @param mTx multi transaction
+   * This requires that the other `MultiTransaction` should contain ONLY one transaction and with the same `receiverId` & `signerId` as CURRENT transaction.
+   * Actions will be added into CURRENT transaction.
+   * @param mTx mTx
    */
   extendActions(mTx: MultiTransaction): this {
     const otherTransactions = mTx.toTransactions();

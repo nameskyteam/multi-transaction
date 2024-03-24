@@ -1,6 +1,6 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 import { Provider } from 'near-api-js/lib/providers';
-import { BlockQueryError } from '../errors/BlockQueryError';
+import { BlockQueryError } from '../errors';
 
 type BlockQueryInternal =
   | { kind: 'optimistic' }

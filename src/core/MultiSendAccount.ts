@@ -10,7 +10,7 @@ import {
   BlockQuery,
 } from '../utils';
 import { MultiTransaction, EmptyArgs } from './transaction';
-import { MultiSendAccountError } from '../errors/MultiSendAccountError';
+import { MultiSendAccountError } from '../errors';
 
 export class MultiSendAccount extends Account implements View, Call, Send {
   private constructor(connection: Connection, accountId: string) {
