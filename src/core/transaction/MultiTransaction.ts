@@ -2,7 +2,11 @@ import { Actions } from './Actions';
 import { Transaction, AccessKey, Action } from '../../types';
 import { Amount, Gas, Stringifier } from '../../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
-import { FungibleTokenFunctionCall, StorageManagementFunctionCall, NonFungibleTokenFunctionCall } from './functioncall';
+import {
+  FungibleTokenFunctionCall,
+  StorageManagementFunctionCall,
+  NonFungibleTokenFunctionCall,
+} from './function-call';
 
 export class MultiTransaction {
   private readonly transactions: Transaction[];
