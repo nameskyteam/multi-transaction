@@ -6,10 +6,11 @@ import {
   throwReceiptErrorsFromOutcomes,
   Stringifier,
   Parser,
-  parseOutcomeValue,
+  parseOutcome,
   BlockQuery,
 } from '../utils';
 import { MultiTransaction, EmptyArgs } from './transaction';
+import { MultiSendAccountError } from '../errors/MultiSendAccountError';
 
 export class MultiSendAccount extends Account implements View, Call, Send {
   private constructor(connection: Connection, accountId: string) {
@@ -50,7 +51,7 @@ export class MultiSendAccount extends Account implements View, Call, Send {
    */
   async call<Value, Args = EmptyArgs>(options: MultiSendAccountCallOptions<Value, Args>): Promise<Value> {
     const outcome = await this.callRaw(options);
-    return parseOutcomeValue(outcome, options.parser);
+    return parseOutcome(outcome, options.parser);
   }
 
   /**
@@ -84,7 +85,7 @@ export class MultiSendAccount extends Account implements View, Call, Send {
   async send<Value>(mTx: MultiTransaction, options?: MultiSendAccountSendOptions<Value>): Promise<Value> {
     const outcomes = await this.sendRaw(mTx, options);
     const outcome = outcomes[outcomes.length - 1];
-    return parseOutcomeValue(outcome, options?.parser);
+    return parseOutcome(outcome, options?.parser);
   }
 
   /**
@@ -94,6 +95,10 @@ export class MultiSendAccount extends Account implements View, Call, Send {
    */
   async sendRaw(mTx: MultiTransaction, options?: MultiSendAccountSendRawOptions): Promise<FinalExecutionOutcome[]> {
     const transactions = parseNearApiJsTransactions(mTx);
+
+    if (transactions.length === 0) {
+      throw new MultiSendAccountError('Transaction not found.');
+    }
 
     const outcomes: FinalExecutionOutcome[] = [];
 

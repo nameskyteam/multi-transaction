@@ -7,6 +7,7 @@ import {
   StorageManagementFunctionCall,
   NonFungibleTokenFunctionCall,
 } from './function-call';
+import { MultiTransactionError } from '../../errors/MultiTransactionError';
 
 export class MultiTransaction {
   private readonly transactions: Transaction[];
@@ -41,12 +42,12 @@ export class MultiTransaction {
   }
 
   /**
-   * Merge other.
+   * Extend other actions
    * This requires that the other should contain ONLY one transaction and with the same receiver id & signer id as current transaction.
    * Actions will be merged into current transaction.
    * @param other Other
    */
-  merge(other: MultiTransaction): this {
+  extendActions(other: MultiTransaction): this {
     const otherTransactions = other.toTransactions();
 
     if (otherTransactions.length === 0) {
@@ -54,18 +55,19 @@ export class MultiTransaction {
     }
 
     if (otherTransactions.length > 1) {
-      throw Error('Merging multiple transactions is not allowed');
+      throw new MultiTransactionError('Other should contain ONLY one transaction');
     }
 
     const otherTransaction = otherTransactions[0];
+
     const transaction = this.getCurrentTransaction();
 
     if (otherTransaction.receiverId !== transaction.receiverId) {
-      throw Error('Merging transaction with different receiver id is not allowed');
+      throw new MultiTransactionError('Other should contain the same `receiverId`');
     }
 
     if (otherTransaction.signerId !== transaction.signerId) {
-      throw Error('Merging transaction with different signer id is not allowed');
+      throw new MultiTransactionError('Other should contain the same `signerId`');
     }
 
     return this.addActions(otherTransaction.actions);
@@ -121,6 +123,9 @@ export class MultiTransaction {
   }
 
   private getCurrentTransaction(): Transaction {
+    if (this.isEmpty()) {
+      throw new MultiTransactionError('Transaction not found');
+    }
     return this.transactions[this.transactions.length - 1];
   }
 

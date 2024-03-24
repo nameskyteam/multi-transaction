@@ -27,7 +27,7 @@ import {
   SendRawOptions,
   BigNumberLike,
 } from './types';
-import { Amount, Gas, BlockQuery, Parser, Stringifier, parseOutcomeValue } from './utils';
+import { Amount, Gas, BlockQuery, Parser, Stringifier, parseOutcome } from './utils';
 
 BigNumber.config({
   DECIMAL_PLACES: 100,
@@ -51,7 +51,7 @@ export {
 };
 export { MultiSendWalletSelectorOptions, setupMultiSendWalletSelector };
 export { View, ViewOptions, Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions };
-export { BlockQuery, Amount, Gas, Stringifier, Parser, parseOutcomeValue };
+export { BlockQuery, Amount, Gas, Stringifier, Parser, parseOutcome };
 export { BigNumber, BigNumberLike };
 export * from './types/fungible-token/args';
 export * from './types/fungible-token/value';

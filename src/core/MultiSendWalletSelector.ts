@@ -18,16 +18,17 @@ import {
   Stringifier,
   throwReceiptErrorsFromOutcomes,
   endless,
-  parseOutcomeValue,
+  parseOutcome,
   BlockQuery,
 } from '../utils';
 import { MultiSendWalletSelectorSendOptions } from '../types';
 import { BigNumber } from 'bignumber.js';
+import { MultiSendWalletSelectorError } from '../errors/MultiSendWalletSelectorError';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 
 export async function setupMultiSendWalletSelector(
-  options: MultiSendWalletSelectorOptions
+  options: MultiSendWalletSelectorOptions,
 ): Promise<MultiSendWalletSelector> {
   if (!multiSendWalletSelector) {
     let selector: WalletSelector;
@@ -54,7 +55,7 @@ export async function setupMultiSendWalletSelector(
 
       async isLoginAccessKeyActive(
         accountId?: string,
-        requiredMinAllowance = Amount.parse('0.01', 'NEAR')
+        requiredMinAllowance = Amount.parse('0.01', 'NEAR'),
       ): Promise<boolean> {
         accountId = accountId ?? this.getActiveAccountId();
         if (!accountId) {
@@ -73,7 +74,7 @@ export async function setupMultiSendWalletSelector(
         const accessKeys = await this.near.account(accountId).then((account) => account.getAccessKeys());
         const loginAccessKey = accessKeys.find(
           (accessKey) =>
-            PublicKey.fromString(accessKey.public_key).toString() === PublicKey.fromString(loginPublicKey).toString()
+            PublicKey.fromString(accessKey.public_key).toString() === PublicKey.fromString(loginPublicKey).toString(),
         );
 
         if (!loginAccessKey) {
@@ -115,7 +116,7 @@ export async function setupMultiSendWalletSelector(
 
       async call<Value, Args = EmptyArgs>(options: MultiSendWalletSelectorCallOptions<Value, Args>): Promise<Value> {
         const outcome = await this.callRaw(options);
-        return parseOutcomeValue(outcome, options.parser);
+        return parseOutcome(outcome, options.parser);
       },
 
       async callRaw<Args = EmptyArgs>({
@@ -141,20 +142,24 @@ export async function setupMultiSendWalletSelector(
       async send<Value>(mTx: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value> {
         const outcomes = await this.sendRaw(mTx, options);
         const outcome = outcomes?.[outcomes.length - 1];
-        return parseOutcomeValue(outcome, options?.parser);
+        return parseOutcome(outcome, options?.parser);
       },
 
       async sendRaw(
         mTx: MultiTransaction,
-        options?: MultiSendWalletSelectorSendRawOptions
+        options?: MultiSendWalletSelectorSendRawOptions,
       ): Promise<FinalExecutionOutcome[]> {
-        const wallet = await this.wallet(options?.walletId);
         const transactions = parseNearWalletSelectorTransactions(mTx);
-        let outcomes: FinalExecutionOutcome[] | undefined;
 
         if (transactions.length === 0) {
-          throw Error(`Transaction not found.`);
-        } else if (transactions.length === 1) {
+          throw new MultiSendWalletSelectorError('Transaction not found.');
+        }
+
+        const wallet = await this.wallet(options?.walletId);
+
+        let outcomes: FinalExecutionOutcome[] | undefined;
+
+        if (transactions.length === 1) {
           const outcome = await wallet.signAndSendTransaction({
             ...transactions[0],
             callbackUrl: options?.callbackUrl,
