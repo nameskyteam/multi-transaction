@@ -8,8 +8,8 @@ import {
 import { Amount, Gas } from '../../../utils';
 import { FunctionCall } from './FunctionCall';
 
-export class FungibleTokenFunctionCall<M extends MultiAction> extends FunctionCall<M> {
-  constructor(mTx: M) {
+export class FungibleTokenFunctionCall<T extends MultiAction> extends FunctionCall<T> {
+  constructor(mTx: T) {
     super(mTx);
   }
 
@@ -18,7 +18,7 @@ export class FungibleTokenFunctionCall<M extends MultiAction> extends FunctionCa
    * @param args args
    * @param gas gas
    */
-  transfer({ args, gas }: FtTransferOptions): M {
+  transfer({ args, gas }: FtTransferOptions): T {
     return this.functionCall<FtTransferArgs>({
       methodName: 'ft_transfer',
       args,
@@ -32,7 +32,7 @@ export class FungibleTokenFunctionCall<M extends MultiAction> extends FunctionCa
    * @param args args
    * @param gas gas
    */
-  transfer_call({ args, gas }: FtTransferCallOptions): M {
+  transfer_call({ args, gas }: FtTransferCallOptions): T {
     return this.functionCall<FtTransferCallArgs>({
       methodName: 'ft_transfer_call',
       args,

@@ -10,8 +10,8 @@ import {
 import { Amount } from '../../../utils';
 import { FunctionCall } from './FunctionCall';
 
-export class StorageManagementFunctionCall<M extends MultiAction> extends FunctionCall<M> {
-  constructor(mTx: M) {
+export class StorageManagementFunctionCall<T extends MultiAction> extends FunctionCall<T> {
+  constructor(mTx: T) {
     super(mTx);
   }
 
@@ -21,7 +21,7 @@ export class StorageManagementFunctionCall<M extends MultiAction> extends Functi
    * @param attachedDeposit attached deposit
    * @param gas gas
    */
-  deposit({ args, attachedDeposit, gas }: StorageDepositOptions): M {
+  deposit({ args, attachedDeposit, gas }: StorageDepositOptions): T {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',
       args,
@@ -35,7 +35,7 @@ export class StorageManagementFunctionCall<M extends MultiAction> extends Functi
    * @param args args
    * @param gas gas
    */
-  withdraw({ args, gas }: StorageWithdrawOptions): M {
+  withdraw({ args, gas }: StorageWithdrawOptions): T {
     return this.functionCall<StorageWithdrawArgs>({
       methodName: 'storage_withdraw',
       args,
@@ -49,7 +49,7 @@ export class StorageManagementFunctionCall<M extends MultiAction> extends Functi
    * @param args args
    * @param gas gas
    */
-  unregister({ args, gas }: StorageUnregisterOptions): M {
+  unregister({ args, gas }: StorageUnregisterOptions): T {
     return this.functionCall<StorageUnregisterArgs>({
       methodName: 'storage_unregister',
       args,

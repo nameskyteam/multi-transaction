@@ -105,7 +105,7 @@ export class MultiTransaction implements MultiAction {
     const otherTransactions = mTx.toTransactions();
 
     if (otherTransactions.length > 1) {
-      throw new MultiTransactionError('Other `MultiAction` should contain up to one transaction');
+      throw new MultiTransactionError('`MultiAction` should contain up to one transaction');
     }
 
     if (otherTransactions.length === 0) {
