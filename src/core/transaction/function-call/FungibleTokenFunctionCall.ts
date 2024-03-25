@@ -1,14 +1,14 @@
 import {
+  MultiFunctionCall,
   FtTransferArgs,
   FtTransferCallArgs,
   FtTransferCallOptions,
   FtTransferOptions,
-  MultiAction,
 } from '../../../types';
 import { Amount, Gas } from '../../../utils';
 import { FunctionCall } from './FunctionCall';
 
-export class FungibleTokenFunctionCall<T extends MultiAction> extends FunctionCall<T> {
+export class FungibleTokenFunctionCall<T extends MultiFunctionCall> extends FunctionCall<T> {
   constructor(mTx: T) {
     super(mTx);
   }

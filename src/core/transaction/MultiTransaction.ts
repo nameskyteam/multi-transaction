@@ -18,7 +18,7 @@ export class MultiTransaction implements MultiAction {
   }
 
   private getCurrentTransaction(): MaybeIncompleteTransaction {
-    if (this.isEmpty()) {
+    if (this.transactions.length === 0) {
       throw new MultiTransactionError('Transaction not found');
     }
     return this.transactions[this.transactions.length - 1];
@@ -35,76 +35,12 @@ export class MultiTransaction implements MultiAction {
     return this;
   }
 
-  private assertCompleteTransactions(): Transaction[] {
+  private assertCompleteTransactions() {
     this.transactions.forEach((transaction, index) => {
       if (!transaction.receiverId) {
         throw new MultiTransactionError(`Transaction (${index}) missing \`receiverId\``);
       }
     });
-    return this.transactions as Transaction[];
-  }
-
-  /**
-   * If it is empty.
-   */
-  isEmpty(): boolean {
-    return this.transactions.length === 0;
-  }
-
-  /**
-   * Count transactions.
-   */
-  countTransactions(): number {
-    return this.transactions.length;
-  }
-
-  /**
-   * Count actions for current transaction.
-   */
-  countActions(): number {
-    const transaction = this.getCurrentTransaction();
-    return transaction.actions.length;
-  }
-
-  /**
-   * Extend transactions.
-   * @param mTx mTx
-   */
-  extendTransactions(mTx: MultiTransaction): this {
-    return this.addTransactions(mTx.toTransactions());
-  }
-
-  /**
-   * Extend actions to current transaction.
-   * @param mTx mTx
-   */
-  extendActions(mTx: MultiAction): this {
-    const actions = mTx.toActions();
-    return this.addActions(actions);
-  }
-
-  /**
-   * Create a new `MultiTransaction` from transactions.
-   * @param transactions
-   */
-  static fromTransactions(transactions: Transaction[]): MultiTransaction {
-    return MultiTransaction.new().addTransactions(transactions);
-  }
-
-  /**
-   * Return transactions.
-   */
-  toTransactions(): Transaction[] {
-    const transactions = this.assertCompleteTransactions();
-    return Array.from(transactions);
-  }
-
-  /**
-   * Return actions of current transaction.
-   */
-  toActions(): Action[] {
-    const transaction = this.getCurrentTransaction();
-    return Array.from(transaction.actions);
   }
 
   /**
@@ -241,6 +177,62 @@ export class MultiTransaction implements MultiAction {
    */
   get storage(): StorageManagementFunctionCall<this> {
     return new StorageManagementFunctionCall(this);
+  }
+
+  /**
+   * Extend transactions.
+   * @param mTx mTx
+   */
+  extendTransactions(mTx: MultiTransaction): this {
+    return this.addTransactions(mTx.toTransactions());
+  }
+
+  /**
+   * Extend actions to current transaction.
+   * @param mTx mTx
+   */
+  extendActions(mTx: MultiAction): this {
+    const actions = mTx.toActions();
+    return this.addActions(actions);
+  }
+
+  /**
+   * Count transactions.
+   */
+  countTransactions(): number {
+    return this.transactions.length;
+  }
+
+  /**
+   * Count actions for current transaction.
+   */
+  countActions(): number {
+    const transaction = this.getCurrentTransaction();
+    return transaction.actions.length;
+  }
+
+  /**
+   * Create a new `MultiTransaction` from transactions.
+   * @param transactions
+   */
+  static fromTransactions(transactions: Transaction[]): MultiTransaction {
+    return MultiTransaction.new().addTransactions(transactions);
+  }
+
+  /**
+   * Return transactions.
+   */
+  toTransactions(): Transaction[] {
+    this.assertCompleteTransactions();
+    return Array.from(this.transactions as Transaction[]);
+  }
+
+  /**
+   * Return actions of current transaction.
+   */
+  toActions(): Action[] {
+    const transaction = this.getCurrentTransaction();
+    return Array.from(transaction.actions);
   }
 }
 

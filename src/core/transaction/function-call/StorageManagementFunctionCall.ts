@@ -1,5 +1,5 @@
 import {
-  MultiAction,
+  MultiFunctionCall,
   StorageDepositArgs,
   StorageDepositOptions,
   StorageUnregisterArgs,
@@ -10,7 +10,7 @@ import {
 import { Amount } from '../../../utils';
 import { FunctionCall } from './FunctionCall';
 
-export class StorageManagementFunctionCall<T extends MultiAction> extends FunctionCall<T> {
+export class StorageManagementFunctionCall<T extends MultiFunctionCall> extends FunctionCall<T> {
   constructor(mTx: T) {
     super(mTx);
   }

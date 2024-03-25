@@ -1,6 +1,6 @@
-import { MultiAction, FunctionCallOptions } from '../../../types';
+import { MultiFunctionCall, FunctionCallOptions } from '../../../types';
 
-export abstract class FunctionCall<T extends MultiAction> {
+export abstract class FunctionCall<T extends MultiFunctionCall> {
   private mTx: T;
 
   protected constructor(mTx: T) {

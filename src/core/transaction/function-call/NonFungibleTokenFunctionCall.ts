@@ -1,5 +1,5 @@
 import {
-  MultiAction,
+  MultiFunctionCall,
   NftApproveArgs,
   NftApproveOptions,
   NftRevokeAllArgs,
@@ -14,7 +14,7 @@ import {
 import { Amount, Gas } from '../../../utils';
 import { FunctionCall } from './FunctionCall';
 
-export class NonFungibleTokenFunctionCall<T extends MultiAction> extends FunctionCall<T> {
+export class NonFungibleTokenFunctionCall<T extends MultiFunctionCall> extends FunctionCall<T> {
   constructor(mTx: T) {
     super(mTx);
   }
