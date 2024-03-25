@@ -62,18 +62,7 @@ export class MultiTransaction {
       return this;
     }
 
-    const otherTransaction = otherTransactions[0];
-    const currentTransaction = this.getCurrentTransaction();
-
-    if (otherTransaction.signerId && otherTransaction.signerId !== currentTransaction.signerId) {
-      throw new MultiTransactionError('Other transaction should have the same `signerId` as current transaction');
-    }
-
-    if (otherTransaction.receiverId && otherTransaction.receiverId !== currentTransaction.receiverId) {
-      throw new MultiTransactionError('Other transaction should have the same `receiverId` as current transaction');
-    }
-
-    return this.addActions(otherTransaction.actions);
+    return this.addActions(otherTransactions[0].actions);
   }
 
   isEmpty(): boolean {
