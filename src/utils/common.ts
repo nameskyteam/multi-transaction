@@ -1,4 +1,4 @@
-import { UnreachableError } from '../errors/UnreachableError';
+import { UnreachableError } from '../errors';
 
 export function endless(): never {
   while (true) {
