@@ -8,7 +8,7 @@ import { EmptyArgs } from './common';
 
 export interface MultiSendWalletSelector extends WalletSelector, WalletSelectorExtension {}
 
-export interface WalletSelectorExtension extends View, Call, Send {
+interface WalletSelectorExtension extends View, Call, Send {
   near: Near;
 
   /**
