@@ -1,5 +1,5 @@
 import { FungibleTokenFunctionCall, NonFungibleTokenFunctionCall, StorageManagementFunctionCall } from '../core';
-import { AccessKey, Action, Transaction } from './transaction';
+import { AccessKey, Action } from './transaction';
 import { Stringifier } from '../utils';
 import { EmptyArgs } from './common';
 
@@ -15,10 +15,9 @@ export interface MultiAction {
   get ft(): FungibleTokenFunctionCall<this>;
   get nft(): NonFungibleTokenFunctionCall<this>;
   get storage(): StorageManagementFunctionCall<this>;
-  extendActions(mTx: this): this;
-  toTransactions(): Transaction[];
-  toActions(): Action[];
   countActions(): number;
+  extendActions(mTx: MultiAction): this;
+  toActions(): Action[];
 }
 
 export type FunctionCallOptions<Args> = {

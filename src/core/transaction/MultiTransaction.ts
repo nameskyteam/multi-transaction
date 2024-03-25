@@ -79,17 +79,8 @@ export class MultiTransaction implements MultiAction {
    * @param mTx mTx
    */
   extendActions(mTx: MultiAction): this {
-    const otherTransactions = mTx.toTransactions();
-
-    if (otherTransactions.length > 1) {
-      throw new MultiTransactionError('`MultiAction` should contain up to one transaction');
-    }
-
-    if (otherTransactions.length === 0) {
-      return this;
-    }
-
-    return this.addActions(otherTransactions[0].actions);
+    const actions = mTx.toActions();
+    return this.addActions(actions);
   }
 
   /**
