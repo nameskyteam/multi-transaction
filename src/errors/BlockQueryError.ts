@@ -1,1 +1,5 @@
-export class BlockQueryError extends Error {}
+export class BlockQueryError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
