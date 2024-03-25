@@ -220,8 +220,8 @@ export class MultiTransaction {
 }
 
 export type BatchOptions = {
-  signerId: string;
-  receiverId: string;
+  signerId?: string;
+  receiverId?: string;
 };
 
 export type FunctionCallOptions<Args> = {
