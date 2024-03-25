@@ -17,14 +17,14 @@ export class MultiTransaction {
   }
 
   /**
-   * Create an empty `MultiTransaction`.
+   * Create a new `MultiTransaction`.
    */
   static new(): MultiTransaction {
     return new MultiTransaction();
   }
 
   /**
-   * Create an empty `MultiTransaction` and add a transaction.
+   * Create a new `MultiTransaction` and add a transaction.
    * @param options options
    */
   static batch(options?: BatchOptions): MultiTransaction {
