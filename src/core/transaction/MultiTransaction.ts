@@ -24,7 +24,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Create a `MultiTransaction` that contains one transaction.
+   * Create an empty `MultiTransaction` and add a transaction.
    * @param options options
    */
   static batch(options?: BatchOptions): MultiTransaction {
@@ -48,14 +48,14 @@ export class MultiTransaction {
   }
 
   /**
-   * Extend actions into CURRENT transaction.
+   * Extend actions into current transaction.
    * @param mTx mTx
    */
   extendActions(mTx: MultiTransaction): this {
     const otherTransactions = mTx.toTransactions();
 
     if (otherTransactions.length > 1) {
-      throw new MultiTransactionError('Other `mTx` should contain up to one transaction');
+      throw new MultiTransactionError('Other `MultiTransaction` should contain up to one transaction');
     }
 
     if (otherTransactions.length === 0) {
@@ -66,11 +66,11 @@ export class MultiTransaction {
     const currentTransaction = this.getCurrentTransaction();
 
     if (otherTransaction.signerId && otherTransaction.signerId !== currentTransaction.signerId) {
-      throw new MultiTransactionError('Other transaction should have the same `signerId`');
+      throw new MultiTransactionError('Other transaction should have the same `signerId` as current transaction');
     }
 
     if (otherTransaction.receiverId && otherTransaction.receiverId !== currentTransaction.receiverId) {
-      throw new MultiTransactionError('Other transaction should have the same `receiverId`');
+      throw new MultiTransactionError('Other transaction should have the same `receiverId` as current transaction');
     }
 
     return this.addActions(otherTransaction.actions);
@@ -88,7 +88,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Count actions of CURRENT transaction.
+   * Count actions of current transaction.
    */
   countActions(): number {
     const transaction = this.getCurrentTransaction();
@@ -122,14 +122,14 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a CreateAccount Action into CURRENT transaction.
+   * Add a CreateAccount Action following the previous one.
    */
   createAccount(): this {
     return this.addActions([Actions.createAccount()]);
   }
 
   /**
-   * Add a DeleteAccount Action into CURRENT transaction.
+   * Add a DeleteAccount Action following the previous one.
    * @param beneficiaryId beneficiary id
    */
   deleteAccount(beneficiaryId: string): this {
@@ -137,7 +137,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a AddKey Action into CURRENT transaction.
+   * Add a AddKey Action following the previous one.
    * @param publicKey public key
    * @param accessKey access key
    */
@@ -151,7 +151,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a DeleteKey Action into CURRENT transaction.
+   * Add a DeleteKey Action following the previous one.
    * @param publicKey public key
    */
   deleteKey(publicKey: string): this {
@@ -159,7 +159,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a DeployContract Action into CURRENT transaction.
+   * Add a DeployContract Action following the previous one.
    * @param code code
    */
   deployContract(code: Uint8Array): this {
@@ -167,7 +167,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a Stake Action into CURRENT transaction.
+   * Add a Stake Action following the previous one.
    * @param amount amount
    * @param publicKey public key
    */
@@ -176,7 +176,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a FunctionCall Action into CURRENT transaction.
+   * Add a FunctionCall Action following the previous one.
    * @param methodName method name
    * @param args args
    * @param attachedDeposit attached deposit
@@ -201,7 +201,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a Transfer Action into CURRENT transaction.
+   * Add a Transfer Action following the previous one.
    * @param amount amount
    */
   transfer(amount: string): this {

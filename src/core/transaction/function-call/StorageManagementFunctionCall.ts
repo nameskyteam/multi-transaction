@@ -16,7 +16,7 @@ export class StorageManagementFunctionCall extends FunctionCall {
   }
 
   /**
-   * Add a FunctionCall Action with method `storage_deposit` into CURRENT transaction.
+   * Add a FunctionCall Action with method `storage_deposit` following the previous one.
    * @param args args
    * @param attachedDeposit attached deposit
    * @param gas gas
@@ -31,7 +31,7 @@ export class StorageManagementFunctionCall extends FunctionCall {
   }
 
   /**
-   * Add a FunctionCall Action with method `storage_withdraw` into CURRENT transaction.
+   * Add a FunctionCall Action with method `storage_withdraw` following the previous one.
    * @param args args
    * @param gas gas
    */
@@ -45,7 +45,7 @@ export class StorageManagementFunctionCall extends FunctionCall {
   }
 
   /**
-   * Add a FunctionCall Action with method `storage_unregister` into CURRENT transaction.
+   * Add a FunctionCall Action with method `storage_unregister` following the previous one.
    * @param args args
    * @param gas gas
    */

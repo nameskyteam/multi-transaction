@@ -20,7 +20,7 @@ export class NonFungibleTokenFunctionCall extends FunctionCall {
   }
 
   /**
-   * Add a FunctionCall Action with method `nft_transfer` into CURRENT transaction.
+   * Add a FunctionCall Action with method `nft_transfer` following the previous one.
    * @param args args
    * @param gas gas
    */
@@ -34,7 +34,7 @@ export class NonFungibleTokenFunctionCall extends FunctionCall {
   }
 
   /**
-   * Add a FunctionCall Action with method `nft_transfer_call` into CURRENT transaction.
+   * Add a FunctionCall Action with method `nft_transfer_call` following the previous one.
    * @param args args
    * @param gas gas
    */
@@ -48,7 +48,7 @@ export class NonFungibleTokenFunctionCall extends FunctionCall {
   }
 
   /**
-   * Add a FunctionCall Action with method `nft_approve` into CURRENT transaction.
+   * Add a FunctionCall Action with method `nft_approve` following the previous one.
    * @param args args
    * @param attachedDeposit attached deposit
    * @param gas gas
@@ -63,7 +63,7 @@ export class NonFungibleTokenFunctionCall extends FunctionCall {
   }
 
   /**
-   * Add a FunctionCall Action with method `nft_revoke` into CURRENT transaction.
+   * Add a FunctionCall Action with method `nft_revoke` following the previous one.
    * @param args args
    * @param gas gas
    */
@@ -77,7 +77,7 @@ export class NonFungibleTokenFunctionCall extends FunctionCall {
   }
 
   /**
-   * Add a FunctionCall Action with method `nft_revoke_all` into CURRENT transaction.
+   * Add a FunctionCall Action with method `nft_revoke_all` following the previous one.
    * @param args args
    * @param gas gas
    */
