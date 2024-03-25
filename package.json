@@ -20,7 +20,7 @@
     "@near-wallet-selector/core": "^8.9.2",
     "bignumber.js": "^9.1.2",
     "bn.js": "^5.2.1",
-    "borsher": "^2.5.0",
+    "borsher": "^2.6.0",
     "buffer": "^6.0.3",
     "near-api-js": "^2.1.4"
   },

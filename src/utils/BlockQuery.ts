@@ -1,6 +1,6 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 import { Provider } from 'near-api-js/lib/providers';
-import { BlockQueryError } from '../errors';
+import { unreachable } from './common';
 
 type BlockQueryInternal =
   | { kind: 'optimistic' }
@@ -16,10 +16,6 @@ export class BlockQuery {
 
   private constructor(internal: BlockQueryInternal) {
     this.internal = internal;
-  }
-
-  private unexpectedKind(): never {
-    throw new BlockQueryError(`Unexpected kind: ${this.internal.kind}`);
   }
 
   static fromReference(reference: BlockReference): BlockQuery {
@@ -51,7 +47,7 @@ export class BlockQuery {
       return BlockQuery.hash(reference.blockId);
     }
 
-    throw new BlockQueryError(`Unexpected reference: ${JSON.stringify(reference)}`);
+    unreachable();
   }
 
   toReference(): BlockReference {
@@ -83,7 +79,7 @@ export class BlockQuery {
       return { blockId: this.internal.hash };
     }
 
-    this.unexpectedKind();
+    unreachable();
   }
 
   /**

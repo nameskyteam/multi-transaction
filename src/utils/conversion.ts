@@ -5,6 +5,7 @@ import { MultiTransaction } from '../core';
 import * as nearWalletSelector from '@near-wallet-selector/core';
 import BN from 'bn.js';
 import { ParseTransactionError } from '../errors';
+import { unreachable } from './common';
 
 export function parseNearApiJsTransactions(mTx: MultiTransaction): NearApiJsTransactionLike[] {
   return mTx.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));
@@ -22,55 +23,60 @@ function parseNearApiJsTransaction({ receiverId, actions }: Transaction): NearAp
 }
 
 function parseNearApiJsAction(action: Action): NearApiJsActionLike {
-  switch (action.type) {
-    case 'CreateAccount': {
-      return nearApiJs.transactions.createAccount();
-    }
-    case 'DeleteAccount': {
-      return nearApiJs.transactions.deleteAccount(action.params.beneficiaryId);
-    }
-    case 'AddKey': {
-      return nearApiJs.transactions.addKey(
-        nearApiJs.utils.PublicKey.fromString(action.params.publicKey),
-        parseNearApiJsAccessKey(action.params.accessKey),
-      );
-    }
-    case 'DeleteKey': {
-      return nearApiJs.transactions.deleteKey(nearApiJs.utils.PublicKey.fromString(action.params.publicKey));
-    }
-    case 'DeployContract': {
-      return nearApiJs.transactions.deployContract(action.params.code);
-    }
-    case 'Stake': {
-      return nearApiJs.transactions.stake(
-        new BN(action.params.amount),
-        nearApiJs.utils.PublicKey.fromString(action.params.publicKey),
-      );
-    }
-    case 'FunctionCall': {
-      return nearApiJs.transactions.functionCall(
-        action.params.methodName,
-        action.params.args,
-        new BN(action.params.gas),
-        new BN(action.params.attachedDeposit),
-      );
-    }
-    case 'Transfer': {
-      return nearApiJs.transactions.transfer(new BN(action.params.amount));
-    }
+  if (action.type === 'CreateAccount') {
+    return nearApiJs.transactions.createAccount();
   }
+
+  if (action.type === 'DeleteAccount') {
+    return nearApiJs.transactions.deleteAccount(action.params.beneficiaryId);
+  }
+
+  if (action.type === 'AddKey') {
+    return nearApiJs.transactions.addKey(
+      nearApiJs.utils.PublicKey.fromString(action.params.publicKey),
+      parseNearApiJsAccessKey(action.params.accessKey),
+    );
+  }
+
+  if (action.type === 'DeleteKey') {
+    return nearApiJs.transactions.deleteKey(nearApiJs.utils.PublicKey.fromString(action.params.publicKey));
+  }
+
+  if (action.type === 'DeployContract') {
+    return nearApiJs.transactions.deployContract(action.params.code);
+  }
+
+  if (action.type === 'Stake') {
+    return nearApiJs.transactions.stake(
+      new BN(action.params.amount),
+      nearApiJs.utils.PublicKey.fromString(action.params.publicKey),
+    );
+  }
+
+  if (action.type === 'FunctionCall') {
+    return nearApiJs.transactions.functionCall(
+      action.params.methodName,
+      action.params.args,
+      new BN(action.params.gas),
+      new BN(action.params.attachedDeposit),
+    );
+  }
+
+  if (action.type === 'Transfer') {
+    return nearApiJs.transactions.transfer(new BN(action.params.amount));
+  }
+
+  unreachable();
 }
 
 function parseNearApiJsAccessKey(accessKey: AccessKey): nearApiJs.transactions.AccessKey {
-  const { permission } = accessKey;
-  if (permission === 'FullAccess') {
+  if (accessKey.permission === 'FullAccess') {
     return nearApiJs.transactions.fullAccessKey();
   } else {
-    const { receiverId, methodNames, allowance } = permission;
     return nearApiJs.transactions.functionCallAccessKey(
-      receiverId,
-      methodNames,
-      allowance ? new BN(allowance) : undefined,
+      accessKey.permission.receiverId,
+      accessKey.permission.methodNames,
+      accessKey.permission.allowance ? new BN(accessKey.permission.allowance) : undefined,
     );
   }
 }
@@ -96,54 +102,48 @@ function parseNearWalletSelectorTransaction({
 }
 
 function parseNearWalletSelectorAction(action: Action): NearWalletSelectorActionLike {
-  switch (action.type) {
-    case 'CreateAccount': {
-      return action;
-    }
-    case 'DeleteAccount': {
-      return action;
-    }
-    case 'AddKey': {
-      return action;
-    }
-    case 'DeleteKey': {
-      return action;
-    }
-    case 'DeployContract': {
-      return action;
-    }
-    case 'Stake': {
-      const { amount, publicKey } = action.params;
-      return {
-        type: action.type,
-        params: {
-          stake: amount,
-          publicKey,
-        },
-      };
-    }
-    case 'FunctionCall': {
-      const { methodName, args, gas, attachedDeposit } = action.params;
-      return {
-        type: action.type,
-        params: {
-          methodName,
-          args,
-          gas,
-          deposit: attachedDeposit,
-        },
-      };
-    }
-    case 'Transfer': {
-      const { amount } = action.params;
-      return {
-        type: action.type,
-        params: {
-          deposit: amount,
-        },
-      };
-    }
+  if (
+    action.type === 'CreateAccount' ||
+    action.type === 'DeleteAccount' ||
+    action.type === 'AddKey' ||
+    action.type === 'DeleteKey' ||
+    action.type === 'DeployContract'
+  ) {
+    return action;
   }
+
+  if (action.type === 'Stake') {
+    return {
+      type: action.type,
+      params: {
+        stake: action.params.amount,
+        publicKey: action.params.publicKey,
+      },
+    };
+  }
+
+  if (action.type === 'FunctionCall') {
+    return {
+      type: action.type,
+      params: {
+        methodName: action.params.methodName,
+        args: action.params.args,
+        gas: action.params.gas,
+        deposit: action.params.attachedDeposit,
+      },
+    };
+  }
+
+  if (action.type === 'Transfer') {
+    return {
+      type: action.type,
+      params: {
+        deposit: action.params.amount,
+      },
+    };
+  }
+
+  unreachable();
 }
 
 export type NearApiJsTransactionLike = {
