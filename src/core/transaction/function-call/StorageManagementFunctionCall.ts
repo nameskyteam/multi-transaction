@@ -1,4 +1,5 @@
 import {
+  MultiAction,
   StorageDepositArgs,
   StorageDepositOptions,
   StorageUnregisterArgs,
@@ -7,11 +8,10 @@ import {
   StorageWithdrawOptions,
 } from '../../../types';
 import { Amount } from '../../../utils';
-import { MultiTransaction } from '../MultiTransaction';
 import { FunctionCall } from './FunctionCall';
 
-export class StorageManagementFunctionCall extends FunctionCall {
-  constructor(mTx: MultiTransaction) {
+export class StorageManagementFunctionCall<M extends MultiAction> extends FunctionCall<M> {
+  constructor(mTx: M) {
     super(mTx);
   }
 
@@ -21,7 +21,7 @@ export class StorageManagementFunctionCall extends FunctionCall {
    * @param attachedDeposit attached deposit
    * @param gas gas
    */
-  deposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
+  deposit({ args, attachedDeposit, gas }: StorageDepositOptions): M {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',
       args,
@@ -35,7 +35,7 @@ export class StorageManagementFunctionCall extends FunctionCall {
    * @param args args
    * @param gas gas
    */
-  withdraw({ args, gas }: StorageWithdrawOptions): MultiTransaction {
+  withdraw({ args, gas }: StorageWithdrawOptions): M {
     return this.functionCall<StorageWithdrawArgs>({
       methodName: 'storage_withdraw',
       args,
@@ -49,7 +49,7 @@ export class StorageManagementFunctionCall extends FunctionCall {
    * @param args args
    * @param gas gas
    */
-  unregister({ args, gas }: StorageUnregisterOptions): MultiTransaction {
+  unregister({ args, gas }: StorageUnregisterOptions): M {
     return this.functionCall<StorageUnregisterArgs>({
       methodName: 'storage_unregister',
       args,

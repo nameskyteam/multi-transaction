@@ -1,5 +1,5 @@
 import { Actions } from './Actions';
-import { Transaction, AccessKey, Action } from '../../types';
+import { Transaction, AccessKey, Action, MultiAction } from '../../types';
 import { Amount, Gas, Stringifier } from '../../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
 import {
@@ -9,19 +9,19 @@ import {
 } from './function-call';
 import { MultiTransactionError } from '../../errors';
 
-export class MultiTransaction {
+export class MultiTransaction implements MultiAction {
   private readonly transactions: Transaction[];
 
   private constructor() {
     this.transactions = [];
   }
 
-  private addTransactions(transactions: Transaction[]): MultiTransaction {
+  private addTransactions(transactions: Transaction[]): this {
     this.transactions.push(...transactions);
     return this;
   }
 
-  private addActions(actions: Action[]): MultiTransaction {
+  private addActions(actions: Action[]): this {
     const transaction = this.getCurrentTransaction();
     transaction.actions.push(...actions);
     return this;
@@ -42,19 +42,24 @@ export class MultiTransaction {
   }
 
   /**
-   * Create a new `MultiTransaction` and add a transaction.
-   * @param options options
+   * Create a new `MultiAction`.
    */
-  static batch(options?: BatchOptions): MultiTransaction {
-    return MultiTransaction.new().batch(options);
+  static actions(): MultiAction {
+    return MultiTransaction.new().addTransactions([{ actions: [] }]);
+  }
+
+  /**
+   * Create a new `MultiTransaction` and add a transaction.
+   */
+  static batch({ signerId, receiverId }: BatchOptions): MultiTransaction {
+    return MultiTransaction.new().addTransactions([{ signerId, receiverId, actions: [] }]);
   }
 
   /**
    * Add a transaction following the previous one.
-   * @param options options
    */
-  batch(options?: BatchOptions): MultiTransaction {
-    return this.addTransactions([{ signerId: options?.signerId, receiverId: options?.receiverId, actions: [] }]);
+  batch({ signerId, receiverId }: BatchOptions): this {
+    return this.addTransactions([{ signerId, receiverId, actions: [] }]);
   }
 
   isEmpty(): boolean {
@@ -88,7 +93,7 @@ export class MultiTransaction {
    * Extend transactions.
    * @param mTx mTx
    */
-  extendTransactions(mTx: MultiTransaction): MultiTransaction {
+  extendTransactions(mTx: MultiTransaction): this {
     return this.addTransactions(mTx.toTransactions());
   }
 
@@ -96,11 +101,11 @@ export class MultiTransaction {
    * Extend actions to current transaction.
    * @param mTx mTx
    */
-  extendActions(mTx: MultiTransaction): MultiTransaction {
+  extendActions(mTx: MultiAction): this {
     const otherTransactions = mTx.toTransactions();
 
     if (otherTransactions.length > 1) {
-      throw new MultiTransactionError('Other `MultiTransaction` should contain up to one transaction');
+      throw new MultiTransactionError('Other `MultiAction` should contain up to one transaction');
     }
 
     if (otherTransactions.length === 0) {
@@ -113,7 +118,7 @@ export class MultiTransaction {
   /**
    * Add a CreateAccount Action following the previous one.
    */
-  createAccount(): MultiTransaction {
+  createAccount(): this {
     return this.addActions([Actions.createAccount()]);
   }
 
@@ -121,7 +126,7 @@ export class MultiTransaction {
    * Add a DeleteAccount Action following the previous one.
    * @param beneficiaryId beneficiary id
    */
-  deleteAccount(beneficiaryId: string): MultiTransaction {
+  deleteAccount(beneficiaryId: string): this {
     return this.addActions([Actions.deleteAccount({ beneficiaryId })]);
   }
 
@@ -130,7 +135,7 @@ export class MultiTransaction {
    * @param publicKey public key
    * @param accessKey access key
    */
-  addKey(publicKey: string, accessKey: AccessKey): MultiTransaction {
+  addKey(publicKey: string, accessKey: AccessKey): this {
     return this.addActions([
       Actions.addKey({
         publicKey: PublicKey.fromString(publicKey).toString(),
@@ -143,7 +148,7 @@ export class MultiTransaction {
    * Add a DeleteKey Action following the previous one.
    * @param publicKey public key
    */
-  deleteKey(publicKey: string): MultiTransaction {
+  deleteKey(publicKey: string): this {
     return this.addActions([Actions.deleteKey({ publicKey: PublicKey.fromString(publicKey).toString() })]);
   }
 
@@ -151,7 +156,7 @@ export class MultiTransaction {
    * Add a DeployContract Action following the previous one.
    * @param code code
    */
-  deployContract(code: Uint8Array): MultiTransaction {
+  deployContract(code: Uint8Array): this {
     return this.addActions([Actions.deployContract({ code })]);
   }
 
@@ -160,7 +165,7 @@ export class MultiTransaction {
    * @param amount amount
    * @param publicKey public key
    */
-  stake(amount: string, publicKey: string): MultiTransaction {
+  stake(amount: string, publicKey: string): this {
     return this.addActions([Actions.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() })]);
   }
 
@@ -178,7 +183,7 @@ export class MultiTransaction {
     attachedDeposit = Amount.ZERO,
     gas = Gas.default(),
     stringifier = Stringifier.json(),
-  }: FunctionCallOptions<Args>): MultiTransaction {
+  }: FunctionCallOptions<Args>): this {
     return this.addActions([
       Actions.functionCall({
         methodName,
@@ -193,35 +198,35 @@ export class MultiTransaction {
    * Add a Transfer Action following the previous one.
    * @param amount amount
    */
-  transfer(amount: string): MultiTransaction {
+  transfer(amount: string): this {
     return this.addActions([Actions.transfer({ amount })]);
   }
 
   /**
    * FungibleToken Helper
    */
-  get ft(): FungibleTokenFunctionCall {
+  get ft(): FungibleTokenFunctionCall<this> {
     return new FungibleTokenFunctionCall(this);
   }
 
   /**
    * NonFungibleToken Helper
    */
-  get nft(): NonFungibleTokenFunctionCall {
+  get nft(): NonFungibleTokenFunctionCall<this> {
     return new NonFungibleTokenFunctionCall(this);
   }
 
   /**
    * StorageManagement Helper
    */
-  get storage(): StorageManagementFunctionCall {
+  get storage(): StorageManagementFunctionCall<this> {
     return new StorageManagementFunctionCall(this);
   }
 }
 
 export type BatchOptions = {
   signerId?: string;
-  receiverId?: string;
+  receiverId: string;
 };
 
 export type FunctionCallOptions<Args> = {
