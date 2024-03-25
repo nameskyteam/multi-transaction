@@ -6,9 +6,9 @@ import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { EmptyArgs } from './common';
 
-export interface MultiSendWalletSelector extends WalletSelector, WalletSelectorEnhancement {}
+export interface MultiSendWalletSelector extends WalletSelector, WalletSelectorExtension {}
 
-export interface WalletSelectorEnhancement extends View, Call, Send {
+export interface WalletSelectorExtension extends View, Call, Send {
   near: Near;
 
   /**
