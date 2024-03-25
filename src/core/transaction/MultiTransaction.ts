@@ -1,5 +1,5 @@
 import { Actions } from './Actions';
-import { Transaction, AccessKey, Action, MultiAction } from '../../types';
+import { Transaction, AccessKey, Action, MultiAction, EmptyArgs, FunctionCallOptions } from '../../types';
 import { Amount, Gas, Stringifier } from '../../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
 import {
@@ -8,16 +8,23 @@ import {
   NonFungibleTokenFunctionCall,
 } from './function-call';
 import { MultiTransactionError } from '../../errors';
-import { Optional } from '@near-wallet-selector/core';
+import { Optional } from '../../types';
 
 export class MultiTransaction implements MultiAction {
-  private readonly transactions: Optional<Transaction, 'receiverId'>[];
+  private readonly transactions: MaybeIncompleteTransaction[];
 
   private constructor() {
     this.transactions = [];
   }
 
-  private addTransactions(transactions: Optional<Transaction, 'receiverId'>[]): this {
+  private getCurrentTransaction(): MaybeIncompleteTransaction {
+    if (this.isEmpty()) {
+      throw new MultiTransactionError('Transaction not found');
+    }
+    return this.transactions[this.transactions.length - 1];
+  }
+
+  private addTransactions(transactions: MaybeIncompleteTransaction[]): this {
     this.transactions.push(...transactions);
     return this;
   }
@@ -28,14 +35,7 @@ export class MultiTransaction implements MultiAction {
     return this;
   }
 
-  private getCurrentTransaction(): Optional<Transaction, 'receiverId'> {
-    if (this.isEmpty()) {
-      throw new MultiTransactionError('Transaction not found');
-    }
-    return this.transactions[this.transactions.length - 1];
-  }
-
-  private assertValidTransactions(): Transaction[] {
+  private assertCompleteTransactions(): Transaction[] {
     this.transactions.forEach((transaction, index) => {
       if (!transaction.receiverId) {
         throw new MultiTransactionError(`Transaction (${index}) missing \`receiverId\``);
@@ -56,7 +56,8 @@ export class MultiTransaction implements MultiAction {
    * Return transactions.
    */
   toTransactions(): Transaction[] {
-    return Array.from(this.assertValidTransactions());
+    const transactions = this.assertCompleteTransactions();
+    return Array.from(transactions);
   }
 
   /**
@@ -252,17 +253,5 @@ export class MultiTransaction implements MultiAction {
   }
 }
 
-export type BatchOptions = {
-  signerId?: string;
-  receiverId: string;
-};
-
-export type FunctionCallOptions<Args> = {
-  methodName: string;
-  args?: Args;
-  attachedDeposit?: string;
-  gas?: string;
-  stringifier?: Stringifier<Args>;
-};
-
-export type EmptyArgs = Record<string, never>;
+type MaybeIncompleteTransaction = Optional<Transaction, 'receiverId'>;
+export type BatchOptions = Pick<Transaction, 'signerId' | 'receiverId'>;

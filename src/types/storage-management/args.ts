@@ -1,4 +1,4 @@
-import { EmptyArgs } from '../../core';
+import { EmptyArgs } from '../common';
 
 export type StorageDepositArgs = {
   account_id?: string;

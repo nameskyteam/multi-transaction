@@ -1,5 +1,15 @@
 import { Account, Connection } from 'near-api-js';
-import { Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions, View, ViewOptions } from '../types';
+import {
+  Call,
+  CallOptions,
+  CallRawOptions,
+  EmptyArgs,
+  Send,
+  SendOptions,
+  SendRawOptions,
+  View,
+  ViewOptions,
+} from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   parseNearApiJsTransactions,
@@ -9,7 +19,7 @@ import {
   parseOutcome,
   BlockQuery,
 } from '../utils';
-import { MultiTransaction, EmptyArgs } from './transaction';
+import { MultiTransaction } from './transaction';
 import { SendTransactionError } from '../errors';
 
 export class MultiSendAccount extends Account implements View, Call, Send {

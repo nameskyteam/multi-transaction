@@ -1,11 +1,7 @@
-import {
-  EmptyArgs,
-  FunctionCallOptions,
-  FungibleTokenFunctionCall,
-  NonFungibleTokenFunctionCall,
-  StorageManagementFunctionCall,
-} from '../core';
+import { FungibleTokenFunctionCall, NonFungibleTokenFunctionCall, StorageManagementFunctionCall } from '../core';
 import { AccessKey, Action, Transaction } from './transaction';
+import { Stringifier } from '../utils';
+import { EmptyArgs } from './common';
 
 export interface MultiAction {
   createAccount(): this;
@@ -24,3 +20,11 @@ export interface MultiAction {
   toActions(): Action[];
   countActions(): number;
 }
+
+export type FunctionCallOptions<Args> = {
+  methodName: string;
+  args?: Args;
+  attachedDeposit?: string;
+  gas?: string;
+  stringifier?: Stringifier<Args>;
+};
