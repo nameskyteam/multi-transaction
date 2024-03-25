@@ -254,4 +254,5 @@ export class MultiTransaction implements MultiAction {
 }
 
 type MaybeIncompleteTransaction = Optional<Transaction, 'receiverId'>;
+
 export type BatchOptions = Pick<Transaction, 'signerId' | 'receiverId'>;
