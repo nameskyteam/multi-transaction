@@ -45,58 +45,6 @@ export class MultiTransaction implements MultiAction {
   }
 
   /**
-   * Create a new `MultiTransaction` from transactions.
-   * @param transactions
-   */
-  static fromTransactions(transactions: Transaction[]): MultiTransaction {
-    return MultiTransaction.new().addTransactions(transactions);
-  }
-
-  /**
-   * Return transactions.
-   */
-  toTransactions(): Transaction[] {
-    const transactions = this.assertCompleteTransactions();
-    return Array.from(transactions);
-  }
-
-  /**
-   * Return actions of current transaction.
-   */
-  toActions(): Action[] {
-    const transaction = this.getCurrentTransaction();
-    return Array.from(transaction.actions);
-  }
-
-  /**
-   * Create a new `MultiTransaction`.
-   */
-  static new(): MultiTransaction {
-    return new MultiTransaction();
-  }
-
-  /**
-   * Create a new `MultiAction`.
-   */
-  static actions(): MultiAction {
-    return MultiTransaction.new().addTransactions([{ actions: [] }]);
-  }
-
-  /**
-   * Create a new `MultiTransaction` and add a transaction.
-   */
-  static batch({ signerId, receiverId }: BatchOptions): MultiTransaction {
-    return MultiTransaction.new().addTransactions([{ signerId, receiverId, actions: [] }]);
-  }
-
-  /**
-   * Add a transaction following the previous one.
-   */
-  batch({ signerId, receiverId }: BatchOptions): this {
-    return this.addTransactions([{ signerId, receiverId, actions: [] }]);
-  }
-
-  /**
    * If it is empty.
    */
   isEmpty(): boolean {
@@ -142,6 +90,58 @@ export class MultiTransaction implements MultiAction {
     }
 
     return this.addActions(otherTransactions[0].actions);
+  }
+
+  /**
+   * Create a new `MultiTransaction` from transactions.
+   * @param transactions
+   */
+  static fromTransactions(transactions: Transaction[]): MultiTransaction {
+    return MultiTransaction.new().addTransactions(transactions);
+  }
+
+  /**
+   * Return transactions.
+   */
+  toTransactions(): Transaction[] {
+    const transactions = this.assertCompleteTransactions();
+    return Array.from(transactions);
+  }
+
+  /**
+   * Return actions of current transaction.
+   */
+  toActions(): Action[] {
+    const transaction = this.getCurrentTransaction();
+    return Array.from(transaction.actions);
+  }
+
+  /**
+   * Create a new `MultiTransaction`.
+   */
+  static new(): MultiTransaction {
+    return new MultiTransaction();
+  }
+
+  /**
+   * Create a new `MultiAction`.
+   */
+  static actions(): MultiAction {
+    return MultiTransaction.new().addTransactions([{ actions: [] }]);
+  }
+
+  /**
+   * Create a new `MultiTransaction` and add a transaction.
+   */
+  static batch(options: BatchOptions): MultiTransaction {
+    return MultiTransaction.new().batch(options);
+  }
+
+  /**
+   * Add a transaction following the previous one.
+   */
+  batch({ signerId, receiverId }: BatchOptions): this {
+    return this.addTransactions([{ signerId, receiverId, actions: [] }]);
   }
 
   /**
