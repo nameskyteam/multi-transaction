@@ -16,6 +16,24 @@ export class MultiTransaction {
     this.transactions = [];
   }
 
+  private addTransactions(transactions: Transaction[]): this {
+    this.transactions.push(...transactions);
+    return this;
+  }
+
+  private addActions(actions: Action[]): this {
+    const transaction = this.getCurrentTransaction();
+    transaction.actions.push(...actions);
+    return this;
+  }
+
+  private getCurrentTransaction(): Transaction {
+    if (this.isEmpty()) {
+      throw new MultiTransactionError('Transaction not found');
+    }
+    return this.transactions[this.transactions.length - 1];
+  }
+
   /**
    * Create a new `MultiTransaction`.
    */
@@ -37,32 +55,6 @@ export class MultiTransaction {
    */
   batch(options?: BatchOptions): this {
     return this.addTransactions([{ signerId: options?.signerId, receiverId: options?.receiverId, actions: [] }]);
-  }
-
-  /**
-   * Extend transactions.
-   * @param mTx mTx
-   */
-  extendTransactions(mTx: MultiTransaction): this {
-    return this.addTransactions(mTx.toTransactions());
-  }
-
-  /**
-   * Extend actions to current transaction.
-   * @param mTx mTx
-   */
-  extendActions(mTx: MultiTransaction): this {
-    const otherTransactions = mTx.toTransactions();
-
-    if (otherTransactions.length > 1) {
-      throw new MultiTransactionError('Other `MultiTransaction` should contain up to one transaction');
-    }
-
-    if (otherTransactions.length === 0) {
-      return this;
-    }
-
-    return this.addActions(otherTransactions[0].actions);
   }
 
   isEmpty(): boolean {
@@ -92,22 +84,30 @@ export class MultiTransaction {
     return Array.from(this.transactions);
   }
 
-  private addTransactions(transactions: Transaction[]): this {
-    this.transactions.push(...transactions);
-    return this;
+  /**
+   * Extend transactions.
+   * @param mTx mTx
+   */
+  extendTransactions(mTx: MultiTransaction): this {
+    return this.addTransactions(mTx.toTransactions());
   }
 
-  private addActions(actions: Action[]): this {
-    const transaction = this.getCurrentTransaction();
-    transaction.actions.push(...actions);
-    return this;
-  }
+  /**
+   * Extend actions to current transaction.
+   * @param mTx mTx
+   */
+  extendActions(mTx: MultiTransaction): this {
+    const otherTransactions = mTx.toTransactions();
 
-  private getCurrentTransaction(): Transaction {
-    if (this.isEmpty()) {
-      throw new MultiTransactionError('Transaction not found');
+    if (otherTransactions.length > 1) {
+      throw new MultiTransactionError('Other `MultiTransaction` should contain up to one transaction');
     }
-    return this.transactions[this.transactions.length - 1];
+
+    if (otherTransactions.length === 0) {
+      return this;
+    }
+
+    return this.addActions(otherTransactions[0].actions);
   }
 
   /**
@@ -219,7 +219,10 @@ export class MultiTransaction {
   }
 }
 
-export type BatchOptions = Pick<Transaction, 'signerId' | 'receiverId'>;
+export type BatchOptions = {
+  signerId: string;
+  receiverId: string;
+};
 
 export type FunctionCallOptions<Args> = {
   methodName: string;
