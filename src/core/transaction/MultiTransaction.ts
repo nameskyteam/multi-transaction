@@ -48,7 +48,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Extend actions into current transaction.
+   * Extend actions to current transaction.
    * @param mTx mTx
    */
   extendActions(mTx: MultiTransaction): this {
@@ -88,7 +88,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Count actions of current transaction.
+   * Count actions for current transaction.
    */
   countActions(): number {
     const transaction = this.getCurrentTransaction();
