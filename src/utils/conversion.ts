@@ -3,7 +3,6 @@ import { Transaction } from '../types';
 import { MultiTransaction } from '../core';
 import { Action as NearWalletSelectorAction } from '@near-wallet-selector/core';
 import BN from 'bn.js';
-import { ParseTransactionError } from '../errors';
 import { unreachable } from './common';
 import {
   addKey,
@@ -26,10 +25,6 @@ export function parseNearApiJsTransactions(mTx: MultiTransaction): NearApiJsTran
 }
 
 function parseNearApiJsTransaction({ receiverId, actions }: Transaction): NearApiJsTransaction {
-  if (!receiverId) {
-    throw new ParseTransactionError('Transaction must have `receiverId`');
-  }
-
   return {
     receiverId,
     actions: actions.map((action) => parseNearApiJsAction(action)),
@@ -98,10 +93,6 @@ function parseNearWalletSelectorTransaction({
   receiverId,
   actions,
 }: Transaction): NearWalletSelectorTransaction {
-  if (!receiverId) {
-    throw new ParseTransactionError('Transaction must have `receiverId`');
-  }
-
   return {
     signerId,
     receiverId,

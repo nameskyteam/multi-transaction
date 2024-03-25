@@ -8,15 +8,16 @@ import {
   NonFungibleTokenFunctionCall,
 } from './function-call';
 import { MultiTransactionError } from '../../errors';
+import { Optional } from '@near-wallet-selector/core';
 
 export class MultiTransaction implements MultiAction {
-  private readonly transactions: Transaction[];
+  private readonly transactions: Optional<Transaction, 'receiverId'>[];
 
   private constructor() {
     this.transactions = [];
   }
 
-  private addTransactions(transactions: Transaction[]): this {
+  private addTransactions(transactions: Optional<Transaction, 'receiverId'>[]): this {
     this.transactions.push(...transactions);
     return this;
   }
@@ -27,11 +28,43 @@ export class MultiTransaction implements MultiAction {
     return this;
   }
 
-  private getCurrentTransaction(): Transaction {
+  private getCurrentTransaction(): Optional<Transaction, 'receiverId'> {
     if (this.isEmpty()) {
       throw new MultiTransactionError('Transaction not found');
     }
     return this.transactions[this.transactions.length - 1];
+  }
+
+  private assertValidTransactions(): Transaction[] {
+    this.transactions.forEach((transaction, index) => {
+      if (!transaction.receiverId) {
+        throw new MultiTransactionError(`Transaction (${index}) missing \`receiverId\``);
+      }
+    });
+    return this.transactions as Transaction[];
+  }
+
+  /**
+   * Create a new `MultiTransaction` from transactions.
+   * @param transactions
+   */
+  static fromTransactions(transactions: Transaction[]): MultiTransaction {
+    return MultiTransaction.new().addTransactions(transactions);
+  }
+
+  /**
+   * Return transactions.
+   */
+  toTransactions(): Transaction[] {
+    return Array.from(this.assertValidTransactions());
+  }
+
+  /**
+   * Return actions of current transaction.
+   */
+  toActions(): Action[] {
+    const transaction = this.getCurrentTransaction();
+    return Array.from(transaction.actions);
   }
 
   /**
@@ -62,6 +95,9 @@ export class MultiTransaction implements MultiAction {
     return this.addTransactions([{ signerId, receiverId, actions: [] }]);
   }
 
+  /**
+   * If it is empty.
+   */
   isEmpty(): boolean {
     return this.transactions.length === 0;
   }
@@ -79,14 +115,6 @@ export class MultiTransaction implements MultiAction {
   countActions(): number {
     const transaction = this.getCurrentTransaction();
     return transaction.actions.length;
-  }
-
-  static fromTransactions(transactions: Transaction[]): MultiTransaction {
-    return MultiTransaction.new().addTransactions(transactions);
-  }
-
-  toTransactions(): Transaction[] {
-    return Array.from(this.transactions);
   }
 
   /**

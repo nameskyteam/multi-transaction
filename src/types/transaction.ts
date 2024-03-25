@@ -1,6 +1,6 @@
 export type Transaction = {
   signerId?: string;
-  receiverId?: string;
+  receiverId: string;
   actions: Action[];
 };
 

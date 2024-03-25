@@ -5,7 +5,7 @@ import {
   NonFungibleTokenFunctionCall,
   StorageManagementFunctionCall,
 } from '../core';
-import { AccessKey, Transaction } from './transaction';
+import { AccessKey, Action, Transaction } from './transaction';
 
 export interface MultiAction {
   createAccount(): this;
@@ -21,5 +21,6 @@ export interface MultiAction {
   get storage(): StorageManagementFunctionCall<this>;
   extendActions(mTx: this): this;
   toTransactions(): Transaction[];
+  toActions(): Action[];
   countActions(): number;
 }
