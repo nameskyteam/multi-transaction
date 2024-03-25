@@ -1,1 +1,5 @@
-export class ParseOutcomeError extends Error {}
+export class ParseOutcomeError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}

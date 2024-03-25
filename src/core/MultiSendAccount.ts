@@ -1,5 +1,15 @@
 import { Account, Connection } from 'near-api-js';
-import { Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions, View, ViewOptions } from '../types';
+import {
+  Call,
+  CallOptions,
+  CallRawOptions,
+  EmptyArgs,
+  Send,
+  SendOptions,
+  SendRawOptions,
+  View,
+  ViewOptions,
+} from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
   parseNearApiJsTransactions,
@@ -9,8 +19,8 @@ import {
   parseOutcome,
   BlockQuery,
 } from '../utils';
-import { MultiTransaction, EmptyArgs } from './transaction';
-import { SendError } from '../errors';
+import { MultiTransaction } from './transaction';
+import { SendTransactionError } from '../errors';
 
 export class MultiSendAccount extends Account implements View, Call, Send {
   private constructor(connection: Connection, accountId: string) {
@@ -97,7 +107,7 @@ export class MultiSendAccount extends Account implements View, Call, Send {
     const transactions = parseNearApiJsTransactions(mTx);
 
     if (transactions.length === 0) {
-      throw new SendError('Transaction not found.');
+      throw new SendTransactionError('Transaction not found.');
     }
 
     const outcomes: FinalExecutionOutcome[] = [];

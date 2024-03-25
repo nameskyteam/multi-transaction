@@ -5,3 +5,4 @@ export * from './non-fungible-token';
 export * from './enhancement';
 export * from './common';
 export * from './send';
+export * from './MultiAction';

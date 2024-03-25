@@ -1,4 +1,5 @@
 import {
+  MultiAction,
   StorageDepositArgs,
   StorageDepositOptions,
   StorageUnregisterArgs,
@@ -7,21 +8,20 @@ import {
   StorageWithdrawOptions,
 } from '../../../types';
 import { Amount } from '../../../utils';
-import { MultiTransaction } from '../MultiTransaction';
 import { FunctionCall } from './FunctionCall';
 
-export class StorageManagementFunctionCall extends FunctionCall {
-  constructor(mTx: MultiTransaction) {
+export class StorageManagementFunctionCall<T extends MultiAction> extends FunctionCall<T> {
+  constructor(mTx: T) {
     super(mTx);
   }
 
   /**
-   * Add a FunctionCall action with method `storage_deposit` into CURRENT transaction.
+   * Add a FunctionCall Action with method `storage_deposit` following the previous one.
    * @param args args
    * @param attachedDeposit attached deposit
    * @param gas gas
    */
-  deposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
+  deposit({ args, attachedDeposit, gas }: StorageDepositOptions): T {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',
       args,
@@ -31,11 +31,11 @@ export class StorageManagementFunctionCall extends FunctionCall {
   }
 
   /**
-   * Add a FunctionCall action with method `storage_withdraw` into CURRENT transaction.
+   * Add a FunctionCall Action with method `storage_withdraw` following the previous one.
    * @param args args
    * @param gas gas
    */
-  withdraw({ args, gas }: StorageWithdrawOptions): MultiTransaction {
+  withdraw({ args, gas }: StorageWithdrawOptions): T {
     return this.functionCall<StorageWithdrawArgs>({
       methodName: 'storage_withdraw',
       args,
@@ -45,11 +45,11 @@ export class StorageManagementFunctionCall extends FunctionCall {
   }
 
   /**
-   * Add a FunctionCall action with method `storage_unregister` into CURRENT transaction.
+   * Add a FunctionCall Action with method `storage_unregister` following the previous one.
    * @param args args
    * @param gas gas
    */
-  unregister({ args, gas }: StorageUnregisterOptions): MultiTransaction {
+  unregister({ args, gas }: StorageUnregisterOptions): T {
     return this.functionCall<StorageUnregisterArgs>({
       methodName: 'storage_unregister',
       args,

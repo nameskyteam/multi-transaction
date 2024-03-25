@@ -1,19 +1,24 @@
-import { FtTransferArgs, FtTransferCallArgs, FtTransferCallOptions, FtTransferOptions } from '../../../types';
+import {
+  FtTransferArgs,
+  FtTransferCallArgs,
+  FtTransferCallOptions,
+  FtTransferOptions,
+  MultiAction,
+} from '../../../types';
 import { Amount, Gas } from '../../../utils';
-import { MultiTransaction } from '../MultiTransaction';
 import { FunctionCall } from './FunctionCall';
 
-export class FungibleTokenFunctionCall extends FunctionCall {
-  constructor(mTx: MultiTransaction) {
+export class FungibleTokenFunctionCall<T extends MultiAction> extends FunctionCall<T> {
+  constructor(mTx: T) {
     super(mTx);
   }
 
   /**
-   * Add a FunctionCall action with method `ft_transfer` into CURRENT transaction.
+   * Add a FunctionCall Action with method `ft_transfer` following the previous one.
    * @param args args
    * @param gas gas
    */
-  transfer({ args, gas }: FtTransferOptions): MultiTransaction {
+  transfer({ args, gas }: FtTransferOptions): T {
     return this.functionCall<FtTransferArgs>({
       methodName: 'ft_transfer',
       args,
@@ -23,11 +28,11 @@ export class FungibleTokenFunctionCall extends FunctionCall {
   }
 
   /**
-   * Add a FunctionCall action with method `ft_transfer_call` into CURRENT transaction.
+   * Add a FunctionCall Action with method `ft_transfer_call` following the previous one.
    * @param args args
    * @param gas gas
    */
-  transfer_call({ args, gas }: FtTransferCallOptions): MultiTransaction {
+  transfer_call({ args, gas }: FtTransferCallOptions): T {
     return this.functionCall<FtTransferCallArgs>({
       methodName: 'ft_transfer_call',
       args,

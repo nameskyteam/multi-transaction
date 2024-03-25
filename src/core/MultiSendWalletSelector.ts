@@ -3,6 +3,7 @@ import { Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
 import {
+  EmptyArgs,
   MultiSendWalletSelector,
   MultiSendWalletSelectorCallOptions,
   MultiSendWalletSelectorCallRawOptions,
@@ -10,7 +11,7 @@ import {
 } from '../types';
 import { MultiSendWalletSelectorOptions } from '../types';
 import { ViewOptions } from '../types';
-import { MultiTransaction, EmptyArgs } from './transaction';
+import { MultiTransaction } from './transaction';
 import {
   Amount,
   parseNearWalletSelectorTransactions,
@@ -23,7 +24,7 @@ import {
 } from '../utils';
 import { MultiSendWalletSelectorSendOptions } from '../types';
 import { BigNumber } from 'bignumber.js';
-import { SendError } from '../errors';
+import { SendTransactionError } from '../errors';
 
 let multiSendWalletSelector: MultiSendWalletSelector | null = null;
 
@@ -152,7 +153,7 @@ export async function setupMultiSendWalletSelector(
         const transactions = parseNearWalletSelectorTransactions(mTx);
 
         if (transactions.length === 0) {
-          throw new SendError('Transaction not found.');
+          throw new SendTransactionError('Transaction not found.');
         }
 
         const wallet = await this.wallet(options?.walletId);

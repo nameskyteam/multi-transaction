@@ -1,4 +1,4 @@
-export class MultiTransactionError extends Error {
+export class SendTransactionError extends Error {
   constructor(message: string) {
     super(message);
   }

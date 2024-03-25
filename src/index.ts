@@ -1,8 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import {
   BatchOptions,
-  FunctionCallOptions,
-  EmptyArgs,
   MultiTransaction,
   MultiSendAccount,
   MultiSendAccountCallOptions,
@@ -12,6 +10,8 @@ import {
   setupMultiSendWalletSelector,
 } from './core';
 import {
+  EmptyArgs,
+  FunctionCallOptions,
   MultiSendWalletSelectorOptions,
   MultiSendWalletSelector,
   MultiSendWalletSelectorCallOptions,

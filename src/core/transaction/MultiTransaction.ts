@@ -1,5 +1,5 @@
 import { Actions } from './Actions';
-import { Transaction, AccessKey, Action } from '../../types';
+import { Transaction, AccessKey, Action, MultiAction, EmptyArgs, FunctionCallOptions } from '../../types';
 import { Amount, Gas, Stringifier } from '../../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
 import {
@@ -8,74 +8,45 @@ import {
   NonFungibleTokenFunctionCall,
 } from './function-call';
 import { MultiTransactionError } from '../../errors';
+import { Optional } from '../../types';
 
-export class MultiTransaction {
-  private readonly transactions: Transaction[];
+export class MultiTransaction implements MultiAction {
+  private readonly transactions: MaybeIncompleteTransaction[];
 
   private constructor() {
     this.transactions = [];
   }
 
-  /**
-   * Create an empty `MultiTransaction`.
-   */
-  static new(): MultiTransaction {
-    return new MultiTransaction();
-  }
-
-  /**
-   * Create a `MultiTransaction` that contains one transaction.
-   * @param options options
-   */
-  static batch(options?: BatchOptions): MultiTransaction {
-    return MultiTransaction.new().batch(options);
-  }
-
-  /**
-   * Add a transaction following the previous one.
-   * @param options options
-   */
-  batch(options?: BatchOptions): this {
-    return this.addTransactions([{ signerId: options?.signerId, receiverId: options?.receiverId, actions: [] }]);
-  }
-
-  /**
-   * Extend transactions.
-   * @param mTx mTx
-   */
-  extendTransactions(mTx: MultiTransaction): this {
-    return this.addTransactions(mTx.toTransactions());
-  }
-
-  /**
-   * Extend actions into CURRENT transaction.
-   * @param mTx mTx
-   */
-  extendActions(mTx: MultiTransaction): this {
-    const otherTransactions = mTx.toTransactions();
-
-    if (otherTransactions.length > 1) {
-      throw new MultiTransactionError('Other `mTx` should contain up to one transaction');
+  private getCurrentTransaction(): MaybeIncompleteTransaction {
+    if (this.isEmpty()) {
+      throw new MultiTransactionError('Transaction not found');
     }
-
-    if (otherTransactions.length === 0) {
-      return this;
-    }
-
-    const otherTransaction = otherTransactions[0];
-    const currentTransaction = this.getCurrentTransaction();
-
-    if (otherTransaction.signerId && otherTransaction.signerId !== currentTransaction.signerId) {
-      throw new MultiTransactionError('Other transaction should have the same `signerId`');
-    }
-
-    if (otherTransaction.receiverId && otherTransaction.receiverId !== currentTransaction.receiverId) {
-      throw new MultiTransactionError('Other transaction should have the same `receiverId`');
-    }
-
-    return this.addActions(otherTransaction.actions);
+    return this.transactions[this.transactions.length - 1];
   }
 
+  private addTransactions(transactions: MaybeIncompleteTransaction[]): this {
+    this.transactions.push(...transactions);
+    return this;
+  }
+
+  private addActions(actions: Action[]): this {
+    const transaction = this.getCurrentTransaction();
+    transaction.actions.push(...actions);
+    return this;
+  }
+
+  private assertCompleteTransactions(): Transaction[] {
+    this.transactions.forEach((transaction, index) => {
+      if (!transaction.receiverId) {
+        throw new MultiTransactionError(`Transaction (${index}) missing \`receiverId\``);
+      }
+    });
+    return this.transactions as Transaction[];
+  }
+
+  /**
+   * If it is empty.
+   */
   isEmpty(): boolean {
     return this.transactions.length === 0;
   }
@@ -88,48 +59,100 @@ export class MultiTransaction {
   }
 
   /**
-   * Count actions of CURRENT transaction.
+   * Count actions for current transaction.
    */
   countActions(): number {
     const transaction = this.getCurrentTransaction();
     return transaction.actions.length;
   }
 
+  /**
+   * Extend transactions.
+   * @param mTx mTx
+   */
+  extendTransactions(mTx: MultiTransaction): this {
+    return this.addTransactions(mTx.toTransactions());
+  }
+
+  /**
+   * Extend actions to current transaction.
+   * @param mTx mTx
+   */
+  extendActions(mTx: MultiAction): this {
+    const otherTransactions = mTx.toTransactions();
+
+    if (otherTransactions.length > 1) {
+      throw new MultiTransactionError('`MultiAction` should contain up to one transaction');
+    }
+
+    if (otherTransactions.length === 0) {
+      return this;
+    }
+
+    return this.addActions(otherTransactions[0].actions);
+  }
+
+  /**
+   * Create a new `MultiTransaction` from transactions.
+   * @param transactions
+   */
   static fromTransactions(transactions: Transaction[]): MultiTransaction {
     return MultiTransaction.new().addTransactions(transactions);
   }
 
+  /**
+   * Return transactions.
+   */
   toTransactions(): Transaction[] {
-    return Array.from(this.transactions);
-  }
-
-  private addTransactions(transactions: Transaction[]): this {
-    this.transactions.push(...transactions);
-    return this;
-  }
-
-  private addActions(actions: Action[]): this {
-    const transaction = this.getCurrentTransaction();
-    transaction.actions.push(...actions);
-    return this;
-  }
-
-  private getCurrentTransaction(): Transaction {
-    if (this.isEmpty()) {
-      throw new MultiTransactionError('Transaction not found');
-    }
-    return this.transactions[this.transactions.length - 1];
+    const transactions = this.assertCompleteTransactions();
+    return Array.from(transactions);
   }
 
   /**
-   * Add a CreateAccount action into CURRENT transaction.
+   * Return actions of current transaction.
+   */
+  toActions(): Action[] {
+    const transaction = this.getCurrentTransaction();
+    return Array.from(transaction.actions);
+  }
+
+  /**
+   * Create a new `MultiTransaction`.
+   */
+  static new(): MultiTransaction {
+    return new MultiTransaction();
+  }
+
+  /**
+   * Create a new `MultiAction`.
+   */
+  static actions(): MultiAction {
+    return MultiTransaction.new().addTransactions([{ actions: [] }]);
+  }
+
+  /**
+   * Create a new `MultiTransaction` and add a transaction.
+   */
+  static batch(options: BatchOptions): MultiTransaction {
+    return MultiTransaction.new().batch(options);
+  }
+
+  /**
+   * Add a transaction following the previous one.
+   */
+  batch({ signerId, receiverId }: BatchOptions): this {
+    return this.addTransactions([{ signerId, receiverId, actions: [] }]);
+  }
+
+  /**
+   * Add a CreateAccount Action following the previous one.
    */
   createAccount(): this {
     return this.addActions([Actions.createAccount()]);
   }
 
   /**
-   * Add a DeleteAccount action into CURRENT transaction.
+   * Add a DeleteAccount Action following the previous one.
    * @param beneficiaryId beneficiary id
    */
   deleteAccount(beneficiaryId: string): this {
@@ -137,7 +160,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a AddKey action into CURRENT transaction.
+   * Add a AddKey Action following the previous one.
    * @param publicKey public key
    * @param accessKey access key
    */
@@ -151,7 +174,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a DeleteKey action into CURRENT transaction.
+   * Add a DeleteKey Action following the previous one.
    * @param publicKey public key
    */
   deleteKey(publicKey: string): this {
@@ -159,7 +182,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a DeployContract action into CURRENT transaction.
+   * Add a DeployContract Action following the previous one.
    * @param code code
    */
   deployContract(code: Uint8Array): this {
@@ -167,7 +190,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a Stake action into CURRENT transaction.
+   * Add a Stake Action following the previous one.
    * @param amount amount
    * @param publicKey public key
    */
@@ -176,7 +199,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a FunctionCall action into CURRENT transaction.
+   * Add a FunctionCall Action following the previous one.
    * @param methodName method name
    * @param args args
    * @param attachedDeposit attached deposit
@@ -201,7 +224,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a Transfer action into CURRENT transaction.
+   * Add a Transfer Action following the previous one.
    * @param amount amount
    */
   transfer(amount: string): this {
@@ -211,33 +234,25 @@ export class MultiTransaction {
   /**
    * FungibleToken Helper
    */
-  get ft(): FungibleTokenFunctionCall {
+  get ft(): FungibleTokenFunctionCall<this> {
     return new FungibleTokenFunctionCall(this);
   }
 
   /**
    * NonFungibleToken Helper
    */
-  get nft(): NonFungibleTokenFunctionCall {
+  get nft(): NonFungibleTokenFunctionCall<this> {
     return new NonFungibleTokenFunctionCall(this);
   }
 
   /**
    * StorageManagement Helper
    */
-  get storage(): StorageManagementFunctionCall {
+  get storage(): StorageManagementFunctionCall<this> {
     return new StorageManagementFunctionCall(this);
   }
 }
 
+type MaybeIncompleteTransaction = Optional<Transaction, 'receiverId'>;
+
 export type BatchOptions = Pick<Transaction, 'signerId' | 'receiverId'>;
-
-export type FunctionCallOptions<Args> = {
-  methodName: string;
-  args?: Args;
-  attachedDeposit?: string;
-  gas?: string;
-  stringifier?: Stringifier<Args>;
-};
-
-export type EmptyArgs = Record<string, never>;

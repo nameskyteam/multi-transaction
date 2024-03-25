@@ -1,13 +1,13 @@
-import { MultiTransaction, FunctionCallOptions } from '../MultiTransaction';
+import { MultiAction, FunctionCallOptions } from '../../../types';
 
-export abstract class FunctionCall {
-  private mTx: MultiTransaction;
+export abstract class FunctionCall<T extends MultiAction> {
+  private mTx: T;
 
-  protected constructor(mTx: MultiTransaction) {
+  protected constructor(mTx: T) {
     this.mTx = mTx;
   }
 
-  protected functionCall<Args>(options: FunctionCallOptions<Args>): MultiTransaction {
+  protected functionCall<Args>(options: FunctionCallOptions<Args>): T {
     return this.mTx.functionCall(options);
   }
 }
