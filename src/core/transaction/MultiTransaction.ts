@@ -16,12 +16,12 @@ export class MultiTransaction {
     this.transactions = [];
   }
 
-  private addTransactions(transactions: Transaction[]): this {
+  private addTransactions(transactions: Transaction[]): MultiTransaction {
     this.transactions.push(...transactions);
     return this;
   }
 
-  private addActions(actions: Action[]): this {
+  private addActions(actions: Action[]): MultiTransaction {
     const transaction = this.getCurrentTransaction();
     transaction.actions.push(...actions);
     return this;
@@ -53,7 +53,7 @@ export class MultiTransaction {
    * Add a transaction following the previous one.
    * @param options options
    */
-  batch(options?: BatchOptions): this {
+  batch(options?: BatchOptions): MultiTransaction {
     return this.addTransactions([{ signerId: options?.signerId, receiverId: options?.receiverId, actions: [] }]);
   }
 
@@ -88,7 +88,7 @@ export class MultiTransaction {
    * Extend transactions.
    * @param mTx mTx
    */
-  extendTransactions(mTx: MultiTransaction): this {
+  extendTransactions(mTx: MultiTransaction): MultiTransaction {
     return this.addTransactions(mTx.toTransactions());
   }
 
@@ -96,7 +96,7 @@ export class MultiTransaction {
    * Extend actions to current transaction.
    * @param mTx mTx
    */
-  extendActions(mTx: MultiTransaction): this {
+  extendActions(mTx: MultiTransaction): MultiTransaction {
     const otherTransactions = mTx.toTransactions();
 
     if (otherTransactions.length > 1) {
@@ -113,7 +113,7 @@ export class MultiTransaction {
   /**
    * Add a CreateAccount Action following the previous one.
    */
-  createAccount(): this {
+  createAccount(): MultiTransaction {
     return this.addActions([Actions.createAccount()]);
   }
 
@@ -121,7 +121,7 @@ export class MultiTransaction {
    * Add a DeleteAccount Action following the previous one.
    * @param beneficiaryId beneficiary id
    */
-  deleteAccount(beneficiaryId: string): this {
+  deleteAccount(beneficiaryId: string): MultiTransaction {
     return this.addActions([Actions.deleteAccount({ beneficiaryId })]);
   }
 
@@ -130,7 +130,7 @@ export class MultiTransaction {
    * @param publicKey public key
    * @param accessKey access key
    */
-  addKey(publicKey: string, accessKey: AccessKey): this {
+  addKey(publicKey: string, accessKey: AccessKey): MultiTransaction {
     return this.addActions([
       Actions.addKey({
         publicKey: PublicKey.fromString(publicKey).toString(),
@@ -143,7 +143,7 @@ export class MultiTransaction {
    * Add a DeleteKey Action following the previous one.
    * @param publicKey public key
    */
-  deleteKey(publicKey: string): this {
+  deleteKey(publicKey: string): MultiTransaction {
     return this.addActions([Actions.deleteKey({ publicKey: PublicKey.fromString(publicKey).toString() })]);
   }
 
@@ -151,7 +151,7 @@ export class MultiTransaction {
    * Add a DeployContract Action following the previous one.
    * @param code code
    */
-  deployContract(code: Uint8Array): this {
+  deployContract(code: Uint8Array): MultiTransaction {
     return this.addActions([Actions.deployContract({ code })]);
   }
 
@@ -160,7 +160,7 @@ export class MultiTransaction {
    * @param amount amount
    * @param publicKey public key
    */
-  stake(amount: string, publicKey: string): this {
+  stake(amount: string, publicKey: string): MultiTransaction {
     return this.addActions([Actions.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() })]);
   }
 
@@ -178,7 +178,7 @@ export class MultiTransaction {
     attachedDeposit = Amount.ZERO,
     gas = Gas.default(),
     stringifier = Stringifier.json(),
-  }: FunctionCallOptions<Args>): this {
+  }: FunctionCallOptions<Args>): MultiTransaction {
     return this.addActions([
       Actions.functionCall({
         methodName,
@@ -193,7 +193,7 @@ export class MultiTransaction {
    * Add a Transfer Action following the previous one.
    * @param amount amount
    */
-  transfer(amount: string): this {
+  transfer(amount: string): MultiTransaction {
     return this.addActions([Actions.transfer({ amount })]);
   }
 
