@@ -46,13 +46,13 @@ export async function setupMultiSendWalletSelector(
   }
 
   if (!MULTI_SEND_WALLET_SELECTOR) {
-    MULTI_SEND_WALLET_SELECTOR = await extendWalletSelector(selector);
+    MULTI_SEND_WALLET_SELECTOR = extendWalletSelector(selector);
   }
 
   return MULTI_SEND_WALLET_SELECTOR;
 }
 
-async function extendWalletSelector(selector: WalletSelector): Promise<MultiSendWalletSelector> {
+function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector {
   const near = new Near(selector.options.network);
 
   return {
@@ -202,5 +202,5 @@ async function extendWalletSelector(selector: WalletSelector): Promise<MultiSend
 
       return outcomes;
     },
-  } as MultiSendWalletSelector;
+  };
 }
