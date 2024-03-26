@@ -1,4 +1,4 @@
-import { BigNumberLike } from '../types';
+import { Numeric } from '../types';
 import { Units } from './Units';
 
 export type GasUnits = 'T' | 'G' | 'M' | 'K' | number;
@@ -32,7 +32,7 @@ export class Gas {
    * @param gas human readable gas
    * @param units units
    */
-  static parse(gas: BigNumberLike, units: GasUnits): string {
+  static parse(gas: Numeric, units: GasUnits): string {
     return Units.parse(gas, Gas.unitsToDecimals(units)).toFixed(0);
   }
 
@@ -44,7 +44,7 @@ export class Gas {
    * @param units units
    * @param decimalPlaces decimal places
    */
-  static format(gas: BigNumberLike, units: GasUnits, decimalPlaces?: number): string {
+  static format(gas: Numeric, units: GasUnits, decimalPlaces?: number): string {
     gas = Units.format(gas, Gas.unitsToDecimals(units));
     if (decimalPlaces) {
       return gas.toFixed(decimalPlaces);

@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { BigNumberLike } from '../types';
+import { Numeric } from '../types';
 
 export class Units {
   private constructor() {}
@@ -9,7 +9,7 @@ export class Units {
    * @param n n
    * @param decimals decimals
    */
-  static parse(n: BigNumberLike, decimals: number): BigNumber {
+  static parse(n: Numeric, decimals: number): BigNumber {
     return BigNumber(n).shiftedBy(decimals);
   }
 
@@ -18,7 +18,7 @@ export class Units {
    * @param n n
    * @param decimals decimals
    */
-  static format(n: BigNumberLike, decimals: number): BigNumber {
+  static format(n: Numeric, decimals: number): BigNumber {
     return BigNumber(n).shiftedBy(-decimals);
   }
 }

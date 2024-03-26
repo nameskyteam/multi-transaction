@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import {
-  BatchOptions,
+  MultiAction,
   MultiTransaction,
   MultiSendAccount,
   MultiSendAccountCallOptions,
@@ -26,7 +26,7 @@ import {
   Send,
   SendOptions,
   SendRawOptions,
-  BigNumberLike,
+  Numeric,
 } from './types';
 import { Amount, Gas, BlockQuery, Parser, Stringifier, parseOutcome } from './utils';
 
@@ -35,7 +35,7 @@ BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_DOWN,
 });
 
-export { BatchOptions, FunctionCallOptions, EmptyArgs, MultiTransaction };
+export { MultiAction, MultiTransaction, FunctionCallOptions, EmptyArgs };
 export {
   MultiSendAccount,
   MultiSendAccountCallOptions,
@@ -53,11 +53,11 @@ export {
 export { MultiSendWalletSelectorOptions, setupMultiSendWalletSelector };
 export { View, ViewOptions, Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions };
 export { BlockQuery, Amount, Gas, Stringifier, Parser, parseOutcome };
-export { BigNumber, BigNumberLike };
+export { BigNumber, Numeric };
+export { BorshSchema, borshSerialize, borshDeserialize, StructFields, EnumVariants, Unit } from 'borsher';
 export * from './types/fungible-token/args';
 export * from './types/fungible-token/value';
 export * from './types/non-fungible-token/args';
 export * from './types/non-fungible-token/value';
 export * from './types/storage-management/args';
 export * from './types/storage-management/value';
-export * from 'borsher';

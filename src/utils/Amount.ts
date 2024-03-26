@@ -1,4 +1,4 @@
-import { BigNumberLike } from '../types';
+import { Numeric } from '../types';
 import { Units } from './Units';
 
 const NEAR_DECIMALS = 24;
@@ -39,7 +39,7 @@ export class Amount {
    * @param amount human readable amount
    * @param units units
    */
-  static parse(amount: BigNumberLike, units: AmountUnits): string {
+  static parse(amount: Numeric, units: AmountUnits): string {
     return Units.parse(amount, Amount.unitsToDecimals(units)).toFixed(0);
   }
 
@@ -51,7 +51,7 @@ export class Amount {
    * @param units units
    * @param decimalPlaces decimal places
    */
-  static format(amount: BigNumberLike, units: AmountUnits, decimalPlaces?: number): string {
+  static format(amount: Numeric, units: AmountUnits, decimalPlaces?: number): string {
     amount = Units.format(amount, Amount.unitsToDecimals(units));
     if (decimalPlaces) {
       return amount.toFixed(decimalPlaces);
