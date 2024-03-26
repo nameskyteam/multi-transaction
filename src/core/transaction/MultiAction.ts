@@ -35,16 +35,16 @@ export class MultiAction {
   }
 
   /**
-   * Count actions.
+   * Number of actions.
    */
-  countActions(): number {
+  num(): number {
     return this.actions.length;
   }
 
   /**
    * Extend actions.
    */
-  extendActions(mx: MultiAction): this {
+  extend(mx: MultiAction): this {
     const actions = mx.toActions();
     return this.addActions(actions);
   }
@@ -130,23 +130,14 @@ export class MultiAction {
     return this.addActions([Actions.transfer({ amount })]);
   }
 
-  /**
-   * FungibleToken.
-   */
   get ft(): FungibleTokenFunctionCall<this> {
     return new FungibleTokenFunctionCall(this);
   }
 
-  /**
-   * NonFungibleToken.
-   */
   get nft(): NonFungibleTokenFunctionCall<this> {
     return new NonFungibleTokenFunctionCall(this);
   }
 
-  /**
-   * StorageManagement.
-   */
   get storage(): StorageManagementFunctionCall<this> {
     return new StorageManagementFunctionCall(this);
   }

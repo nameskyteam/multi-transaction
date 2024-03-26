@@ -58,17 +58,17 @@ export class MultiTransaction {
   }
 
   /**
-   * Count transactions.
+   * Number of transactions.
    */
-  countTransactions(): number {
+  numTransactions(): number {
     return this.transactions.length;
   }
 
   /**
-   * Count actions of current transaction.
+   * Number of actions in current transaction.
    */
-  countCurrentActions(): number {
-    return this.getCurrentMultiAction().countActions();
+  numActions(): number {
+    return this.getCurrentMultiAction().num();
   }
 
   /**
@@ -82,8 +82,8 @@ export class MultiTransaction {
   /**
    * Extend actions to current transaction.
    */
-  extendCurrentActions(mx: MultiAction): this {
-    this.getCurrentMultiAction().extendActions(mx);
+  extendActions(mx: MultiAction): this {
+    this.getCurrentMultiAction().extend(mx);
     return this;
   }
 
@@ -172,23 +172,14 @@ export class MultiTransaction {
     return this;
   }
 
-  /**
-   * FungibleToken.
-   */
   get ft(): FungibleTokenFunctionCall<this> {
     return new FungibleTokenFunctionCall(this);
   }
 
-  /**
-   * NonFungibleToken.
-   */
   get nft(): NonFungibleTokenFunctionCall<this> {
     return new NonFungibleTokenFunctionCall(this);
   }
 
-  /**
-   * StorageManagement.
-   */
   get storage(): StorageManagementFunctionCall<this> {
     return new StorageManagementFunctionCall(this);
   }
