@@ -2,7 +2,7 @@ import { Numeric } from '../types';
 import { Units } from './Units';
 
 export class Gas {
-  static readonly DEFAULT = '3000000000000';
+  static readonly DEFAULT = '30000000000000';
 
   private constructor() {}
 
