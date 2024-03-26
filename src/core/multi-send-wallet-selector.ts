@@ -2,6 +2,7 @@ import { setupWalletSelector, WalletSelector } from '@near-wallet-selector/core'
 import { Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
+import { BigNumber } from 'bignumber.js';
 import {
   EmptyArgs,
   MultiSendWalletSelector,
@@ -16,14 +17,13 @@ import { MultiTransaction } from './MultiTransaction';
 import {
   Amount,
   BlockQuery,
+  Stringifier,
+  Parser,
   endless,
   parseNearWalletSelectorTransactions,
   parseOutcome,
-  Parser,
-  Stringifier,
   throwReceiptErrorsFromOutcomes,
 } from '../utils';
-import { BigNumber } from 'bignumber.js';
 import { SendTransactionError } from '../errors';
 
 let MULTI_SEND_WALLET_SELECTOR: MultiSendWalletSelector | undefined;
