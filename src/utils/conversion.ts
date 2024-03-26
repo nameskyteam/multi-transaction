@@ -145,10 +145,6 @@ function parseNearWalletSelectorAction(action: Action): NearWalletSelectorAction
   unreachable();
 }
 
-export function validatePublicKey(publicKey: string): string {
-  return PublicKey.fromString(publicKey).toString();
-}
-
 export type NearApiJsTransaction = {
   receiverId: string;
   actions: NearApiJsAction[];

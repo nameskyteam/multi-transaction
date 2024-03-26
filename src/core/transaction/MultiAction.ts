@@ -5,7 +5,7 @@ import {
   StorageManagementFunctionCall,
 } from '../index';
 import { AccessKey, Action } from '../../types';
-import { Amount, Gas, Stringifier, validatePublicKey } from '../../utils';
+import { Amount, Gas, Stringifier } from '../../utils';
 import { EmptyArgs } from '../../types';
 
 export class MultiAction {
@@ -76,7 +76,7 @@ export class MultiAction {
   addKey(publicKey: string, accessKey: AccessKey): this {
     return this.addActions([
       Actions.addKey({
-        publicKey: validatePublicKey(publicKey),
+        publicKey,
         accessKey,
       }),
     ]);
@@ -86,7 +86,7 @@ export class MultiAction {
    * Add a DeleteKey Action following the previous one.
    */
   deleteKey(publicKey: string): this {
-    return this.addActions([Actions.deleteKey({ publicKey: validatePublicKey(publicKey) })]);
+    return this.addActions([Actions.deleteKey({ publicKey })]);
   }
 
   /**
@@ -100,7 +100,7 @@ export class MultiAction {
    * Add a Stake Action following the previous one.
    */
   stake(amount: string, publicKey: string): this {
-    return this.addActions([Actions.stake({ amount, publicKey: validatePublicKey(publicKey) })]);
+    return this.addActions([Actions.stake({ amount, publicKey })]);
   }
 
   /**
