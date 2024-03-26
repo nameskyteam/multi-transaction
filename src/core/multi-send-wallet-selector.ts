@@ -1,19 +1,9 @@
-import { AccountState, setupWalletSelector, WalletSelector } from '@near-wallet-selector/core';
+import { setupWalletSelector, WalletSelector } from '@near-wallet-selector/core';
 import { Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { BigNumber } from 'bignumber.js';
-import {
-  EmptyArgs,
-  IsLoginAccessKeyActiveOptions,
-  MultiSendWalletSelector,
-  MultiSendWalletSelectorCallOptions,
-  MultiSendWalletSelectorCallRawOptions,
-  MultiSendWalletSelectorOptions,
-  MultiSendWalletSelectorSendOptions,
-  MultiSendWalletSelectorSendRawOptions,
-  ViewOptions,
-} from '../types';
+import { MultiSendWalletSelector, MultiSendWalletSelectorOptions } from '../types';
 import { MultiTransaction } from './MultiTransaction';
 import {
   Amount,
@@ -60,26 +50,23 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
     ...selector,
     near,
 
-    getActiveAccountId(): string | undefined {
+    getActiveAccountId() {
       return this.getActiveAccount()?.accountId;
     },
 
-    getActiveAccount(): AccountState | undefined {
+    getActiveAccount() {
       return this.store.getState().accounts.find((accountState) => accountState.active);
     },
 
-    getAccountIds(): string[] {
+    getAccountIds() {
       return this.getAccounts().map((accountState) => accountState.accountId);
     },
 
-    getAccounts(): AccountState[] {
+    getAccounts() {
       return this.store.getState().accounts;
     },
 
-    async isLoginAccessKeyActive({
-      accountId,
-      requiredAllowance = Amount.parse('0.01', 'NEAR'),
-    }: IsLoginAccessKeyActiveOptions): Promise<boolean> {
+    async isLoginAccessKeyActive({ accountId, requiredAllowance = Amount.parse('0.01', 'NEAR') }) {
       accountId = accountId ?? this.getActiveAccountId();
       if (!accountId) {
         return false;
@@ -120,14 +107,14 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
       return remainingAllowance.gte(requiredAllowance);
     },
 
-    async view<Value, Args = EmptyArgs>({
+    async view({
       contractId,
       methodName,
       args,
       stringifier = Stringifier.json(),
       parser = Parser.json(),
       blockQuery = BlockQuery.OPTIMISTIC,
-    }: ViewOptions<Value, Args>): Promise<Value> {
+    }) {
       const viewer = await near.account('');
       return viewer.viewFunction({
         contractId,
@@ -139,20 +126,12 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
       });
     },
 
-    async call<Value, Args = EmptyArgs>(options: MultiSendWalletSelectorCallOptions<Value, Args>): Promise<Value> {
+    async call(options) {
       const outcome = await this.callRaw(options);
       return parseOutcome(outcome, options.parser);
     },
 
-    async callRaw<Args = EmptyArgs>({
-      contractId,
-      methodName,
-      args,
-      attachedDeposit,
-      gas,
-      stringifier,
-      ...options
-    }: MultiSendWalletSelectorCallRawOptions<Args>): Promise<FinalExecutionOutcome> {
+    async callRaw({ contractId, methodName, args, attachedDeposit, gas, stringifier, ...options }) {
       const mtx = MultiTransaction.batch({ receiverId: contractId }).functionCall({
         methodName,
         args,
@@ -164,16 +143,13 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
       return outcomes?.[0];
     },
 
-    async send<Value>(mtx: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value> {
+    async send(mtx, options) {
       const outcomes = await this.sendRaw(mtx, options);
       const outcome = outcomes?.[outcomes.length - 1];
       return parseOutcome(outcome, options?.parser);
     },
 
-    async sendRaw(
-      mtx: MultiTransaction,
-      options?: MultiSendWalletSelectorSendRawOptions,
-    ): Promise<FinalExecutionOutcome[]> {
+    async sendRaw(mtx, options) {
       const transactions = parseNearWalletSelectorTransactions(mtx);
 
       if (transactions.length === 0) {
