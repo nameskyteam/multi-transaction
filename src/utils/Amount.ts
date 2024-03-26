@@ -33,7 +33,7 @@ export class Amount {
   }
 
   /**
-   * Parse from specific units and return a fixed string.
+   * Parse from specific units and return a fixed string
    * @example
    * const rawAmount = Amount.parse('5', 'NEAR'); // '5000000000000000000000000'
    * @param amount human readable amount
@@ -44,7 +44,7 @@ export class Amount {
   }
 
   /**
-   * Format in specific units and return a fixed string.
+   * Format in specific units and return a fixed string
    * @example
    * const humanReadableAmount = Amount.format('5000000000000000000000000', 'NEAR'); // '5'
    * @param amount raw amount

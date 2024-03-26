@@ -1,10 +1,11 @@
-import { setupWalletSelector, WalletSelector } from '@near-wallet-selector/core';
+import { AccountState, setupWalletSelector, WalletSelector } from '@near-wallet-selector/core';
 import { Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { BigNumber } from 'bignumber.js';
 import {
   EmptyArgs,
+  IsLoginAccessKeyActiveOptions,
   MultiSendWalletSelector,
   MultiSendWalletSelectorCallOptions,
   MultiSendWalletSelectorCallRawOptions,
@@ -60,53 +61,63 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
     near,
 
     getActiveAccountId(): string | undefined {
-      return this.store.getState().accounts.find((accountState) => accountState.active)?.accountId;
+      return this.getActiveAccount()?.accountId;
+    },
+
+    getActiveAccount(): AccountState | undefined {
+      return this.store.getState().accounts.find((accountState) => accountState.active);
     },
 
     getAccountIds(): string[] {
-      return this.store.getState().accounts.map((accountState) => accountState.accountId);
+      return this.getAccounts().map((accountState) => accountState.accountId);
     },
 
-    async isLoginAccessKeyActive(
-      accountId?: string,
-      requiredMinAllowance = Amount.parse('0.01', 'NEAR'),
-    ): Promise<boolean> {
+    getAccounts(): AccountState[] {
+      return this.store.getState().accounts;
+    },
+
+    async isLoginAccessKeyActive({
+      accountId,
+      requiredAllowance = Amount.parse('0.01', 'NEAR'),
+    }: IsLoginAccessKeyActiveOptions): Promise<boolean> {
       accountId = accountId ?? this.getActiveAccountId();
       if (!accountId) {
         return false;
       }
 
-      const loginAccount = await this.wallet()
-        .then((wallet) => wallet.getAccounts())
-        .then((accounts) => accounts.find((account) => account.accountId === accountId));
-      const loginPublicKey = loginAccount?.publicKey;
+      const accountStates = this.getAccounts();
+      const accountState = accountStates.find((accountState) => accountState.accountId === accountId);
 
-      if (!loginPublicKey) {
+      const publicKey = accountState?.publicKey;
+
+      if (!publicKey) {
         return false;
       }
 
-      const accessKeys = await this.near.account(accountId).then((account) => account.getAccessKeys());
-      const loginAccessKey = accessKeys.find(
-        (accessKey) =>
-          PublicKey.fromString(accessKey.public_key).toString() === PublicKey.fromString(loginPublicKey).toString(),
-      );
+      const account = await this.near.account(accountId);
+      const accessKeys = await account.getAccessKeys();
+      const accessKey = accessKeys.find((accessKey) => {
+        const remotePublicKey = PublicKey.fromString(accessKey.public_key);
+        const localPublicKey = PublicKey.fromString(publicKey);
+        return remotePublicKey.toString() === localPublicKey.toString();
+      });
 
-      if (!loginAccessKey) {
+      if (!accessKey) {
         return false;
       }
 
-      if (loginAccessKey.access_key.permission === 'FullAccess') {
+      if (accessKey.access_key.permission === 'FullAccess') {
         return true;
       }
 
-      const allowance = loginAccessKey.access_key.permission.FunctionCall.allowance;
+      const allowance = accessKey.access_key.permission.FunctionCall.allowance;
 
       if (!allowance) {
         return true;
       }
 
       const remainingAllowance = BigNumber(allowance);
-      return remainingAllowance.gte(requiredMinAllowance);
+      return remainingAllowance.gte(requiredAllowance);
     },
 
     async view<Value, Args = EmptyArgs>({

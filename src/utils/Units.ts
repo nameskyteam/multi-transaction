@@ -5,8 +5,8 @@ export class Units {
   private constructor() {}
 
   /**
-   * Parse from specific units and return a BigNumber.
-   * @param n n
+   * Parse from specific units and return a BigNumber
+   * @param n number
    * @param decimals decimals
    */
   static parse(n: Numeric, decimals: number): BigNumber {
@@ -14,8 +14,8 @@ export class Units {
   }
 
   /**
-   * Format in specific units and return a BigNumber.
-   * @param n n
+   * Format in specific units and return a BigNumber
+   * @param n number
    * @param decimals decimals
    */
   static format(n: Numeric, decimals: number): BigNumber {

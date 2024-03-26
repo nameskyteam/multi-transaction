@@ -4,11 +4,6 @@ import { Buffer } from 'buffer';
 import { Parser } from './Parser';
 import { ParseOutcomeError, ReceiptErrorMessage, ReceiptError } from '../errors';
 
-/**
- * Parse success value from outcome.
- * @param outcome outcome
- * @param parser parser
- */
 export function parseOutcome<Value>(outcome: FinalExecutionOutcome, parser: Parser<Value> = Parser.json()): Value {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
   if (successValue) {

@@ -36,7 +36,7 @@ export class MultiSendAccount extends Account implements View, Call, Send {
   }
 
   /**
-   * View a contract method
+   * View a contract method and return success value
    */
   async view<Value, Args = EmptyArgs>({
     contractId,
@@ -65,7 +65,7 @@ export class MultiSendAccount extends Account implements View, Call, Send {
   }
 
   /**
-   * Call a contract method
+   * Call a contract method and return outcome
    */
   async callRaw<Args = EmptyArgs>({
     contractId,
@@ -99,7 +99,7 @@ export class MultiSendAccount extends Account implements View, Call, Send {
   }
 
   /**
-   * Send multiple transactions
+   * Send multiple transactions and return outcomes
    * @param mtx mtx
    * @param options options
    */
