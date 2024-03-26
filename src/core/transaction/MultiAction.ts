@@ -1,12 +1,20 @@
+import { Actions } from '../index';
+import { AccessKey, Action } from '../../types';
 import {
-  Actions,
+  Amount,
+  fungibleTokenFunctionCall,
+  Gas,
+  nonFungibleTokenFunctionCall,
+  storageManagementFunctionCall,
+  Stringifier,
+} from '../../utils';
+import { EmptyArgs } from '../../types';
+import {
+  FunctionCallOptions,
   FungibleTokenFunctionCall,
   NonFungibleTokenFunctionCall,
   StorageManagementFunctionCall,
-} from '../index';
-import { AccessKey, Action } from '../../types';
-import { Amount, Gas, Stringifier } from '../../utils';
-import { EmptyArgs } from '../../types';
+} from '../../types/function-call';
 
 export class MultiAction {
   private readonly actions: Action[];
@@ -131,54 +139,14 @@ export class MultiAction {
   }
 
   get ft(): FungibleTokenFunctionCall<this> {
-    return new FungibleTokenFunctionCall(this);
+    return fungibleTokenFunctionCall((options) => this.functionCall(options));
   }
 
   get nft(): NonFungibleTokenFunctionCall<this> {
-    return new NonFungibleTokenFunctionCall(this);
+    return nonFungibleTokenFunctionCall((options) => this.functionCall(options));
   }
 
   get storage(): StorageManagementFunctionCall<this> {
-    return new StorageManagementFunctionCall(this);
+    return storageManagementFunctionCall((options) => this.functionCall(options));
   }
 }
-
-export interface MultiCreateAccount {
-  createAccount(): this;
-}
-
-export interface MultiDeleteAccount {
-  deleteAccount(beneficiaryId: string): this;
-}
-
-export interface MultiAddKey {
-  addKey(publicKey: string, accessKey: AccessKey): this;
-}
-
-export interface MultiDeleteKey {
-  deleteKey(publicKey: string): this;
-}
-
-export interface MultiDeployContract {
-  deployContract(code: Uint8Array): this;
-}
-
-export interface MultiStake {
-  stake(amount: string, publicKey: string): this;
-}
-
-export interface MultiFunctionCall {
-  functionCall<Args = EmptyArgs>(options: FunctionCallOptions<Args>): this;
-}
-
-export interface MultiTransfer {
-  transfer(amount: string): this;
-}
-
-export type FunctionCallOptions<Args> = {
-  methodName: string;
-  args?: Args;
-  attachedDeposit?: string;
-  gas?: string;
-  stringifier?: Stringifier<Args>;
-};

@@ -1,10 +1,13 @@
-import { Transaction, AccessKey, MultiAction, EmptyArgs, FunctionCallOptions } from '../../types';
-import {
-  FungibleTokenFunctionCall,
-  StorageManagementFunctionCall,
-  NonFungibleTokenFunctionCall,
-} from './function-call';
+import { Transaction, AccessKey, EmptyArgs } from '../../types';
 import { MultiTransactionError } from '../../errors';
+import { fungibleTokenFunctionCall, nonFungibleTokenFunctionCall, storageManagementFunctionCall } from '../../utils';
+import {
+  FunctionCallOptions,
+  FungibleTokenFunctionCall,
+  NonFungibleTokenFunctionCall,
+  StorageManagementFunctionCall,
+} from '../../types';
+import { MultiAction } from './MultiAction';
 
 export class MultiTransaction {
   private readonly transactions: TransactionWithMultiAction[];
@@ -173,15 +176,15 @@ export class MultiTransaction {
   }
 
   get ft(): FungibleTokenFunctionCall<this> {
-    return new FungibleTokenFunctionCall(this);
+    return fungibleTokenFunctionCall((options) => this.functionCall(options));
   }
 
   get nft(): NonFungibleTokenFunctionCall<this> {
-    return new NonFungibleTokenFunctionCall(this);
+    return nonFungibleTokenFunctionCall((options) => this.functionCall(options));
   }
 
   get storage(): StorageManagementFunctionCall<this> {
-    return new StorageManagementFunctionCall(this);
+    return storageManagementFunctionCall((options) => this.functionCall(options));
   }
 }
 

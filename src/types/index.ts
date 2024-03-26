@@ -5,4 +5,4 @@ export * from './non-fungible-token';
 export * from './MultiSendWalletSelector';
 export * from './common';
 export * from './send';
-export * from '../core/transaction/MultiAction';
+export * from './function-call';
