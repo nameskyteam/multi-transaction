@@ -1,3 +1,7 @@
+import { Optional } from './common';
+
+export type PartialTransaction = Optional<Transaction, 'receiverId'>;
+
 export type Transaction = {
   signerId?: string;
   receiverId: string;

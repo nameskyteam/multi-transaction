@@ -1,5 +1,13 @@
 import { Actions } from './Actions';
-import { Transaction, AccessKey, Action, MultiAction, EmptyArgs, FunctionCallOptions } from '../../types';
+import {
+  Transaction,
+  AccessKey,
+  Action,
+  ActionContainer,
+  EmptyArgs,
+  FunctionCallOptions,
+  PartialTransaction,
+} from '../../types';
 import { Amount, Gas, Stringifier } from '../../utils';
 import { PublicKey } from 'near-api-js/lib/utils';
 import {
@@ -8,23 +16,22 @@ import {
   NonFungibleTokenFunctionCall,
 } from './function-call';
 import { MultiTransactionError } from '../../errors';
-import { Optional } from '../../types';
 
-export class MultiTransaction implements MultiAction {
-  private readonly transactions: MaybeIncompleteTransaction[];
+export class MultiTransaction implements ActionContainer {
+  private readonly transactions: PartialTransaction[];
 
   private constructor() {
     this.transactions = [];
   }
 
-  private getCurrentTransaction(): MaybeIncompleteTransaction {
+  private getCurrentTransaction(): PartialTransaction {
     if (this.transactions.length === 0) {
       throw new MultiTransactionError('Transaction not found');
     }
     return this.transactions[this.transactions.length - 1];
   }
 
-  private addTransactions(transactions: MaybeIncompleteTransaction[]): this {
+  private addTransactions(transactions: PartialTransaction[]): this {
     this.transactions.push(...transactions);
     return this;
   }
@@ -53,7 +60,7 @@ export class MultiTransaction implements MultiAction {
   /**
    * Create a new `MultiAction`.
    */
-  static actions(): MultiAction {
+  static actions(): ActionContainer {
     return MultiTransaction.new().addTransactions([{ actions: [] }]);
   }
 
@@ -189,10 +196,10 @@ export class MultiTransaction implements MultiAction {
 
   /**
    * Extend actions to current transaction.
-   * @param mTx mTx
+   * @param container container
    */
-  extendActions(mTx: MultiAction): this {
-    const actions = mTx.toActions();
+  extendActions(container: ActionContainer): this {
+    const actions = container.toActions();
     return this.addActions(actions);
   }
 
@@ -235,7 +242,5 @@ export class MultiTransaction implements MultiAction {
     return Array.from(transaction.actions);
   }
 }
-
-type MaybeIncompleteTransaction = Optional<Transaction, 'receiverId'>;
 
 export type BatchOptions = Pick<Transaction, 'signerId' | 'receiverId'>;

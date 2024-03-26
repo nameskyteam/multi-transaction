@@ -3,7 +3,7 @@ import { AccessKey, Action } from './transaction';
 import { Stringifier } from '../utils';
 import { EmptyArgs } from './common';
 
-export interface MultiAction
+export interface ActionContainer
   extends MultiCreateAccount,
     MultiDeleteAccount,
     MultiAddKey,
@@ -15,7 +15,7 @@ export interface MultiAction
   get ft(): FungibleTokenFunctionCall<this>;
   get nft(): NonFungibleTokenFunctionCall<this>;
   get storage(): StorageManagementFunctionCall<this>;
-  extendActions(mTx: MultiAction): this;
+  extendActions(container: ActionContainer): this;
   countActions(): number;
   toActions(): Action[];
 }
