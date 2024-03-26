@@ -17,9 +17,9 @@ import {
 import { Amount } from './Amount';
 import { Gas } from './Gas';
 
-export function fungibleTokenFunctionCall<T>(fc: FunctionCall<T>): FungibleTokenFunctionCall<T> {
+export function fungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): FungibleTokenFunctionCall<T> {
   const transfer = ({ args, gas }: FtTransferOptions): T => {
-    return fc({
+    return functionCall({
       methodName: 'ft_transfer',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
@@ -28,7 +28,7 @@ export function fungibleTokenFunctionCall<T>(fc: FunctionCall<T>): FungibleToken
   };
 
   const transfer_call = ({ args, gas }: FtTransferCallOptions): T => {
-    return fc({
+    return functionCall({
       methodName: 'ft_transfer_call',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
@@ -39,9 +39,9 @@ export function fungibleTokenFunctionCall<T>(fc: FunctionCall<T>): FungibleToken
   return { transfer, transfer_call };
 }
 
-export function nonFungibleTokenFunctionCall<T>(fc: FunctionCall<T>): NonFungibleTokenFunctionCall<T> {
+export function nonFungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): NonFungibleTokenFunctionCall<T> {
   const transfer = ({ args, gas }: NftTransferOptions): T => {
-    return fc({
+    return functionCall({
       methodName: 'nft_transfer',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
@@ -50,7 +50,7 @@ export function nonFungibleTokenFunctionCall<T>(fc: FunctionCall<T>): NonFungibl
   };
 
   const transfer_call = ({ args, gas }: NftTransferCallOptions): T => {
-    return fc({
+    return functionCall({
       methodName: 'nft_transfer_call',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
@@ -59,7 +59,7 @@ export function nonFungibleTokenFunctionCall<T>(fc: FunctionCall<T>): NonFungibl
   };
 
   const approve = ({ args, attachedDeposit, gas }: NftApproveOptions): T => {
-    return fc({
+    return functionCall({
       methodName: 'nft_approve',
       args,
       attachedDeposit: attachedDeposit ?? Amount.parse('0.005', 'NEAR'),
@@ -68,7 +68,7 @@ export function nonFungibleTokenFunctionCall<T>(fc: FunctionCall<T>): NonFungibl
   };
 
   const revoke = ({ args, gas }: NftRevokeOptions): T => {
-    return fc({
+    return functionCall({
       methodName: 'nft_revoke',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
@@ -77,7 +77,7 @@ export function nonFungibleTokenFunctionCall<T>(fc: FunctionCall<T>): NonFungibl
   };
 
   const revoke_all = ({ args, gas }: NftRevokeAllOptions): T => {
-    return fc({
+    return functionCall({
       methodName: 'nft_revoke_all',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
@@ -88,9 +88,9 @@ export function nonFungibleTokenFunctionCall<T>(fc: FunctionCall<T>): NonFungibl
   return { transfer, transfer_call, approve, revoke, revoke_all };
 }
 
-export function storageManagementFunctionCall<T>(fc: FunctionCall<T>): StorageManagementFunctionCall<T> {
+export function storageManagementFunctionCall<T>(functionCall: FunctionCall<T>): StorageManagementFunctionCall<T> {
   const deposit = ({ args, attachedDeposit, gas }: StorageDepositOptions): T => {
-    return fc({
+    return functionCall({
       methodName: 'storage_deposit',
       args,
       attachedDeposit,
@@ -99,7 +99,7 @@ export function storageManagementFunctionCall<T>(fc: FunctionCall<T>): StorageMa
   };
 
   const withdraw = ({ args, gas }: StorageWithdrawOptions): T => {
-    return fc({
+    return functionCall({
       methodName: 'storage_withdraw',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
@@ -108,7 +108,7 @@ export function storageManagementFunctionCall<T>(fc: FunctionCall<T>): StorageMa
   };
 
   const unregister = ({ args, gas }: StorageUnregisterOptions): T => {
-    return fc({
+    return functionCall({
       methodName: 'storage_unregister',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
