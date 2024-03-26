@@ -5,9 +5,8 @@ import {
   StorageManagementFunctionCall,
 } from '../index';
 import { AccessKey, Action } from '../../types';
-import { Amount, Gas, Stringifier } from '../../utils';
+import { Amount, Gas, Stringifier, validatePublicKey } from '../../utils';
 import { EmptyArgs } from '../../types';
-import { PublicKey } from 'near-api-js/lib/utils';
 
 export class MultiAction {
   private readonly actions: Action[];
@@ -16,25 +15,45 @@ export class MultiAction {
     this.actions = [];
   }
 
-  addActions(actions: Action[]): this {
+  private addActions(actions: Action[]): this {
     this.actions.push(...actions);
     return this;
   }
 
-  static new(): MultiAction {
-    return new MultiAction();
-  }
-
+  /**
+   * Create a new `MultiAction` from actions.
+   */
   static fromActions(actions: Action[]): MultiAction {
     return MultiAction.new().addActions(actions);
   }
 
+  /**
+   * Return actions.
+   */
   toActions(): Action[] {
     return Array.from(this.actions);
   }
 
+  /**
+   * Count actions.
+   */
   countActions(): number {
     return this.actions.length;
+  }
+
+  /**
+   * Extend actions.
+   */
+  extendActions(mAc: MultiAction): this {
+    const actions = mAc.toActions();
+    return this.addActions(actions);
+  }
+
+  /**
+   * Create a new `MultiAction`.
+   */
+  static new(): MultiAction {
+    return new MultiAction();
   }
 
   /**
@@ -46,7 +65,6 @@ export class MultiAction {
 
   /**
    * Add a DeleteAccount Action following the previous one.
-   * @param beneficiaryId beneficiary id
    */
   deleteAccount(beneficiaryId: string): this {
     return this.addActions([Actions.deleteAccount({ beneficiaryId })]);
@@ -54,13 +72,11 @@ export class MultiAction {
 
   /**
    * Add a AddKey Action following the previous one.
-   * @param publicKey public key
-   * @param accessKey access key
    */
   addKey(publicKey: string, accessKey: AccessKey): this {
     return this.addActions([
       Actions.addKey({
-        publicKey: PublicKey.fromString(publicKey).toString(),
+        publicKey: validatePublicKey(publicKey),
         accessKey,
       }),
     ]);
@@ -68,15 +84,13 @@ export class MultiAction {
 
   /**
    * Add a DeleteKey Action following the previous one.
-   * @param publicKey public key
    */
   deleteKey(publicKey: string): this {
-    return this.addActions([Actions.deleteKey({ publicKey: PublicKey.fromString(publicKey).toString() })]);
+    return this.addActions([Actions.deleteKey({ publicKey: validatePublicKey(publicKey) })]);
   }
 
   /**
    * Add a DeployContract Action following the previous one.
-   * @param code code
    */
   deployContract(code: Uint8Array): this {
     return this.addActions([Actions.deployContract({ code })]);
@@ -84,20 +98,13 @@ export class MultiAction {
 
   /**
    * Add a Stake Action following the previous one.
-   * @param amount amount
-   * @param publicKey public key
    */
   stake(amount: string, publicKey: string): this {
-    return this.addActions([Actions.stake({ amount, publicKey: PublicKey.fromString(publicKey).toString() })]);
+    return this.addActions([Actions.stake({ amount, publicKey: validatePublicKey(publicKey) })]);
   }
 
   /**
    * Add a FunctionCall Action following the previous one.
-   * @param methodName method name
-   * @param args args
-   * @param attachedDeposit attached deposit
-   * @param gas gas
-   * @param stringifier stringifier
    */
   functionCall<Args = EmptyArgs>({
     methodName,
@@ -118,28 +125,27 @@ export class MultiAction {
 
   /**
    * Add a Transfer Action following the previous one.
-   * @param amount amount
    */
   transfer(amount: string): this {
     return this.addActions([Actions.transfer({ amount })]);
   }
 
   /**
-   * FungibleToken Helper
+   * FungibleToken.
    */
   get ft(): FungibleTokenFunctionCall<this> {
     return new FungibleTokenFunctionCall(this);
   }
 
   /**
-   * NonFungibleToken Helper
+   * NonFungibleToken.
    */
   get nft(): NonFungibleTokenFunctionCall<this> {
     return new NonFungibleTokenFunctionCall(this);
   }
 
   /**
-   * StorageManagement Helper
+   * StorageManagement.
    */
   get storage(): StorageManagementFunctionCall<this> {
     return new StorageManagementFunctionCall(this);

@@ -20,17 +20,71 @@ export class MultiTransaction {
     return this.transactions[this.transactions.length - 1];
   }
 
-  private addTransactions(transactions: TransactionWithMultiAction[]): this {
-    this.transactions.push(...transactions);
+  private getCurrentMultiAction(): MultiAction {
+    return this.getCurrentTransaction().mAc;
+  }
+
+  private addTransactions(transactions: Transaction[]): this {
+    const tx = transactions.map<TransactionWithMultiAction>(({ signerId, receiverId, actions }) => {
+      return {
+        signerId,
+        receiverId,
+        mAc: MultiAction.fromActions(actions),
+      };
+    });
+    this.transactions.push(...tx);
     return this;
   }
 
-  private assertCompleteTransactions() {
-    this.transactions.forEach((transaction, index) => {
-      if (!transaction.receiverId) {
-        throw new MultiTransactionError(`Transaction (${index}) missing \`receiverId\``);
-      }
+  /**
+   * Create a new `MultiTransaction` from transactions.
+   */
+  static fromTransactions(transactions: Transaction[]): MultiTransaction {
+    return MultiTransaction.new().addTransactions(transactions);
+  }
+
+  /**
+   * Return transactions.
+   */
+  toTransactions(): Transaction[] {
+    const transactions = this.transactions.map<Transaction>(({ signerId, receiverId, mAc }) => {
+      return {
+        signerId,
+        receiverId,
+        actions: mAc.toActions(),
+      };
     });
+    return Array.from(transactions);
+  }
+
+  /**
+   * Count transactions.
+   */
+  countTransactions(): number {
+    return this.transactions.length;
+  }
+
+  /**
+   * Count actions of current transaction.
+   */
+  countCurrentActions(): number {
+    return this.getCurrentMultiAction().countActions();
+  }
+
+  /**
+   * Extend transactions.
+   */
+  extendTransactions(mTx: MultiTransaction): this {
+    const transactions = mTx.toTransactions();
+    return this.addTransactions(transactions);
+  }
+
+  /**
+   * Extend actions to current transaction.
+   */
+  extendCurrentActions(mAc: MultiAction): this {
+    this.getCurrentMultiAction().extendActions(mAc);
+    return this;
   }
 
   /**
@@ -51,67 +105,54 @@ export class MultiTransaction {
    * Add a transaction following the previous one.
    */
   batch({ signerId, receiverId }: BatchOptions): this {
-    return this.addTransactions([{ signerId, receiverId, mAc: MultiAction.new() }]);
+    return this.addTransactions([{ signerId, receiverId, actions: [] }]);
   }
 
   /**
    * Add a CreateAccount Action following the previous one.
    */
   createAccount(): this {
-    const transaction = this.getCurrentTransaction();
-    transaction.mAc.createAccount();
+    this.getCurrentMultiAction().createAccount();
     return this;
   }
 
   /**
    * Add a DeleteAccount Action following the previous one.
-   * @param beneficiaryId beneficiary id
    */
   deleteAccount(beneficiaryId: string): this {
-    const transaction = this.getCurrentTransaction();
-    transaction.mAc.deleteAccount(beneficiaryId);
+    this.getCurrentMultiAction().deleteAccount(beneficiaryId);
     return this;
   }
 
   /**
    * Add a AddKey Action following the previous one.
-   * @param publicKey public key
-   * @param accessKey access key
    */
   addKey(publicKey: string, accessKey: AccessKey): this {
-    const transaction = this.getCurrentTransaction();
-    transaction.mAc.addKey(publicKey, accessKey);
+    this.getCurrentMultiAction().addKey(publicKey, accessKey);
     return this;
   }
 
   /**
    * Add a DeleteKey Action following the previous one.
-   * @param publicKey public key
    */
   deleteKey(publicKey: string): this {
-    const transaction = this.getCurrentTransaction();
-    transaction.mAc.deleteKey(publicKey);
+    this.getCurrentMultiAction().deleteKey(publicKey);
     return this;
   }
 
   /**
    * Add a DeployContract Action following the previous one.
-   * @param code code
    */
   deployContract(code: Uint8Array): this {
-    const transaction = this.getCurrentTransaction();
-    transaction.mAc.deployContract(code);
+    this.getCurrentMultiAction().deployContract(code);
     return this;
   }
 
   /**
    * Add a Stake Action following the previous one.
-   * @param amount amount
-   * @param publicKey public key
    */
   stake(amount: string, publicKey: string): this {
-    const transaction = this.getCurrentTransaction();
-    transaction.mAc.stake(amount, publicKey);
+    this.getCurrentMultiAction().stake(amount, publicKey);
     return this;
   }
 
@@ -119,110 +160,37 @@ export class MultiTransaction {
    * Add a FunctionCall Action following the previous one.
    */
   functionCall<Args = EmptyArgs>(options: FunctionCallOptions<Args>): this {
-    const transaction = this.getCurrentTransaction();
-    transaction.mAc.functionCall(options);
+    this.getCurrentMultiAction().functionCall(options);
     return this;
   }
 
   /**
    * Add a Transfer Action following the previous one.
-   * @param amount amount
    */
   transfer(amount: string): this {
-    const transaction = this.getCurrentTransaction();
-    transaction.mAc.transfer(amount);
+    this.getCurrentMultiAction().transfer(amount);
     return this;
   }
 
   /**
-   * FungibleToken Helper
+   * FungibleToken.
    */
   get ft(): FungibleTokenFunctionCall<this> {
     return new FungibleTokenFunctionCall(this);
   }
 
   /**
-   * NonFungibleToken Helper
+   * NonFungibleToken.
    */
   get nft(): NonFungibleTokenFunctionCall<this> {
     return new NonFungibleTokenFunctionCall(this);
   }
 
   /**
-   * StorageManagement Helper
+   * StorageManagement.
    */
   get storage(): StorageManagementFunctionCall<this> {
     return new StorageManagementFunctionCall(this);
-  }
-
-  /**
-   * Extend transactions.
-   * @param mTx mTx
-   */
-  extendTransactions(mTx: MultiTransaction): this {
-    const transactions = mTx.toTransactions().map<TransactionWithMultiAction>(({ signerId, receiverId, actions }) => {
-      return {
-        signerId,
-        receiverId,
-        mAc: MultiAction.fromActions(actions),
-      };
-    });
-    return this.addTransactions(transactions);
-  }
-
-  /**
-   * Extend actions to current transaction.
-   * @param mAc mAc
-   */
-  extendActions(mAc: MultiAction): this {
-    const actions = mAc.toActions();
-    const transaction = this.getCurrentTransaction();
-    transaction.mAc.addActions(actions);
-    return this;
-  }
-
-  /**
-   * Count transactions.
-   */
-  countTransactions(): number {
-    return this.transactions.length;
-  }
-
-  /**
-   * Count actions for current transaction.
-   */
-  countActions(): number {
-    const transaction = this.getCurrentTransaction();
-    return transaction.mAc.countActions();
-  }
-
-  /**
-   * Create a new `MultiTransaction` from transactions.
-   * @param transactions
-   */
-  static fromTransactions(transactions: Transaction[]): MultiTransaction {
-    const tx = transactions.map<TransactionWithMultiAction>(({ signerId, receiverId, actions }) => {
-      return {
-        signerId,
-        receiverId,
-        mAc: MultiAction.fromActions(actions),
-      };
-    });
-    return MultiTransaction.new().addTransactions(tx);
-  }
-
-  /**
-   * Return transactions.
-   */
-  toTransactions(): Transaction[] {
-    const transactions = this.transactions.map<Transaction>(({ signerId, receiverId, mAc }) => {
-      return {
-        signerId,
-        receiverId,
-        actions: mAc.toActions(),
-      };
-    });
-    return Array.from(transactions);
   }
 }
 
