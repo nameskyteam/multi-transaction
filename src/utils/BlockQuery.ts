@@ -2,15 +2,6 @@ import { BlockReference } from 'near-api-js/lib/providers/provider';
 import { Provider } from 'near-api-js/lib/providers';
 import { unreachable } from './common';
 
-type BlockQueryInternal =
-  | { kind: 'optimistic' }
-  | { kind: 'doomslug' }
-  | { kind: 'final' }
-  | { kind: 'earliest' }
-  | { kind: 'genesis' }
-  | { kind: 'height'; height: number }
-  | { kind: 'hash'; hash: string };
-
 export class BlockQuery {
   private readonly internal: BlockQueryInternal;
 
@@ -219,3 +210,12 @@ export class BlockQuery {
     return BlockQuery.hash(block.header.hash);
   }
 }
+
+type BlockQueryInternal =
+  | { kind: 'optimistic' }
+  | { kind: 'doomslug' }
+  | { kind: 'final' }
+  | { kind: 'earliest' }
+  | { kind: 'genesis' }
+  | { kind: 'height'; height: number }
+  | { kind: 'hash'; hash: string };
