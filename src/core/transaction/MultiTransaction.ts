@@ -21,7 +21,7 @@ export class MultiTransaction {
   }
 
   private getCurrentMultiAction(): MultiAction {
-    return this.getCurrentTransaction().mAc;
+    return this.getCurrentTransaction().mx;
   }
 
   private addTransactions(transactions: Transaction[]): this {
@@ -29,7 +29,7 @@ export class MultiTransaction {
       return {
         signerId,
         receiverId,
-        mAc: MultiAction.fromActions(actions),
+        mx: MultiAction.fromActions(actions),
       };
     });
     this.transactions.push(...tx);
@@ -47,11 +47,11 @@ export class MultiTransaction {
    * Return transactions.
    */
   toTransactions(): Transaction[] {
-    const transactions = this.transactions.map<Transaction>(({ signerId, receiverId, mAc }) => {
+    const transactions = this.transactions.map<Transaction>(({ signerId, receiverId, mx }) => {
       return {
         signerId,
         receiverId,
-        actions: mAc.toActions(),
+        actions: mx.toActions(),
       };
     });
     return Array.from(transactions);
@@ -74,16 +74,16 @@ export class MultiTransaction {
   /**
    * Extend transactions.
    */
-  extendTransactions(mTx: MultiTransaction): this {
-    const transactions = mTx.toTransactions();
+  extendTransactions(mtx: MultiTransaction): this {
+    const transactions = mtx.toTransactions();
     return this.addTransactions(transactions);
   }
 
   /**
    * Extend actions to current transaction.
    */
-  extendCurrentActions(mAc: MultiAction): this {
-    this.getCurrentMultiAction().extendActions(mAc);
+  extendCurrentActions(mx: MultiAction): this {
+    this.getCurrentMultiAction().extendActions(mx);
     return this;
   }
 
@@ -195,7 +195,7 @@ export class MultiTransaction {
 }
 
 type TransactionWithMultiAction = Pick<Transaction, 'signerId' | 'receiverId'> & {
-  mAc: MultiAction;
+  mx: MultiAction;
 };
 
 export type BatchOptions = Pick<Transaction, 'signerId' | 'receiverId'>;

@@ -15,8 +15,8 @@ import { Amount, Gas } from '../../../utils';
 import { FunctionCall } from './FunctionCall';
 
 export class NonFungibleTokenFunctionCall<T extends MultiFunctionCall> extends FunctionCall<T> {
-  constructor(mTx: T) {
-    super(mTx);
+  constructor(mtx: T) {
+    super(mtx);
   }
 
   /**

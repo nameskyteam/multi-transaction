@@ -44,8 +44,8 @@ export class MultiAction {
   /**
    * Extend actions.
    */
-  extendActions(mAc: MultiAction): this {
-    const actions = mAc.toActions();
+  extendActions(mx: MultiAction): this {
+    const actions = mx.toActions();
     return this.addActions(actions);
   }
 

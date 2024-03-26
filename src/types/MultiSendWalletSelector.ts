@@ -47,17 +47,17 @@ interface WalletSelectorExtension extends View, Call, Send {
 
   /**
    * Send multiple transactions and return success value of last transaction
-   * @param mTx mTx
+   * @param mtx mtx
    * @param options options
    */
-  send<Value>(mTx: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value>;
+  send<Value>(mtx: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value>;
 
   /**
    * Send multiple transactions
-   * @param mTx mTx
+   * @param mtx mtx
    * @param options options
    */
-  sendRaw(mTx: MultiTransaction, options?: MultiSendWalletSelectorSendRawOptions): Promise<FinalExecutionOutcome[]>;
+  sendRaw(mtx: MultiTransaction, options?: MultiSendWalletSelectorSendRawOptions): Promise<FinalExecutionOutcome[]>;
 }
 
 export type MultiSendWalletSelectorCallOptions<Value, Args> = CallOptions<Value, Args> & {

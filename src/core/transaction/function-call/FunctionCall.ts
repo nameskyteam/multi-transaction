@@ -1,13 +1,13 @@
 import { MultiFunctionCall, FunctionCallOptions } from '../../../types';
 
 export abstract class FunctionCall<T extends MultiFunctionCall> {
-  private mTx: T;
+  private mtx: T;
 
-  protected constructor(mTx: T) {
-    this.mTx = mTx;
+  protected constructor(mtx: T) {
+    this.mtx = mtx;
   }
 
   protected functionCall<Args>(options: FunctionCallOptions<Args>): T {
-    return this.mTx.functionCall(options);
+    return this.mtx.functionCall(options);
   }
 }

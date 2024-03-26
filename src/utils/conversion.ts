@@ -20,8 +20,8 @@ import {
 } from 'near-api-js/lib/transaction';
 import { PublicKey } from 'near-api-js/lib/utils';
 
-export function parseNearApiJsTransactions(mTx: MultiTransaction): NearApiJsTransaction[] {
-  return mTx.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));
+export function parseNearApiJsTransactions(mtx: MultiTransaction): NearApiJsTransaction[] {
+  return mtx.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));
 }
 
 function parseNearApiJsTransaction({ receiverId, actions }: Transaction): NearApiJsTransaction {
@@ -84,8 +84,8 @@ function parseNearApiJsAccessKey(accessKey: AccessKey): NearApiJsAccessKey {
   }
 }
 
-export function parseNearWalletSelectorTransactions(mTx: MultiTransaction): NearWalletSelectorTransaction[] {
-  return mTx.toTransactions().map((transaction) => parseNearWalletSelectorTransaction(transaction));
+export function parseNearWalletSelectorTransactions(mtx: MultiTransaction): NearWalletSelectorTransaction[] {
+  return mtx.toTransactions().map((transaction) => parseNearWalletSelectorTransaction(transaction));
 }
 
 function parseNearWalletSelectorTransaction({
