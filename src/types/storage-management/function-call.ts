@@ -1,5 +1,11 @@
 import { StorageDepositArgs, StorageWithdrawArgs, StorageUnregisterArgs } from './args';
 
+export type StorageManagementFunctionCall<T> = {
+  deposit: (options: StorageDepositOptions) => T;
+  withdraw: (options: StorageWithdrawOptions) => T;
+  unregister: (options: StorageUnregisterOptions) => T;
+};
+
 export type StorageDepositOptions = {
   args?: StorageDepositArgs;
   attachedDeposit: string;

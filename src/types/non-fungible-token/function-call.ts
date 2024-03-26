@@ -1,5 +1,13 @@
 import { NftTransferArgs, NftTransferCallArgs, NftApproveArgs, NftRevokeArgs, NftRevokeAllArgs } from './args';
 
+export type NonFungibleTokenFunctionCall<T> = {
+  transfer: (options: NftTransferOptions) => T;
+  transfer_call: (options: NftTransferCallOptions) => T;
+  approve: (options: NftApproveOptions) => T;
+  revoke: (options: NftRevokeOptions) => T;
+  revoke_all: (options: NftRevokeAllOptions) => T;
+};
+
 export type NftTransferOptions = {
   args: NftTransferArgs;
   gas?: string;
