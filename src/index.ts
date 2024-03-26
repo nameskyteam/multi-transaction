@@ -14,6 +14,7 @@ import {
   FunctionCallOptions,
   MultiSendWalletSelectorOptions,
   MultiSendWalletSelector,
+  IsLoginAccessKeyActiveOptions,
   MultiSendWalletSelectorCallOptions,
   MultiSendWalletSelectorCallRawOptions,
   MultiSendWalletSelectorSendOptions,
@@ -45,6 +46,7 @@ export {
 };
 export {
   MultiSendWalletSelector,
+  IsLoginAccessKeyActiveOptions,
   MultiSendWalletSelectorCallOptions,
   MultiSendWalletSelectorCallRawOptions,
   MultiSendWalletSelectorSendOptions,
@@ -52,8 +54,8 @@ export {
 };
 export { MultiSendWalletSelectorOptions, setupMultiSendWalletSelector };
 export { View, ViewOptions, Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions };
-export { BlockQuery, Amount, AmountUnits, Gas, GasUnits, Stringifier, Parser, parseOutcome };
-export { BigNumber, Numeric };
+export { BlockQuery, Stringifier, Parser, parseOutcome };
+export { BigNumber, Numeric, Amount, AmountUnits, Gas, GasUnits };
 export { BorshSchema, borshSerialize, borshDeserialize, StructFields, EnumVariants, Unit } from 'borsher';
 export * from './types/fungible-token/args';
 export * from './types/fungible-token/value';
