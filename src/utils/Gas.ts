@@ -4,6 +4,8 @@ import { Units } from './Units';
 export type GasUnits = 'T' | 'G' | 'M' | 'K' | number;
 
 export class Gas {
+  static readonly DEFAULT = '3000000000000';
+
   private constructor() {}
 
   private static unitsToDecimals(units: GasUnits): number {
@@ -19,10 +21,6 @@ export class Gas {
       default:
         return units;
     }
-  }
-
-  static get DEFAULT(): string {
-    return Gas.parse('30', 'T');
   }
 
   /**
