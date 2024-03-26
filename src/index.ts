@@ -28,7 +28,7 @@ import {
   SendRawOptions,
   Numeric,
 } from './types';
-import { Amount, Gas, BlockQuery, Parser, Stringifier, parseOutcome } from './utils';
+import { Amount, AmountUnits, Gas, GasUnits, BlockQuery, Parser, Stringifier, parseOutcome } from './utils';
 
 BigNumber.config({
   DECIMAL_PLACES: 100,
@@ -52,7 +52,7 @@ export {
 };
 export { MultiSendWalletSelectorOptions, setupMultiSendWalletSelector };
 export { View, ViewOptions, Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions };
-export { BlockQuery, Amount, Gas, Stringifier, Parser, parseOutcome };
+export { BlockQuery, Amount, AmountUnits, Gas, GasUnits, Stringifier, Parser, parseOutcome };
 export { BigNumber, Numeric };
 export { BorshSchema, borshSerialize, borshDeserialize, StructFields, EnumVariants, Unit } from 'borsher';
 export * from './types/fungible-token/args';

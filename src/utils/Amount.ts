@@ -1,14 +1,6 @@
 import { Numeric } from '../types';
 import { Units } from './Units';
 
-const NEAR_DECIMALS = 24;
-const USDT_DECIMALS = 6;
-const USDC_DECIMALS = 6;
-const BTC_DECIMALS = 8;
-const ETH_DECIMALS = 18;
-
-export type AmountUnits = 'NEAR' | 'USDT' | 'USDC' | 'BTC' | 'ETH' | number;
-
 export class Amount {
   static readonly ZERO = '0';
   static readonly ONE_YOCTO = '1';
@@ -16,20 +8,27 @@ export class Amount {
   private constructor() {}
 
   private static unitsToDecimals(units: AmountUnits): number {
-    switch (units) {
-      case 'NEAR':
-        return NEAR_DECIMALS;
-      case 'USDT':
-        return USDT_DECIMALS;
-      case 'USDC':
-        return USDC_DECIMALS;
-      case 'BTC':
-        return BTC_DECIMALS;
-      case 'ETH':
-        return ETH_DECIMALS;
-      default:
-        return units;
+    if (units === 'NEAR') {
+      return NEAR_DECIMALS;
     }
+
+    if (units === 'USDT') {
+      return USDT_DECIMALS;
+    }
+
+    if (units === 'USDC') {
+      return USDC_DECIMALS;
+    }
+
+    if (units === 'BTC') {
+      return BTC_DECIMALS;
+    }
+
+    if (units === 'ETH') {
+      return ETH_DECIMALS;
+    }
+
+    return units;
   }
 
   /**
@@ -60,3 +59,11 @@ export class Amount {
     }
   }
 }
+
+export type AmountUnits = 'NEAR' | 'USDT' | 'USDC' | 'BTC' | 'ETH' | number;
+
+const NEAR_DECIMALS = 24;
+const USDT_DECIMALS = 6;
+const USDC_DECIMALS = 6;
+const BTC_DECIMALS = 8;
+const ETH_DECIMALS = 18;

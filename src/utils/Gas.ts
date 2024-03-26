@@ -1,26 +1,29 @@
 import { Numeric } from '../types';
 import { Units } from './Units';
 
-export type GasUnits = 'T' | 'G' | 'M' | 'K' | number;
-
 export class Gas {
   static readonly DEFAULT = '3000000000000';
 
   private constructor() {}
 
   private static unitsToDecimals(units: GasUnits): number {
-    switch (units) {
-      case 'T':
-        return 12;
-      case 'G':
-        return 9;
-      case 'M':
-        return 6;
-      case 'K':
-        return 3;
-      default:
-        return units;
+    if (units === 'T') {
+      return TERA;
     }
+
+    if (units === 'G') {
+      return GIGA;
+    }
+
+    if (units === 'M') {
+      return MEGA;
+    }
+
+    if (units === 'K') {
+      return KILO;
+    }
+
+    return units;
   }
 
   /**
@@ -51,3 +54,10 @@ export class Gas {
     }
   }
 }
+
+export type GasUnits = 'T' | 'G' | 'M' | 'K' | number;
+
+const TERA = 12;
+const GIGA = 9;
+const MEGA = 6;
+const KILO = 3;
