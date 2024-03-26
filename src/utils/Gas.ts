@@ -8,19 +8,19 @@ export class Gas {
 
   private static unitsToDecimals(units: GasUnits): number {
     if (units === 'T') {
-      return TERA;
+      return 12;
     }
 
     if (units === 'G') {
-      return GIGA;
+      return 9;
     }
 
     if (units === 'M') {
-      return MEGA;
+      return 6;
     }
 
     if (units === 'K') {
-      return KILO;
+      return 3;
     }
 
     return units;
@@ -56,8 +56,3 @@ export class Gas {
 }
 
 export type GasUnits = 'T' | 'G' | 'M' | 'K' | number;
-
-const TERA = 12;
-const GIGA = 9;
-const MEGA = 6;
-const KILO = 3;

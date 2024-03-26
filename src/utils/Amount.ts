@@ -9,23 +9,23 @@ export class Amount {
 
   private static unitsToDecimals(units: AmountUnits): number {
     if (units === 'NEAR') {
-      return NEAR_DECIMALS;
+      return 24;
     }
 
     if (units === 'USDT') {
-      return USDT_DECIMALS;
+      return 6;
     }
 
     if (units === 'USDC') {
-      return USDC_DECIMALS;
+      return 6;
     }
 
     if (units === 'BTC') {
-      return BTC_DECIMALS;
+      return 8;
     }
 
     if (units === 'ETH') {
-      return ETH_DECIMALS;
+      return 18;
     }
 
     return units;
@@ -61,9 +61,3 @@ export class Amount {
 }
 
 export type AmountUnits = 'NEAR' | 'USDT' | 'USDC' | 'BTC' | 'ETH' | number;
-
-const NEAR_DECIMALS = 24;
-const USDT_DECIMALS = 6;
-const USDC_DECIMALS = 6;
-const BTC_DECIMALS = 8;
-const ETH_DECIMALS = 18;
