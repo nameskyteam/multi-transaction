@@ -21,14 +21,14 @@ export class Gas {
     }
   }
 
-  static default(): string {
+  static get DEFAULT(): string {
     return Gas.parse('30', 'T');
   }
 
   /**
    * Parse from specific units and return a fixed string
    * @example
-   * const rawGas = Gas.parse('30', 'T'); // '30000000000000'
+   * const rawGas = Gas.parse('5', 'T'); // '5000000000000'
    * @param gas human readable gas
    * @param units units
    */
@@ -39,7 +39,7 @@ export class Gas {
   /**
    * Format in specific units and return a fixed string
    * @example
-   * const humanReadableGas = Gas.format('30000000000000', 'T'); // '30'
+   * const humanReadableGas = Gas.format('5000000000000', 'T'); // '5'
    * @param gas raw gas
    * @param units units
    * @param decimalPlaces decimal places

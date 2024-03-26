@@ -119,7 +119,7 @@ export class MultiAction {
     methodName,
     args = {} as Args,
     attachedDeposit = Amount.ZERO,
-    gas = Gas.default(),
+    gas = Gas.DEFAULT,
     stringifier = Stringifier.json(),
   }: FunctionCallOptions<Args>): this {
     return this.addActions([
