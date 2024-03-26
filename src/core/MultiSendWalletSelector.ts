@@ -7,11 +7,12 @@ import {
   MultiSendWalletSelector,
   MultiSendWalletSelectorCallOptions,
   MultiSendWalletSelectorCallRawOptions,
+  MultiSendWalletSelectorSendOptions,
   MultiSendWalletSelectorSendRawOptions,
 } from '../types';
 import { MultiSendWalletSelectorOptions } from '../types';
 import { ViewOptions } from '../types';
-import { MultiTransaction } from './transaction';
+import { MultiTransaction } from './MultiTransaction';
 import {
   Amount,
   parseNearWalletSelectorTransactions,
@@ -22,7 +23,6 @@ import {
   parseOutcome,
   BlockQuery,
 } from '../utils';
-import { MultiSendWalletSelectorSendOptions } from '../types';
 import { BigNumber } from 'bignumber.js';
 import { SendTransactionError } from '../errors';
 

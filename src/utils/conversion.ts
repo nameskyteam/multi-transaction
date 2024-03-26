@@ -1,9 +1,6 @@
-import { AccessKey, Action } from '../types';
-import { Transaction } from '../types';
-import { MultiTransaction } from '../core';
 import { Action as NearWalletSelectorAction } from '@near-wallet-selector/core';
 import BN from 'bn.js';
-import { unreachable } from './common';
+import { PublicKey } from 'near-api-js/lib/utils';
 import {
   addKey,
   createAccount,
@@ -18,7 +15,9 @@ import {
   Action as NearApiJsAction,
   AccessKey as NearApiJsAccessKey,
 } from 'near-api-js/lib/transaction';
-import { PublicKey } from 'near-api-js/lib/utils';
+import { AccessKey, Action, Transaction } from '../types';
+import { MultiTransaction } from '../core';
+import { unreachable } from './common';
 
 export function parseNearApiJsTransactions(mtx: MultiTransaction): NearApiJsTransaction[] {
   return mtx.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));

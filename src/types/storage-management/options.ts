@@ -1,4 +1,4 @@
-import { StorageDepositArgs, StorageUnregisterArgs, StorageWithdrawArgs } from './args';
+import { StorageDepositArgs, StorageWithdrawArgs, StorageUnregisterArgs } from './args';
 
 export type StorageDepositOptions = {
   args?: StorageDepositArgs;

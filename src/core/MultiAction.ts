@@ -1,20 +1,21 @@
-import { Actions } from '../index';
-import { AccessKey, Action } from '../../types';
+import { Actions } from './Actions';
 import {
   Amount,
-  fungibleTokenFunctionCall,
   Gas,
+  Stringifier,
+  fungibleTokenFunctionCall,
   nonFungibleTokenFunctionCall,
   storageManagementFunctionCall,
-  Stringifier,
-} from '../../utils';
-import { EmptyArgs } from '../../types';
+} from '../utils';
 import {
+  EmptyArgs,
+  AccessKey,
+  Action,
   FunctionCallOptions,
   FungibleTokenFunctionCall,
   NonFungibleTokenFunctionCall,
   StorageManagementFunctionCall,
-} from '../../types/function-call';
+} from '../types';
 
 export class MultiAction {
   private readonly actions: Action[];

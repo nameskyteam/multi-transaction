@@ -1,5 +1,5 @@
-import { MultiTransaction } from '../core';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
+import { MultiTransaction } from '../core';
 import { BlockQuery, Parser, Stringifier } from '../utils';
 
 export interface View {

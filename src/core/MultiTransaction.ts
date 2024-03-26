@@ -1,12 +1,14 @@
-import { Transaction, AccessKey, EmptyArgs } from '../../types';
-import { MultiTransactionError } from '../../errors';
-import { fungibleTokenFunctionCall, nonFungibleTokenFunctionCall, storageManagementFunctionCall } from '../../utils';
+import { MultiTransactionError } from '../errors';
+import { fungibleTokenFunctionCall, nonFungibleTokenFunctionCall, storageManagementFunctionCall } from '../utils';
 import {
+  EmptyArgs,
+  AccessKey,
+  Transaction,
   FunctionCallOptions,
   FungibleTokenFunctionCall,
   NonFungibleTokenFunctionCall,
   StorageManagementFunctionCall,
-} from '../../types';
+} from '../types';
 import { MultiAction } from './MultiAction';
 
 export class MultiTransaction {
