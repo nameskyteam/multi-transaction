@@ -20,20 +20,20 @@ export type FunctionCallOptions<Args> = {
 export type FunctionCall<T> = <Args>(options: FunctionCallOptions<Args>) => T;
 
 export type FungibleTokenFunctionCall<T> = {
-  transfer(options: FtTransferOptions): T;
-  transfer_call(options: FtTransferCallOptions): T;
+  transfer: (options: FtTransferOptions) => T;
+  transfer_call: (options: FtTransferCallOptions) => T;
 };
 
 export type NonFungibleTokenFunctionCall<T> = {
-  transfer(options: NftTransferOptions): T;
-  transfer_call(options: NftTransferCallOptions): T;
-  approve(options: NftApproveOptions): T;
-  revoke(options: NftRevokeOptions): T;
-  revoke_all(options: NftRevokeAllOptions): T;
+  transfer: (options: NftTransferOptions) => T;
+  transfer_call: (options: NftTransferCallOptions) => T;
+  approve: (options: NftApproveOptions) => T;
+  revoke: (options: NftRevokeOptions) => T;
+  revoke_all: (options: NftRevokeAllOptions) => T;
 };
 
 export type StorageManagementFunctionCall<T> = {
-  deposit(options: StorageDepositOptions): T;
-  withdraw(options: StorageWithdrawOptions): T;
-  unregister(options: StorageUnregisterOptions): T;
+  deposit: (options: StorageDepositOptions) => T;
+  withdraw: (options: StorageWithdrawOptions) => T;
+  unregister: (options: StorageUnregisterOptions) => T;
 };
