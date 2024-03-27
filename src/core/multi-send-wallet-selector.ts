@@ -50,16 +50,8 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
     ...selector,
     near,
 
-    getActiveAccountId() {
-      return this.getActiveAccount()?.accountId;
-    },
-
     getActiveAccount() {
       return this.store.getState().accounts.find((accountState) => accountState.active);
-    },
-
-    getAccountIds() {
-      return this.getAccounts().map((accountState) => accountState.accountId);
     },
 
     getAccounts() {
@@ -67,7 +59,7 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
     },
 
     async isLoginAccessKeyActive({ accountId, requiredAllowance = Amount.parse('0.01', 'NEAR') }) {
-      accountId = accountId ?? this.getActiveAccountId();
+      accountId = accountId ?? this.getActiveAccount()?.accountId;
       if (!accountId) {
         return false;
       }

@@ -14,17 +14,7 @@ interface WalletSelectorExtension extends View, Call, Send {
   /**
    * Account that is login
    */
-  getActiveAccountId(): string | undefined;
-
-  /**
-   * Account that is login
-   */
   getActiveAccount(): AccountState | undefined;
-
-  /**
-   * Accounts that have logged in
-   */
-  getAccountIds(): string[];
 
   /**
    * Accounts that have logged in
