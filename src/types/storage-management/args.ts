@@ -1,4 +1,4 @@
-import { EmptyArgs } from '../common';
+import { EmptyArgs } from '../function-call';
 
 export type StorageDepositArgs = {
   account_id?: string;

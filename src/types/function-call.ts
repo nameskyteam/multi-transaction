@@ -1,6 +1,6 @@
 import { Stringifier } from '../utils';
 
-export type FunctionCall<T> = <Args>(options: FunctionCallOptions<Args>) => T;
+export type FunctionCall<T> = <Args = EmptyArgs>(options: FunctionCallOptions<Args>) => T;
 
 export type FunctionCallOptions<Args> = {
   methodName: string;
@@ -9,3 +9,5 @@ export type FunctionCallOptions<Args> = {
   gas?: string;
   stringifier?: Stringifier<Args>;
 };
+
+export type EmptyArgs = Record<string, never>;

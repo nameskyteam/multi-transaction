@@ -4,7 +4,7 @@ import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions, View, ViewOptions } from './send';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-selector.types';
-import { EmptyArgs } from './common';
+import { EmptyArgs } from './function-call';
 
 export interface MultiSendWalletSelector extends WalletSelector, WalletSelectorExtension {}
 
