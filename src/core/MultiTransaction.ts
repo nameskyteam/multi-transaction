@@ -164,7 +164,7 @@ function convertLocalTransactionsToTransactions(transactions: LocalTransaction[]
   }));
 }
 
-type LocalTransaction = Pick<Transaction, 'signerId' | 'receiverId'> & {
+type LocalTransaction = Omit<Transaction, 'actions'> & {
   mx: MultiAction;
 };
 
