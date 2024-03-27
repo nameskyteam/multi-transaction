@@ -18,7 +18,7 @@ export class MultiTransaction {
     this.transactions = [];
   }
 
-  private get tx(): LocalTransaction {
+  private get transaction(): LocalTransaction {
     if (this.transactions.length === 0) {
       throw new MultiTransactionError('Transaction not found');
     }
@@ -42,15 +42,12 @@ export class MultiTransaction {
     return this.addTransactions(mtx.transactions);
   }
 
-  /**
-   * Create a new `MultiTransaction` instance
-   */
   static new(): MultiTransaction {
     return new MultiTransaction();
   }
 
   /**
-   * Create a new `MultiTransaction` instance and add a transaction
+   * Create a transaction
    */
   static batch(options: BatchOptions): MultiTransaction {
     return MultiTransaction.new().batch(options);
@@ -64,10 +61,10 @@ export class MultiTransaction {
   }
 
   /**
-   * Add all actions following previous actions
+   * Add actions following previous actions
    */
-  actions(mx: MultiAction): this {
-    this.tx.mx.extend(mx);
+  addMultiAction(mx: MultiAction): this {
+    this.transaction.mx.extend(mx);
     return this;
   }
 
@@ -75,7 +72,7 @@ export class MultiTransaction {
    * Add a CreateAccount Action following previous actions
    */
   createAccount(): this {
-    this.tx.mx.createAccount();
+    this.transaction.mx.createAccount();
     return this;
   }
 
@@ -83,7 +80,7 @@ export class MultiTransaction {
    * Add a DeleteAccount Action following previous actions
    */
   deleteAccount(beneficiaryId: string): this {
-    this.tx.mx.deleteAccount(beneficiaryId);
+    this.transaction.mx.deleteAccount(beneficiaryId);
     return this;
   }
 
@@ -91,7 +88,7 @@ export class MultiTransaction {
    * Add a AddKey Action following previous actions
    */
   addKey(publicKey: string, accessKey: AccessKey): this {
-    this.tx.mx.addKey(publicKey, accessKey);
+    this.transaction.mx.addKey(publicKey, accessKey);
     return this;
   }
 
@@ -99,7 +96,7 @@ export class MultiTransaction {
    * Add a DeleteKey Action following previous actions
    */
   deleteKey(publicKey: string): this {
-    this.tx.mx.deleteKey(publicKey);
+    this.transaction.mx.deleteKey(publicKey);
     return this;
   }
 
@@ -107,7 +104,7 @@ export class MultiTransaction {
    * Add a DeployContract Action following previous actions
    */
   deployContract(code: Uint8Array): this {
-    this.tx.mx.deployContract(code);
+    this.transaction.mx.deployContract(code);
     return this;
   }
 
@@ -115,7 +112,7 @@ export class MultiTransaction {
    * Add a Stake Action following previous actions
    */
   stake(amount: string, publicKey: string): this {
-    this.tx.mx.stake(amount, publicKey);
+    this.transaction.mx.stake(amount, publicKey);
     return this;
   }
 
@@ -123,7 +120,7 @@ export class MultiTransaction {
    * Add a FunctionCall Action following previous actions
    */
   functionCall<Args = EmptyArgs>(options: FunctionCallOptions<Args>): this {
-    this.tx.mx.functionCall(options);
+    this.transaction.mx.functionCall(options);
     return this;
   }
 
@@ -131,7 +128,7 @@ export class MultiTransaction {
    * Add a Transfer Action following previous actions
    */
   transfer(amount: string): this {
-    this.tx.mx.transfer(amount);
+    this.transaction.mx.transfer(amount);
     return this;
   }
 
