@@ -25,9 +25,13 @@ export class MultiTransaction {
     return this.transactions[this.transactions.length - 1];
   }
 
-  private addTransactions(transactions: Transaction[]): this {
-    this.transactions.push(...convertTransactionsToLocalTransactions(transactions));
+  private addLocalTransactions(transactions: LocalTransaction[]): this {
+    this.transactions.push(...transactions);
     return this;
+  }
+
+  private addTransactions(transactions: Transaction[]): this {
+    return this.addLocalTransactions(convertTransactionsToLocalTransactions(transactions));
   }
 
   static fromTransactions(transactions: Transaction[]): MultiTransaction {
@@ -39,7 +43,7 @@ export class MultiTransaction {
   }
 
   extend(mtx: MultiTransaction): this {
-    return this.addTransactions(mtx.toTransactions());
+    return this.addLocalTransactions(mtx.transactions);
   }
 
   /**
