@@ -124,25 +124,25 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
     },
 
     async callRaw({ contractId, methodName, args, attachedDeposit, gas, stringifier, ...options }) {
-      const mtx = MultiTransaction.batch({ receiverId: contractId }).functionCall({
+      const mTransaction = MultiTransaction.batch({ receiverId: contractId }).functionCall({
         methodName,
         args,
         attachedDeposit,
         gas,
         stringifier,
       });
-      const outcomes = await this.sendRaw(mtx, options);
+      const outcomes = await this.sendRaw(mTransaction, options);
       return outcomes?.[0];
     },
 
-    async send(mtx, options) {
-      const outcomes = await this.sendRaw(mtx, options);
+    async send(mTransaction, options) {
+      const outcomes = await this.sendRaw(mTransaction, options);
       const outcome = outcomes?.[outcomes.length - 1];
       return parseOutcome(outcome, options?.parser);
     },
 
-    async sendRaw(mtx, options) {
-      const transactions = parseNearWalletSelectorTransactions(mtx);
+    async sendRaw(mTransaction, options) {
+      const transactions = parseNearWalletSelectorTransactions(mTransaction);
 
       if (transactions.length === 0) {
         throw new SendTransactionError('Transaction not found.');

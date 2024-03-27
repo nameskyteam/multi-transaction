@@ -12,8 +12,8 @@ export interface Call {
 }
 
 export interface Send {
-  send<Value>(mtx: MultiTransaction, options?: SendOptions<Value>): Promise<Value>;
-  sendRaw(mtx: MultiTransaction, options?: SendRawOptions): Promise<FinalExecutionOutcome[]>;
+  send<Value>(mTransaction: MultiTransaction, options?: SendOptions<Value>): Promise<Value>;
+  sendRaw(mTransaction: MultiTransaction, options?: SendRawOptions): Promise<FinalExecutionOutcome[]>;
 }
 
 export type ViewOptions<Value, Args> = {

@@ -19,8 +19,8 @@ import { AccessKey, Action, Transaction } from '../types';
 import { MultiTransaction } from '../core';
 import { unreachable } from './common';
 
-export function parseNearApiJsTransactions(mtx: MultiTransaction): NearApiJsTransaction[] {
-  return mtx.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));
+export function parseNearApiJsTransactions(mTransaction: MultiTransaction): NearApiJsTransaction[] {
+  return mTransaction.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));
 }
 
 function parseNearApiJsTransaction({ receiverId, actions }: Transaction): NearApiJsTransaction {
@@ -83,8 +83,8 @@ function parseNearApiJsAccessKey(accessKey: AccessKey): NearApiJsAccessKey {
   }
 }
 
-export function parseNearWalletSelectorTransactions(mtx: MultiTransaction): NearWalletSelectorTransaction[] {
-  return mtx.toTransactions().map((transaction) => parseNearWalletSelectorTransaction(transaction));
+export function parseNearWalletSelectorTransactions(mTransaction: MultiTransaction): NearWalletSelectorTransaction[] {
+  return mTransaction.toTransactions().map((transaction) => parseNearWalletSelectorTransaction(transaction));
 }
 
 function parseNearWalletSelectorTransaction({

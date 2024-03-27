@@ -38,8 +38,8 @@ export class MultiTransaction {
     return Array.from(convertLocalTransactionsToTransactions(this.transactions));
   }
 
-  extend(mtx: MultiTransaction): this {
-    return this.addTransactions(mtx.transactions);
+  extend(mTransaction: MultiTransaction): this {
+    return this.addTransactions(mTransaction.transactions);
   }
 
   static new(): MultiTransaction {
@@ -57,14 +57,14 @@ export class MultiTransaction {
    * Add a transaction following previous transactions
    */
   batch({ signerId, receiverId }: BatchOptions): this {
-    return this.addTransactions([{ signerId, receiverId, mx: MultiAction.new() }]);
+    return this.addTransactions([{ signerId, receiverId, mAction: MultiAction.new() }]);
   }
 
   /**
    * Add actions following previous actions
    */
-  addMultiAction(mx: MultiAction): this {
-    this.transaction.mx.extend(mx);
+  addMultiAction(mAction: MultiAction): this {
+    this.transaction.mAction.extend(mAction);
     return this;
   }
 
@@ -72,7 +72,7 @@ export class MultiTransaction {
    * Add a CreateAccount Action following previous actions
    */
   createAccount(): this {
-    this.transaction.mx.createAccount();
+    this.transaction.mAction.createAccount();
     return this;
   }
 
@@ -80,7 +80,7 @@ export class MultiTransaction {
    * Add a DeleteAccount Action following previous actions
    */
   deleteAccount(beneficiaryId: string): this {
-    this.transaction.mx.deleteAccount(beneficiaryId);
+    this.transaction.mAction.deleteAccount(beneficiaryId);
     return this;
   }
 
@@ -88,7 +88,7 @@ export class MultiTransaction {
    * Add a AddKey Action following previous actions
    */
   addKey(publicKey: string, accessKey: AccessKey): this {
-    this.transaction.mx.addKey(publicKey, accessKey);
+    this.transaction.mAction.addKey(publicKey, accessKey);
     return this;
   }
 
@@ -96,7 +96,7 @@ export class MultiTransaction {
    * Add a DeleteKey Action following previous actions
    */
   deleteKey(publicKey: string): this {
-    this.transaction.mx.deleteKey(publicKey);
+    this.transaction.mAction.deleteKey(publicKey);
     return this;
   }
 
@@ -104,7 +104,7 @@ export class MultiTransaction {
    * Add a DeployContract Action following previous actions
    */
   deployContract(code: Uint8Array): this {
-    this.transaction.mx.deployContract(code);
+    this.transaction.mAction.deployContract(code);
     return this;
   }
 
@@ -112,7 +112,7 @@ export class MultiTransaction {
    * Add a Stake Action following previous actions
    */
   stake(amount: string, publicKey: string): this {
-    this.transaction.mx.stake(amount, publicKey);
+    this.transaction.mAction.stake(amount, publicKey);
     return this;
   }
 
@@ -120,7 +120,7 @@ export class MultiTransaction {
    * Add a FunctionCall Action following previous actions
    */
   functionCall<Args = EmptyArgs>(options: FunctionCallOptions<Args>): this {
-    this.transaction.mx.functionCall(options);
+    this.transaction.mAction.functionCall(options);
     return this;
   }
 
@@ -128,7 +128,7 @@ export class MultiTransaction {
    * Add a Transfer Action following previous actions
    */
   transfer(amount: string): this {
-    this.transaction.mx.transfer(amount);
+    this.transaction.mAction.transfer(amount);
     return this;
   }
 
@@ -149,20 +149,20 @@ function convertTransactionsToLocalTransactions(transactions: Transaction[]): Lo
   return transactions.map(({ signerId, receiverId, actions }) => ({
     signerId,
     receiverId,
-    mx: MultiAction.fromActions(actions),
+    mAction: MultiAction.fromActions(actions),
   }));
 }
 
 function convertLocalTransactionsToTransactions(transactions: LocalTransaction[]): Transaction[] {
-  return transactions.map(({ signerId, receiverId, mx }) => ({
+  return transactions.map(({ signerId, receiverId, mAction }) => ({
     signerId,
     receiverId,
-    actions: mx.toActions(),
+    actions: mAction.toActions(),
   }));
 }
 
 type LocalTransaction = Omit<Transaction, 'actions'> & {
-  mx: MultiAction;
+  mAction: MultiAction;
 };
 
 export type BatchOptions = Pick<Transaction, 'signerId' | 'receiverId'>;

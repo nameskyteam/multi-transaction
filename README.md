@@ -54,7 +54,7 @@ import { MultiTransaction, MultiSendAccount, Amount, Gas } from 'multi-transacti
 const account = MultiSendAccount.new(near.connection, 'alice.near');
 
 // one transaction that contains two actions
-const mtx = MultiTransaction
+const mTransaction = MultiTransaction
   .batch({ receiverId: 'wrap.near' })
   .functionCall({
     methodName: 'ft_transfer',
@@ -75,7 +75,7 @@ const mtx = MultiTransaction
     gas: Gas.parse('10', 'T')
   });
 
-await account.send(mtx);
+await account.send(mTransaction);
 ```
 
 ### Multiple Transactions
@@ -87,7 +87,7 @@ import { MultiTransaction, MultiSendAccount, Amount, Gas } from 'multi-transacti
 const account = MultiSendAccount.new(near.connection, 'alice.near');
 
 // two transactions, each contains one action
-const mtx = MultiTransaction
+const mTransaction = MultiTransaction
   .batch({ receiverId: 'wrap.near' })
   .functionCall({
     methodName: 'ft_transfer',
@@ -109,7 +109,7 @@ const mtx = MultiTransaction
     gas: Gas.parse('10', 'T')
   });
 
-await account.send(mtx);
+await account.send(mTransaction);
 ```
 
 ## Wallet Selector

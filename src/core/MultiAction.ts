@@ -37,8 +37,8 @@ export class MultiAction {
     return Array.from(this.actions);
   }
 
-  extend(mx: MultiAction): this {
-    return this.addActions(mx.actions);
+  extend(mAction: MultiAction): this {
+    return this.addActions(mAction.actions);
   }
 
   static new(): MultiAction {

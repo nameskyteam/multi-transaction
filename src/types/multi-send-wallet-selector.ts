@@ -44,12 +44,15 @@ interface WalletSelectorExtension extends View, Call, Send {
   /**
    * Send multiple transactions and return success value of last transaction
    */
-  send<Value>(mtx: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value>;
+  send<Value>(mTransaction: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value>;
 
   /**
    * Send multiple transactions and return outcomes
    */
-  sendRaw(mtx: MultiTransaction, options?: MultiSendWalletSelectorSendRawOptions): Promise<FinalExecutionOutcome[]>;
+  sendRaw(
+    mTransaction: MultiTransaction,
+    options?: MultiSendWalletSelectorSendRawOptions,
+  ): Promise<FinalExecutionOutcome[]>;
 }
 
 export type IsLoginAccessKeyActiveOptions = {
