@@ -12,32 +12,21 @@ import {
 import { MultiAction } from './MultiAction';
 
 export class MultiTransaction {
-  private readonly transactions: TransactionWithMultiAction[];
+  private readonly transactions: LocalTransaction[];
 
   private constructor() {
     this.transactions = [];
   }
 
-  private getCurrentTransaction(): TransactionWithMultiAction {
+  private get current(): LocalTransaction {
     if (this.transactions.length === 0) {
       throw new MultiTransactionError('Transaction not found');
     }
     return this.transactions[this.transactions.length - 1];
   }
 
-  private getCurrentMultiAction(): MultiAction {
-    return this.getCurrentTransaction().mx;
-  }
-
   private addTransactions(transactions: Transaction[]): this {
-    const tx = transactions.map<TransactionWithMultiAction>(({ signerId, receiverId, actions }) => {
-      return {
-        signerId,
-        receiverId,
-        mx: MultiAction.fromActions(actions),
-      };
-    });
-    this.transactions.push(...tx);
+    this.transactions.push(...convertTransactionsToLocalTransactions(transactions));
     return this;
   }
 
@@ -46,19 +35,11 @@ export class MultiTransaction {
   }
 
   toTransactions(): Transaction[] {
-    const transactions = this.transactions.map<Transaction>(({ signerId, receiverId, mx }) => {
-      return {
-        signerId,
-        receiverId,
-        actions: mx.toActions(),
-      };
-    });
-    return Array.from(transactions);
+    return Array.from(convertLocalTransactionsToTransactions(this.transactions));
   }
 
   extend(mtx: MultiTransaction): this {
-    const transactions = mtx.toTransactions();
-    return this.addTransactions(transactions);
+    return this.addTransactions(mtx.toTransactions());
   }
 
   /**
@@ -86,7 +67,7 @@ export class MultiTransaction {
    * Add a CreateAccount Action following previous actions
    */
   createAccount(): this {
-    this.getCurrentMultiAction().createAccount();
+    this.current.mx.createAccount();
     return this;
   }
 
@@ -94,7 +75,7 @@ export class MultiTransaction {
    * Add a DeleteAccount Action following previous actions
    */
   deleteAccount(beneficiaryId: string): this {
-    this.getCurrentMultiAction().deleteAccount(beneficiaryId);
+    this.current.mx.deleteAccount(beneficiaryId);
     return this;
   }
 
@@ -102,7 +83,7 @@ export class MultiTransaction {
    * Add a AddKey Action following previous actions
    */
   addKey(publicKey: string, accessKey: AccessKey): this {
-    this.getCurrentMultiAction().addKey(publicKey, accessKey);
+    this.current.mx.addKey(publicKey, accessKey);
     return this;
   }
 
@@ -110,7 +91,7 @@ export class MultiTransaction {
    * Add a DeleteKey Action following previous actions
    */
   deleteKey(publicKey: string): this {
-    this.getCurrentMultiAction().deleteKey(publicKey);
+    this.current.mx.deleteKey(publicKey);
     return this;
   }
 
@@ -118,7 +99,7 @@ export class MultiTransaction {
    * Add a DeployContract Action following previous actions
    */
   deployContract(code: Uint8Array): this {
-    this.getCurrentMultiAction().deployContract(code);
+    this.current.mx.deployContract(code);
     return this;
   }
 
@@ -126,7 +107,7 @@ export class MultiTransaction {
    * Add a Stake Action following previous actions
    */
   stake(amount: string, publicKey: string): this {
-    this.getCurrentMultiAction().stake(amount, publicKey);
+    this.current.mx.stake(amount, publicKey);
     return this;
   }
 
@@ -134,7 +115,7 @@ export class MultiTransaction {
    * Add a FunctionCall Action following previous actions
    */
   functionCall<Args = EmptyArgs>(options: FunctionCallOptions<Args>): this {
-    this.getCurrentMultiAction().functionCall(options);
+    this.current.mx.functionCall(options);
     return this;
   }
 
@@ -142,7 +123,7 @@ export class MultiTransaction {
    * Add a Transfer Action following previous actions
    */
   transfer(amount: string): this {
-    this.getCurrentMultiAction().transfer(amount);
+    this.current.mx.transfer(amount);
     return this;
   }
 
@@ -150,7 +131,7 @@ export class MultiTransaction {
    * Add all actions following previous actions
    */
   actions(mx: MultiAction): this {
-    this.getCurrentMultiAction().extend(mx);
+    this.current.mx.extend(mx);
     return this;
   }
 
@@ -167,7 +148,23 @@ export class MultiTransaction {
   }
 }
 
-type TransactionWithMultiAction = Pick<Transaction, 'signerId' | 'receiverId'> & {
+function convertTransactionsToLocalTransactions(transactions: Transaction[]): LocalTransaction[] {
+  return transactions.map(({ signerId, receiverId, actions }) => ({
+    signerId,
+    receiverId,
+    mx: MultiAction.fromActions(actions),
+  }));
+}
+
+function convertLocalTransactionsToTransactions(transactions: LocalTransaction[]): Transaction[] {
+  return transactions.map(({ signerId, receiverId, mx }) => ({
+    signerId,
+    receiverId,
+    actions: mx.toActions(),
+  }));
+}
+
+type LocalTransaction = Pick<Transaction, 'signerId' | 'receiverId'> & {
   mx: MultiAction;
 };
 
