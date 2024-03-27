@@ -41,16 +41,10 @@ export class MultiTransaction {
     return this;
   }
 
-  /**
-   * Create a new `MultiTransaction` from transactions
-   */
   static fromTransactions(transactions: Transaction[]): MultiTransaction {
     return MultiTransaction.new().addTransactions(transactions);
   }
 
-  /**
-   * Return transactions
-   */
   toTransactions(): Transaction[] {
     const transactions = this.transactions.map<Transaction>(({ signerId, receiverId, mx }) => {
       return {
@@ -62,59 +56,34 @@ export class MultiTransaction {
     return Array.from(transactions);
   }
 
-  /**
-   * Number of transactions
-   */
-  numTransactions(): number {
-    return this.transactions.length;
-  }
-
-  /**
-   * Number of actions in current transaction
-   */
-  numActions(): number {
-    return this.getCurrentMultiAction().num();
-  }
-
-  /**
-   * Extend transactions
-   */
-  extendTransactions(mtx: MultiTransaction): this {
+  extend(mtx: MultiTransaction): this {
     const transactions = mtx.toTransactions();
     return this.addTransactions(transactions);
   }
 
   /**
-   * Extend actions to current transaction
-   */
-  extendActions(mx: MultiAction): this {
-    this.getCurrentMultiAction().extend(mx);
-    return this;
-  }
-
-  /**
-   * Create a new `MultiTransaction`
-   */
-  static new(): MultiTransaction {
-    return new MultiTransaction();
-  }
-
-  /**
-   * Create a new `MultiTransaction` and add a transaction
+   * Create a new `MultiTransaction` instance and add a transaction
    */
   static batch(options: BatchOptions): MultiTransaction {
     return MultiTransaction.new().batch(options);
   }
 
   /**
-   * Add a transaction following the previous one
+   * Create a new `MultiTransaction` instance
+   */
+  static new(): MultiTransaction {
+    return new MultiTransaction();
+  }
+
+  /**
+   * Add a transaction following previous transactions
    */
   batch({ signerId, receiverId }: BatchOptions): this {
     return this.addTransactions([{ signerId, receiverId, actions: [] }]);
   }
 
   /**
-   * Add a CreateAccount Action following the previous one
+   * Add a CreateAccount Action following previous actions
    */
   createAccount(): this {
     this.getCurrentMultiAction().createAccount();
@@ -122,7 +91,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a DeleteAccount Action following the previous one
+   * Add a DeleteAccount Action following previous actions
    */
   deleteAccount(beneficiaryId: string): this {
     this.getCurrentMultiAction().deleteAccount(beneficiaryId);
@@ -130,7 +99,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a AddKey Action following the previous one
+   * Add a AddKey Action following previous actions
    */
   addKey(publicKey: string, accessKey: AccessKey): this {
     this.getCurrentMultiAction().addKey(publicKey, accessKey);
@@ -138,7 +107,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a DeleteKey Action following the previous one
+   * Add a DeleteKey Action following previous actions
    */
   deleteKey(publicKey: string): this {
     this.getCurrentMultiAction().deleteKey(publicKey);
@@ -146,7 +115,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a DeployContract Action following the previous one
+   * Add a DeployContract Action following previous actions
    */
   deployContract(code: Uint8Array): this {
     this.getCurrentMultiAction().deployContract(code);
@@ -154,7 +123,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a Stake Action following the previous one
+   * Add a Stake Action following previous actions
    */
   stake(amount: string, publicKey: string): this {
     this.getCurrentMultiAction().stake(amount, publicKey);
@@ -162,7 +131,7 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a FunctionCall Action following the previous one
+   * Add a FunctionCall Action following previous actions
    */
   functionCall<Args = EmptyArgs>(options: FunctionCallOptions<Args>): this {
     this.getCurrentMultiAction().functionCall(options);
@@ -170,10 +139,18 @@ export class MultiTransaction {
   }
 
   /**
-   * Add a Transfer Action following the previous one
+   * Add a Transfer Action following previous actions
    */
   transfer(amount: string): this {
     this.getCurrentMultiAction().transfer(amount);
+    return this;
+  }
+
+  /**
+   * Add all actions following previous actions
+   */
+  actions(mx: MultiAction): this {
+    this.getCurrentMultiAction().extend(mx);
     return this;
   }
 

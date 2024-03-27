@@ -29,58 +29,38 @@ export class MultiAction {
     return this;
   }
 
-  /**
-   * Create a new `MultiAction` from actions
-   */
   static fromActions(actions: Action[]): MultiAction {
     return MultiAction.new().addActions(actions);
   }
 
-  /**
-   * Return actions
-   */
   toActions(): Action[] {
     return Array.from(this.actions);
   }
 
-  /**
-   * Number of actions
-   */
-  num(): number {
-    return this.actions.length;
-  }
-
-  /**
-   * Extend actions
-   */
   extend(mx: MultiAction): this {
-    const actions = mx.toActions();
-    return this.addActions(actions);
+    return this.addActions(mx.toActions());
   }
 
-  /**
-   * Create a new `MultiAction`
-   */
   static new(): MultiAction {
     return new MultiAction();
   }
 
   /**
-   * Add a CreateAccount Action following the previous one
+   * Add a CreateAccount Action following previous actions
    */
   createAccount(): this {
     return this.addActions([Actions.createAccount()]);
   }
 
   /**
-   * Add a DeleteAccount Action following the previous one
+   * Add a DeleteAccount Action following previous actions
    */
   deleteAccount(beneficiaryId: string): this {
     return this.addActions([Actions.deleteAccount({ beneficiaryId })]);
   }
 
   /**
-   * Add a AddKey Action following the previous one
+   * Add a AddKey Action following previous actions
    */
   addKey(publicKey: string, accessKey: AccessKey): this {
     return this.addActions([
@@ -92,28 +72,28 @@ export class MultiAction {
   }
 
   /**
-   * Add a DeleteKey Action following the previous one
+   * Add a DeleteKey Action following previous actions
    */
   deleteKey(publicKey: string): this {
     return this.addActions([Actions.deleteKey({ publicKey })]);
   }
 
   /**
-   * Add a DeployContract Action following the previous one
+   * Add a DeployContract Action following previous actions
    */
   deployContract(code: Uint8Array): this {
     return this.addActions([Actions.deployContract({ code })]);
   }
 
   /**
-   * Add a Stake Action following the previous one
+   * Add a Stake Action following previous actions
    */
   stake(amount: string, publicKey: string): this {
     return this.addActions([Actions.stake({ amount, publicKey })]);
   }
 
   /**
-   * Add a FunctionCall Action following the previous one
+   * Add a FunctionCall Action following previous actions
    */
   functionCall<Args = EmptyArgs>({
     methodName,
@@ -133,7 +113,7 @@ export class MultiAction {
   }
 
   /**
-   * Add a Transfer Action following the previous one
+   * Add a Transfer Action following previous actions
    */
   transfer(amount: string): this {
     return this.addActions([Actions.transfer({ amount })]);

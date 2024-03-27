@@ -2,17 +2,17 @@ import { StorageDepositArgs, StorageWithdrawArgs, StorageUnregisterArgs } from '
 
 export type StorageManagementFunctionCall<T> = {
   /**
-   * Add a FunctionCall Action with method `storage_deposit` following the previous one
+   * Add a FunctionCall Action with method `storage_deposit` following previous actions
    */
   deposit: (options: StorageDepositOptions) => T;
 
   /**
-   * Add a FunctionCall Action with method `storage_withdraw` following the previous one
+   * Add a FunctionCall Action with method `storage_withdraw` following previous actions
    */
   withdraw: (options: StorageWithdrawOptions) => T;
 
   /**
-   * Add a FunctionCall Action with method `storage_unregister` following the previous one
+   * Add a FunctionCall Action with method `storage_unregister` following previous actions
    */
   unregister: (options: StorageUnregisterOptions) => T;
 };
