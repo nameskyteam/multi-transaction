@@ -123,7 +123,7 @@ export class BlockQuery {
   }
 
   /**
-   * Convert current block query to that with certain block height.
+   * Convert block query to that with certain block height.
    * This is useful when need multiple queries at the same block
    *
    * @example
@@ -167,7 +167,7 @@ export class BlockQuery {
   }
 
   /**
-   * Convert current block query to that with certain block hash.
+   * Convert block query to that with certain block hash.
    * This is useful when need multiple queries at the same block
    *
    * @example
