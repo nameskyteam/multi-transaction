@@ -1,5 +1,4 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
-import { Provider } from 'near-api-js/lib/providers';
 
 export class BlockQuery {
   private readonly reference: BlockReference;
@@ -101,7 +100,7 @@ export class BlockQuery {
    *   blockQuery
    * });
    */
-  async height(provider: Provider): Promise<BlockQuery> {
+  async height(provider: BlockQueryProvider): Promise<BlockQuery> {
     if ('blockId' in this.reference && typeof this.reference.blockId === 'number') {
       return BlockQuery.height(this.reference.blockId);
     }
@@ -145,11 +144,22 @@ export class BlockQuery {
    *   blockQuery
    * });
    */
-  async hash(provider: Provider): Promise<BlockQuery> {
+  async hash(provider: BlockQueryProvider): Promise<BlockQuery> {
     if ('blockId' in this.reference && typeof this.reference.blockId === 'string') {
       return BlockQuery.hash(this.reference.blockId);
     }
     const block = await provider.block(this.toReference());
     return BlockQuery.hash(block.header.hash);
   }
+}
+
+export type BlockWithHeader = {
+  header: {
+    height: number;
+    hash: string;
+  };
+};
+
+export interface BlockQueryProvider {
+  block(reference: BlockReference): Promise<BlockWithHeader>;
 }
