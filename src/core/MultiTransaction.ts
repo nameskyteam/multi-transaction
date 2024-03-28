@@ -49,14 +49,14 @@ export class MultiTransaction {
   /**
    * Create a transaction
    */
-  static batch(options: BatchOptions): MultiTransaction {
-    return MultiTransaction.new().batch(options);
+  static batch(receiverId: string, signerId?: string): MultiTransaction {
+    return MultiTransaction.new().batch(receiverId, signerId);
   }
 
   /**
    * Add a transaction following previous transactions
    */
-  batch({ signerId, receiverId }: BatchOptions): this {
+  batch(receiverId: string, signerId?: string): this {
     return this.addTransactions([{ signerId, receiverId, mAction: MultiAction.new() }]);
   }
 
@@ -164,5 +164,3 @@ function toTransactions(transactions: InternalTransaction[]): Transaction[] {
 type InternalTransaction = Omit<Transaction, 'actions'> & {
   mAction: MultiAction;
 };
-
-export type BatchOptions = Pick<Transaction, 'signerId' | 'receiverId'>;
