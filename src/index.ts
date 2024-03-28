@@ -24,8 +24,31 @@ import {
   Send,
   SendOptions,
   SendRawOptions,
-  EmptyArgs,
   Numeric,
+  EmptyArgs,
+  FtTransferArgs,
+  FtTransferCallArgs,
+  FtBalanceOfArgs,
+  FungibleTokenMetadata,
+  NftTransferArgs,
+  NftTransferCallArgs,
+  NftTokenArgs,
+  NftApproveArgs,
+  NftRevokeArgs,
+  NftRevokeAllArgs,
+  NftIsApprovedArgs,
+  NftTokensArgs,
+  NftSupplyForOwnerArgs,
+  NftTokensForOwnerArgs,
+  Token,
+  TokenMetadata,
+  NFTContractMetadata,
+  StorageDepositArgs,
+  StorageWithdrawArgs,
+  StorageUnregisterArgs,
+  StorageBalanceOfArgs,
+  StorageBalance,
+  StorageBalanceBounds,
 } from './types';
 import {
   Amount,
@@ -47,8 +70,7 @@ BigNumber.config({
 
 export { MultiAction, MultiTransaction, EmptyArgs };
 export {
-  MultiSendAccount,
-  MultiSendAccountCallOptions,
+  MultiSendAccount, MultiSendAccountCallOptions,
   MultiSendAccountCallRawOptions,
   MultiSendAccountSendOptions,
   MultiSendAccountSendRawOptions,
@@ -64,10 +86,28 @@ export { MultiSendWalletSelectorOptions, setupMultiSendWalletSelector };
 export { View, ViewOptions, Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions };
 export { BlockQuery, BlockQueryProvider, BlockWithHeader, Stringifier, Parser, parseOutcome };
 export { BigNumber, Numeric, Amount, AmountUnits, Gas, GasUnits };
-export { BorshSchema, borshSerialize, borshDeserialize, StructFields, EnumVariants, Unit } from 'borsher';
-export * from './types/fungible-token/args';
-export * from './types/fungible-token/value';
-export * from './types/non-fungible-token/args';
-export * from './types/non-fungible-token/value';
-export * from './types/storage-management/args';
-export * from './types/storage-management/value';
+export { FtTransferArgs, FtTransferCallArgs, FtBalanceOfArgs, FungibleTokenMetadata };
+export {
+  NftTransferArgs,
+  NftTransferCallArgs,
+  NftTokenArgs,
+  NftApproveArgs,
+  NftRevokeArgs,
+  NftRevokeAllArgs,
+  NftIsApprovedArgs,
+  NftTokensArgs,
+  NftSupplyForOwnerArgs,
+  NftTokensForOwnerArgs,
+  Token,
+  TokenMetadata,
+  NFTContractMetadata,
+};
+export {
+  StorageDepositArgs,
+  StorageWithdrawArgs,
+  StorageUnregisterArgs,
+  StorageBalanceOfArgs,
+  StorageBalance,
+  StorageBalanceBounds,
+};
+export * from 'borsher';
