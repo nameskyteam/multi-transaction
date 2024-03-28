@@ -70,7 +70,8 @@ BigNumber.config({
 
 export { MultiAction, MultiTransaction, EmptyArgs };
 export {
-  MultiSendAccount, MultiSendAccountCallOptions,
+  MultiSendAccount,
+  MultiSendAccountCallOptions,
   MultiSendAccountCallRawOptions,
   MultiSendAccountSendOptions,
   MultiSendAccountSendRawOptions,
