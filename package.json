@@ -12,8 +12,8 @@
   ],
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "prettier": "prettier src/*.ts src/**/*.ts --write",
-    "lint": "eslint src/*.ts src/**/*.ts --fix",
+    "lint": "eslint src/{**,}/*.ts --fix",
+    "prettier": "prettier src/{**,}/*.ts --write",
     "prepare": "husky"
   },
   "dependencies": {
