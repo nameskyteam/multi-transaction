@@ -7,3 +7,4 @@ export * from './conversion';
 export * from './Stringifier';
 export * from './Parser';
 export * from './BlockQuery';
+export * from './function-call';

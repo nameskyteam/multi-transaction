@@ -2,13 +2,8 @@ import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/pro
 import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
 import { Buffer } from 'buffer';
 import { Parser } from './Parser';
-import { ParseOutcomeError, TransactionReceiptError } from '../errors';
+import { ParseOutcomeError, ReceiptErrorMessage, ReceiptError } from '../errors';
 
-/**
- * Parse success value from outcome.
- * @param outcome outcome
- * @param parser parser
- */
 export function parseOutcome<Value>(outcome: FinalExecutionOutcome, parser: Parser<Value> = Parser.json()): Value {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
   if (successValue) {
@@ -17,14 +12,14 @@ export function parseOutcome<Value>(outcome: FinalExecutionOutcome, parser: Pars
   } else if (successValue === '') {
     return undefined as Value;
   } else {
-    throw new ParseOutcomeError(`Outcome status is Failure`);
+    throw new ParseOutcomeError(`Execution status is Failure`);
   }
 }
 
 export function throwReceiptErrorsFromOutcomes(outcomes: FinalExecutionOutcome[]) {
   const errors = outcomes.map((outcome) => getReceiptErrorsFromOutcome(outcome)).flat();
   if (errors.length !== 0) {
-    throw new TransactionReceiptError(JSON.stringify(errors));
+    throw new ReceiptError(errors);
   }
 }
 
@@ -40,10 +35,3 @@ function getReceiptErrorsFromOutcome(outcome: FinalExecutionOutcome): ReceiptErr
   });
   return errors;
 }
-
-export type ReceiptErrorMessage = {
-  index: number;
-  kind: {
-    ExecutionError: string;
-  };
-};

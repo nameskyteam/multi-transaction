@@ -1,4 +1,12 @@
 import {
+  CreateAccountAction,
+  DeleteAccountAction,
+  AddKeyAction,
+  DeleteKeyAction,
+  DeployContractAction,
+  StakeAction,
+  FunctionCallAction,
+  TransferAction,
   DeleteAccountParams,
   AddKeyParams,
   DeleteKeyParams,
@@ -6,17 +14,7 @@ import {
   StakeParams,
   FunctionCallParams,
   TransferParams,
-} from '../../types';
-import {
-  AddKeyAction,
-  CreateAccountAction,
-  DeleteAccountAction,
-  DeleteKeyAction,
-  DeployContractAction,
-  FunctionCallAction,
-  StakeAction,
-  TransferAction,
-} from '../../types';
+} from '../types';
 
 export class Actions {
   private constructor() {}

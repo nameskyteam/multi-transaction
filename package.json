@@ -12,15 +12,15 @@
   ],
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "prettier": "prettier src/**/*.ts --write",
-    "lint": "eslint src/**/*.ts --fix",
+    "lint": "eslint src/{**,}/*.ts --fix",
+    "prettier": "prettier src/{**,}/*.ts --write",
     "prepare": "husky"
   },
   "dependencies": {
     "@near-wallet-selector/core": "^8.9.2",
     "bignumber.js": "^9.1.2",
     "bn.js": "^5.2.1",
-    "borsher": "^2.4.0",
+    "borsher": "^3.0.0",
     "buffer": "^6.0.3",
     "near-api-js": "^2.1.4"
   },
@@ -40,6 +40,10 @@
     "printWidth": 120
   },
   "lint-staged": {
+    "src/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
     "src/**/*.ts": [
       "eslint --fix",
       "prettier --write"

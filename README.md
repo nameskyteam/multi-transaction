@@ -12,9 +12,9 @@ import { MultiSendAccount, Amount } from 'multi-transaction';
 ```
 
 ```ts
-const msAccount = MultiSendAccount.fromAccount(account);
+const account = MultiSendAccount.new(near.connection);
 
-const amount: string = await msAccount.view({
+const amount: string = await account.view({
   contractId: 'wrap.near',
   methodName: 'ft_balance_of',
   args: {
@@ -31,9 +31,9 @@ import { MultiSendAccount, Amount, Gas } from 'multi-transaction';
 ```
 
 ```ts
-const msAccount = MultiSendAccount.fromAccount(account);
+const account = MultiSendAccount.new(near.connection, 'alice.near');
 
-await msAccount.call({
+await account.call({
   contractId: 'wrap.near',
   methodName: 'ft_transfer',
   args: {
@@ -51,11 +51,11 @@ import { MultiTransaction, MultiSendAccount, Amount, Gas } from 'multi-transacti
 ```
 
 ```ts
-const msAccount = MultiSendAccount.fromAccount(account);
+const account = MultiSendAccount.new(near.connection, 'alice.near');
 
 // one transaction that contains two actions
-const mTx = MultiTransaction
-  .batch({ receiverId: 'wrap.near' })
+const mTransaction = MultiTransaction
+  .batch('wrap.near')
   .functionCall({
     methodName: 'ft_transfer',
     args: {
@@ -75,7 +75,7 @@ const mTx = MultiTransaction
     gas: Gas.parse('10', 'T')
   });
 
-await msAccount.send(mTx);
+await account.send(mTransaction);
 ```
 
 ### Multiple Transactions
@@ -84,11 +84,11 @@ import { MultiTransaction, MultiSendAccount, Amount, Gas } from 'multi-transacti
 ```
 
 ```ts
-const msAccount = MultiSendAccount.fromAccount(account);
+const account = MultiSendAccount.new(near.connection, 'alice.near');
 
 // two transactions, each contains one action
-const mTx = MultiTransaction
-  .batch({ receiverId: 'wrap.near' })
+const mTransaction = MultiTransaction
+  .batch('wrap.near')
   .functionCall({
     methodName: 'ft_transfer',
     args: {
@@ -98,7 +98,7 @@ const mTx = MultiTransaction
     attachedDeposit: Amount.ONE_YOCTO,
     gas: Gas.parse('10', 'T')
   })
-  .batch({ receiverId: 'usdt.tether-token.near' })
+  .batch('usdt.tether-token.near')
   .functionCall({
     methodName: 'ft_transfer',
     args: {
@@ -109,27 +109,21 @@ const mTx = MultiTransaction
     gas: Gas.parse('10', 'T')
   });
 
-await msAccount.send(mTx);
+await account.send(mTransaction);
 ```
 
 ## Wallet Selector
-You can replace the official `WalletSelector` with `MultiSendWalletSelector`, while keeping other usage unchanged
+You can replace the official `WalletSelector` with `MultiSendWalletSelector` while keeping other usage unchanged
 
 ```ts
 import { setupMultiSendWalletSelector } from 'multi-transaction';
 ```
 
 ```ts
-const msSelector = await setupMultiSendWalletSelector({
+const selector = await setupMultiSendWalletSelector({
   network: 'mainnet',
   modules: [
     /* wallet modules */
   ]
 });
-```
-
-If you already use `WalletSelector` in your project
-
-```ts
-const msSelector = await setupMultiSendWalletSelector(selector);
 ```

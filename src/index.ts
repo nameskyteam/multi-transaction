@@ -1,8 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import {
-  BatchOptions,
-  FunctionCallOptions,
-  EmptyArgs,
+  MultiAction,
   MultiTransaction,
   MultiSendAccount,
   MultiSendAccountCallOptions,
@@ -26,16 +24,51 @@ import {
   Send,
   SendOptions,
   SendRawOptions,
-  BigNumberLike,
+  Numeric,
+  EmptyArgs,
+  FtTransferArgs,
+  FtTransferCallArgs,
+  FtBalanceOfArgs,
+  FungibleTokenMetadata,
+  NftTransferArgs,
+  NftTransferCallArgs,
+  NftTokenArgs,
+  NftApproveArgs,
+  NftRevokeArgs,
+  NftRevokeAllArgs,
+  NftIsApprovedArgs,
+  NftTokensArgs,
+  NftSupplyForOwnerArgs,
+  NftTokensForOwnerArgs,
+  Token,
+  TokenMetadata,
+  NFTContractMetadata,
+  StorageDepositArgs,
+  StorageWithdrawArgs,
+  StorageUnregisterArgs,
+  StorageBalanceOfArgs,
+  StorageBalance,
+  StorageBalanceBounds,
 } from './types';
-import { Amount, Gas, BlockQuery, Parser, Stringifier, parseOutcome } from './utils';
+import {
+  Amount,
+  AmountUnits,
+  Gas,
+  GasUnits,
+  BlockQuery,
+  BlockQueryProvider,
+  BlockWithHeader,
+  Parser,
+  Stringifier,
+  parseOutcome,
+} from './utils';
 
 BigNumber.config({
   DECIMAL_PLACES: 100,
   ROUNDING_MODE: BigNumber.ROUND_DOWN,
 });
 
-export { BatchOptions, FunctionCallOptions, EmptyArgs, MultiTransaction };
+export { MultiAction, MultiTransaction, EmptyArgs };
 export {
   MultiSendAccount,
   MultiSendAccountCallOptions,
@@ -52,12 +85,30 @@ export {
 };
 export { MultiSendWalletSelectorOptions, setupMultiSendWalletSelector };
 export { View, ViewOptions, Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions };
-export { BlockQuery, Amount, Gas, Stringifier, Parser, parseOutcome };
-export { BigNumber, BigNumberLike };
-export * from './types/fungible-token/args';
-export * from './types/fungible-token/value';
-export * from './types/non-fungible-token/args';
-export * from './types/non-fungible-token/value';
-export * from './types/storage-management/args';
-export * from './types/storage-management/value';
+export { BlockQuery, BlockQueryProvider, BlockWithHeader, Stringifier, Parser, parseOutcome };
+export { BigNumber, Numeric, Amount, AmountUnits, Gas, GasUnits };
+export { FtTransferArgs, FtTransferCallArgs, FtBalanceOfArgs, FungibleTokenMetadata };
+export {
+  NftTransferArgs,
+  NftTransferCallArgs,
+  NftTokenArgs,
+  NftApproveArgs,
+  NftRevokeArgs,
+  NftRevokeAllArgs,
+  NftIsApprovedArgs,
+  NftTokensArgs,
+  NftSupplyForOwnerArgs,
+  NftTokensForOwnerArgs,
+  Token,
+  TokenMetadata,
+  NFTContractMetadata,
+};
+export {
+  StorageDepositArgs,
+  StorageWithdrawArgs,
+  StorageUnregisterArgs,
+  StorageBalanceOfArgs,
+  StorageBalance,
+  StorageBalanceBounds,
+};
 export * from 'borsher';

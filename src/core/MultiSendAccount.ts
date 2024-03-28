@@ -1,16 +1,26 @@
 import { Account, Connection } from 'near-api-js';
-import { Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions, View, ViewOptions } from '../types';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import {
-  parseNearApiJsTransactions,
-  throwReceiptErrorsFromOutcomes,
+  EmptyArgs,
+  View,
+  ViewOptions,
+  Call,
+  CallOptions,
+  CallRawOptions,
+  Send,
+  SendOptions,
+  SendRawOptions,
+} from '../types';
+import {
   Stringifier,
   Parser,
-  parseOutcome,
   BlockQuery,
+  parseNearApiJsTransactions,
+  throwReceiptErrorsFromOutcomes,
+  parseOutcome,
 } from '../utils';
-import { MultiTransaction, EmptyArgs } from './transaction';
-import { SendError } from '../errors';
+import { MultiTransaction } from './MultiTransaction';
+import { SendTransactionError } from '../errors';
 
 export class MultiSendAccount extends Account implements View, Call, Send {
   private constructor(connection: Connection, accountId: string) {
@@ -26,7 +36,7 @@ export class MultiSendAccount extends Account implements View, Call, Send {
   }
 
   /**
-   * View a contract method
+   * View a contract method and return success value
    */
   async view<Value, Args = EmptyArgs>({
     contractId,
@@ -55,7 +65,7 @@ export class MultiSendAccount extends Account implements View, Call, Send {
   }
 
   /**
-   * Call a contract method
+   * Call a contract method and return outcome
    */
   async callRaw<Args = EmptyArgs>({
     contractId,
@@ -66,38 +76,37 @@ export class MultiSendAccount extends Account implements View, Call, Send {
     stringifier,
     ...options
   }: MultiSendAccountCallRawOptions<Args>): Promise<FinalExecutionOutcome> {
-    const mTx = MultiTransaction.batch({ receiverId: contractId }).functionCall({
+    const mTransaction = MultiTransaction.batch(contractId).functionCall({
       methodName,
       args,
       attachedDeposit,
       gas,
       stringifier,
     });
-    const outcomes = await this.sendRaw(mTx, options);
+    const outcomes = await this.sendRaw(mTransaction, options);
     return outcomes[0];
   }
 
   /**
    * Send multiple transactions and return success value of last transaction
-   * @param mTx mTx
-   * @param options options
    */
-  async send<Value>(mTx: MultiTransaction, options?: MultiSendAccountSendOptions<Value>): Promise<Value> {
-    const outcomes = await this.sendRaw(mTx, options);
+  async send<Value>(mTransaction: MultiTransaction, options?: MultiSendAccountSendOptions<Value>): Promise<Value> {
+    const outcomes = await this.sendRaw(mTransaction, options);
     const outcome = outcomes[outcomes.length - 1];
     return parseOutcome(outcome, options?.parser);
   }
 
   /**
-   * Send multiple transactions
-   * @param mTx mTx
-   * @param options options
+   * Send multiple transactions and return outcomes
    */
-  async sendRaw(mTx: MultiTransaction, options?: MultiSendAccountSendRawOptions): Promise<FinalExecutionOutcome[]> {
-    const transactions = parseNearApiJsTransactions(mTx);
+  async sendRaw(
+    mTransaction: MultiTransaction,
+    options?: MultiSendAccountSendRawOptions,
+  ): Promise<FinalExecutionOutcome[]> {
+    const transactions = parseNearApiJsTransactions(mTransaction);
 
     if (transactions.length === 0) {
-      throw new SendError('Transaction not found.');
+      throw new SendTransactionError('Transaction not found.');
     }
 
     const outcomes: FinalExecutionOutcome[] = [];
