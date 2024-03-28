@@ -10,11 +10,8 @@ import {
   setupMultiSendWalletSelector,
 } from './core';
 import {
-  EmptyArgs,
-  FunctionCallOptions,
   MultiSendWalletSelectorOptions,
   MultiSendWalletSelector,
-  IsLoginAccessKeyActiveOptions,
   MultiSendWalletSelectorCallOptions,
   MultiSendWalletSelectorCallRawOptions,
   MultiSendWalletSelectorSendOptions,
@@ -27,6 +24,7 @@ import {
   Send,
   SendOptions,
   SendRawOptions,
+  EmptyArgs,
   Numeric,
 } from './types';
 import {
@@ -47,7 +45,7 @@ BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_DOWN,
 });
 
-export { MultiAction, MultiTransaction, FunctionCallOptions, EmptyArgs };
+export { MultiAction, MultiTransaction, EmptyArgs };
 export {
   MultiSendAccount,
   MultiSendAccountCallOptions,
@@ -57,7 +55,6 @@ export {
 };
 export {
   MultiSendWalletSelector,
-  IsLoginAccessKeyActiveOptions,
   MultiSendWalletSelectorCallOptions,
   MultiSendWalletSelectorCallRawOptions,
   MultiSendWalletSelectorSendOptions,

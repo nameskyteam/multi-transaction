@@ -4,5 +4,7 @@ export * from './storage-management';
 export * from './non-fungible-token';
 export * from './multi-send-wallet-selector';
 export * from './common';
-export * from './send';
 export * from './function-call';
+export * from './view';
+export * from './call';
+export * from './send';

@@ -9,12 +9,12 @@ export type StorageManagementFunctionCall<T> = {
   /**
    * Add a FunctionCall Action with method `storage_withdraw` following previous actions
    */
-  withdraw: (options: StorageWithdrawOptions) => T;
+  withdraw: (options?: StorageWithdrawOptions) => T;
 
   /**
    * Add a FunctionCall Action with method `storage_unregister` following previous actions
    */
-  unregister: (options: StorageUnregisterOptions) => T;
+  unregister: (options?: StorageUnregisterOptions) => T;
 };
 
 export type StorageDepositOptions = {

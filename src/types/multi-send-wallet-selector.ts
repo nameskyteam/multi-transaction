@@ -1,7 +1,9 @@
 import { AccountState, WalletSelector } from '@near-wallet-selector/core';
 import { Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
-import { Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions, View, ViewOptions } from './send';
+import { View, ViewOptions } from './view';
+import { Call, CallOptions, CallRawOptions } from './call';
+import { Send, SendOptions, SendRawOptions } from './send';
 import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-selector.types';
 import { EmptyArgs } from './function-call';

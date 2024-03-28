@@ -97,7 +97,7 @@ export function storageManagementFunctionCall<T>(functionCall: FunctionCall<T>):
     });
   };
 
-  const withdraw = ({ args, gas }: StorageWithdrawOptions): T => {
+  const withdraw = ({ args, gas }: StorageWithdrawOptions = {}): T => {
     return functionCall({
       methodName: 'storage_withdraw',
       args,
@@ -106,7 +106,7 @@ export function storageManagementFunctionCall<T>(functionCall: FunctionCall<T>):
     });
   };
 
-  const unregister = ({ args, gas }: StorageUnregisterOptions): T => {
+  const unregister = ({ args, gas }: StorageUnregisterOptions = {}): T => {
     return functionCall({
       methodName: 'storage_unregister',
       args,
