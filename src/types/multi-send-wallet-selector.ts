@@ -26,7 +26,7 @@ interface WalletSelectorExtension extends View, Call, Send {
   /**
    * Is login access key active
    */
-  isLoginAccessKeyActive(options: IsLoginAccessKeyActiveOptions): Promise<boolean>;
+  isLoginAccessKeyActive(options?: IsLoginAccessKeyActiveOptions): Promise<boolean>;
 
   /**
    * View a contract method and return success value

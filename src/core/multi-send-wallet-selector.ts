@@ -58,7 +58,7 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
       return this.store.getState().accounts;
     },
 
-    async isLoginAccessKeyActive({ accountId, requiredAllowance = Amount.parse('0.01', 'NEAR') }) {
+    async isLoginAccessKeyActive({ accountId, requiredAllowance = Amount.parse('0.01', 'NEAR') } = {}) {
       accountId = accountId ?? this.getActiveAccount()?.accountId;
       if (!accountId) {
         return false;
