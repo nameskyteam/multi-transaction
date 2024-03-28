@@ -76,7 +76,7 @@ export class MultiSendAccount extends Account implements View, Call, Send {
     stringifier,
     ...options
   }: MultiSendAccountCallRawOptions<Args>): Promise<FinalExecutionOutcome> {
-    const mTransaction = MultiTransaction.batch({ receiverId: contractId }).functionCall({
+    const mTransaction = MultiTransaction.batch(contractId).functionCall({
       methodName,
       args,
       attachedDeposit,

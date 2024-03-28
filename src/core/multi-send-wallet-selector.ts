@@ -124,7 +124,7 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
     },
 
     async callRaw({ contractId, methodName, args, attachedDeposit, gas, stringifier, ...options }) {
-      const mTransaction = MultiTransaction.batch({ receiverId: contractId }).functionCall({
+      const mTransaction = MultiTransaction.batch(contractId).functionCall({
         methodName,
         args,
         attachedDeposit,
