@@ -58,8 +58,10 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
       return this.store.getState().accounts;
     },
 
-    async isLoginAccessKeyActive({ accountId, requiredAllowance = Amount.parse('0.01', 'NEAR') } = {}) {
-      accountId = accountId ?? this.getActiveAccount()?.accountId;
+    async isLoginAccessKeyActive(options = {}) {
+      const { accountId = this.getActiveAccount()?.accountId, requiredAllowance = Amount.parse('0.01', 'NEAR') } =
+        options;
+
       if (!accountId) {
         return false;
       }
@@ -99,15 +101,18 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
       return remainingAllowance.gte(requiredAllowance);
     },
 
-    async view({
-      contractId,
-      methodName,
-      args,
-      stringifier = Stringifier.json(),
-      parser = Parser.json(),
-      blockQuery = BlockQuery.OPTIMISTIC,
-    }) {
+    async view(options) {
+      const {
+        contractId,
+        methodName,
+        args,
+        stringifier = Stringifier.json(),
+        parser = Parser.json(),
+        blockQuery = BlockQuery.OPTIMISTIC,
+      } = options;
+
       const viewer = await near.account('');
+
       return viewer.viewFunction({
         contractId,
         methodName,
@@ -119,11 +124,14 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
     },
 
     async call(options) {
-      const outcome = await this.callRaw(options);
-      return parseOutcome(outcome, options.parser);
+      const { parser, ...callRawOptions } = options;
+      const outcome = await this.callRaw(callRawOptions);
+      return parseOutcome(outcome, parser);
     },
 
-    async callRaw({ contractId, methodName, args, attachedDeposit, gas, stringifier, ...options }) {
+    async callRaw(options) {
+      const { contractId, methodName, args, attachedDeposit, gas, stringifier, ...sendRawOptions } = options;
+
       const mTransaction = MultiTransaction.batch(contractId).functionCall({
         methodName,
         args,
@@ -131,31 +139,36 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
         gas,
         stringifier,
       });
-      const outcomes = await this.sendRaw(mTransaction, options);
+
+      const outcomes = await this.sendRaw(mTransaction, sendRawOptions);
+
       return outcomes?.[0];
     },
 
-    async send(mTransaction, options) {
-      const outcomes = await this.sendRaw(mTransaction, options);
+    async send(mTransaction, options = {}) {
+      const { parser, ...sendRawOptions } = options;
+      const outcomes = await this.sendRaw(mTransaction, sendRawOptions);
       const outcome = outcomes?.[outcomes.length - 1];
-      return parseOutcome(outcome, options?.parser);
+      return parseOutcome(outcome, parser);
     },
 
-    async sendRaw(mTransaction, options) {
+    async sendRaw(mTransaction, options = {}) {
+      const { throwReceiptErrors, walletId, callbackUrl } = options;
+
       const transactions = parseNearWalletSelectorTransactions(mTransaction);
 
       if (transactions.length === 0) {
         throw new SendTransactionError('Transaction not found.');
       }
 
-      const wallet = await this.wallet(options?.walletId);
+      const wallet = await this.wallet(walletId);
 
       let outcomes: FinalExecutionOutcome[] | undefined;
 
       if (transactions.length === 1) {
         const outcome = await wallet.signAndSendTransaction({
           ...transactions[0],
-          callbackUrl: options?.callbackUrl,
+          callbackUrl,
         });
         if (outcome) {
           outcomes = [outcome];
@@ -163,7 +176,7 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
       } else {
         const res = await wallet.signAndSendTransactions({
           transactions,
-          callbackUrl: options?.callbackUrl,
+          callbackUrl,
         });
         if (res) {
           outcomes = res;
@@ -175,7 +188,7 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
         endless();
       }
 
-      if (options?.throwReceiptErrors) {
+      if (throwReceiptErrors) {
         throwReceiptErrorsFromOutcomes(outcomes);
       }
 

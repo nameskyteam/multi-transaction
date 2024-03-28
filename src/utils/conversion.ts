@@ -23,7 +23,8 @@ export function parseNearApiJsTransactions(mTransaction: MultiTransaction): Near
   return mTransaction.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));
 }
 
-function parseNearApiJsTransaction({ receiverId, actions }: Transaction): NearApiJsTransaction {
+function parseNearApiJsTransaction(transaction: Transaction): NearApiJsTransaction {
+  const { receiverId, actions } = transaction;
   return {
     receiverId,
     actions: actions.map((action) => parseNearApiJsAction(action)),
@@ -36,36 +37,38 @@ function parseNearApiJsAction(action: Action): NearApiJsAction {
   }
 
   if (action.type === 'DeleteAccount') {
-    return deleteAccount(action.params.beneficiaryId);
+    const { beneficiaryId } = action.params;
+    return deleteAccount(beneficiaryId);
   }
 
   if (action.type === 'AddKey') {
-    return addKey(PublicKey.fromString(action.params.publicKey), parseNearApiJsAccessKey(action.params.accessKey));
+    const { publicKey, accessKey } = action.params;
+    return addKey(PublicKey.fromString(publicKey), parseNearApiJsAccessKey(accessKey));
   }
 
   if (action.type === 'DeleteKey') {
-    return deleteKey(PublicKey.fromString(action.params.publicKey));
+    const { publicKey } = action.params;
+    return deleteKey(PublicKey.fromString(publicKey));
   }
 
   if (action.type === 'DeployContract') {
-    return deployContract(action.params.code);
+    const { code } = action.params;
+    return deployContract(code);
   }
 
   if (action.type === 'Stake') {
-    return stake(new BN(action.params.amount), PublicKey.fromString(action.params.publicKey));
+    const { amount, publicKey } = action.params;
+    return stake(new BN(amount), PublicKey.fromString(publicKey));
   }
 
   if (action.type === 'FunctionCall') {
-    return functionCall(
-      action.params.methodName,
-      action.params.args,
-      new BN(action.params.gas),
-      new BN(action.params.attachedDeposit),
-    );
+    const { methodName, args, gas, attachedDeposit } = action.params;
+    return functionCall(methodName, args, new BN(gas), new BN(attachedDeposit));
   }
 
   if (action.type === 'Transfer') {
-    return transfer(new BN(action.params.amount));
+    const { amount } = action.params;
+    return transfer(new BN(amount));
   }
 
   unreachable();
@@ -75,11 +78,8 @@ function parseNearApiJsAccessKey(accessKey: AccessKey): NearApiJsAccessKey {
   if (accessKey.permission === 'FullAccess') {
     return fullAccessKey();
   } else {
-    return functionCallAccessKey(
-      accessKey.permission.receiverId,
-      accessKey.permission.methodNames,
-      accessKey.permission.allowance ? new BN(accessKey.permission.allowance) : undefined,
-    );
+    const { receiverId, methodNames, allowance } = accessKey.permission;
+    return functionCallAccessKey(receiverId, methodNames, allowance ? new BN(allowance) : undefined);
   }
 }
 
@@ -87,11 +87,8 @@ export function parseNearWalletSelectorTransactions(mTransaction: MultiTransacti
   return mTransaction.toTransactions().map((transaction) => parseNearWalletSelectorTransaction(transaction));
 }
 
-function parseNearWalletSelectorTransaction({
-  signerId,
-  receiverId,
-  actions,
-}: Transaction): NearWalletSelectorTransaction {
+function parseNearWalletSelectorTransaction(transaction: Transaction): NearWalletSelectorTransaction {
+  const { signerId, receiverId, actions } = transaction;
   return {
     signerId,
     receiverId,
@@ -111,32 +108,35 @@ function parseNearWalletSelectorAction(action: Action): NearWalletSelectorAction
   }
 
   if (action.type === 'Stake') {
+    const { amount, publicKey } = action.params;
     return {
       type: action.type,
       params: {
-        stake: action.params.amount,
-        publicKey: action.params.publicKey,
+        stake: amount,
+        publicKey,
       },
     };
   }
 
   if (action.type === 'FunctionCall') {
+    const { methodName, args, gas, attachedDeposit } = action.params;
     return {
       type: action.type,
       params: {
-        methodName: action.params.methodName,
-        args: action.params.args,
-        gas: action.params.gas,
-        deposit: action.params.attachedDeposit,
+        methodName,
+        args,
+        gas,
+        deposit: attachedDeposit,
       },
     };
   }
 
   if (action.type === 'Transfer') {
+    const { amount } = action.params;
     return {
       type: action.type,
       params: {
-        deposit: action.params.amount,
+        deposit: amount,
       },
     };
   }
