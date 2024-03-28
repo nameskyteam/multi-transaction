@@ -1,125 +1,68 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 import { Provider } from 'near-api-js/lib/providers';
-import { unreachable } from './common';
 
 export class BlockQuery {
-  private readonly internal: BlockQueryInternal;
+  private readonly reference: BlockReference;
 
-  private constructor(internal: BlockQueryInternal) {
-    this.internal = internal;
+  private constructor(reference: BlockReference) {
+    this.reference = reference;
   }
 
   static fromReference(reference: BlockReference): BlockQuery {
-    if ('finality' in reference && reference.finality === 'optimistic') {
-      return BlockQuery.OPTIMISTIC;
-    }
-
-    if ('finality' in reference && reference.finality === 'near-final') {
-      return BlockQuery.DOOMSLUG;
-    }
-
-    if ('finality' in reference && reference.finality === 'final') {
-      return BlockQuery.FINAL;
-    }
-
-    if ('sync_checkpoint' in reference && reference.sync_checkpoint === 'earliest_available') {
-      return BlockQuery.EARLIEST;
-    }
-
-    if ('sync_checkpoint' in reference && reference.sync_checkpoint === 'genesis') {
-      return BlockQuery.GENESIS;
-    }
-
-    if ('blockId' in reference && typeof reference.blockId === 'number') {
-      return BlockQuery.height(reference.blockId);
-    }
-
-    if ('blockId' in reference && typeof reference.blockId === 'string') {
-      return BlockQuery.hash(reference.blockId);
-    }
-
-    unreachable();
+    return new BlockQuery(reference);
   }
 
   toReference(): BlockReference {
-    if (this.internal.kind === 'optimistic') {
-      return { finality: 'optimistic' };
-    }
-
-    if (this.internal.kind === 'doomslug') {
-      return { finality: 'near-final' };
-    }
-
-    if (this.internal.kind === 'final') {
-      return { finality: 'final' };
-    }
-
-    if (this.internal.kind === 'earliest') {
-      return { sync_checkpoint: 'earliest_available' };
-    }
-
-    if (this.internal.kind === 'genesis') {
-      return { sync_checkpoint: 'genesis' };
-    }
-
-    if (this.internal.kind === 'height') {
-      return { blockId: this.internal.height };
-    }
-
-    if (this.internal.kind === 'hash') {
-      return { blockId: this.internal.hash };
-    }
-
-    unreachable();
+    return this.reference;
   }
 
   /**
    * Query at optimistic block
    */
   static get OPTIMISTIC(): BlockQuery {
-    return new BlockQuery({ kind: 'optimistic' });
+    return new BlockQuery({ finality: 'optimistic' });
   }
 
   /**
    * Query at doomslug final block
    */
   static get DOOMSLUG(): BlockQuery {
-    return new BlockQuery({ kind: 'doomslug' });
+    return new BlockQuery({ finality: 'near-final' });
   }
 
   /**
    * Query at final block
    */
   static get FINAL(): BlockQuery {
-    return new BlockQuery({ kind: 'final' });
+    return new BlockQuery({ finality: 'final' });
   }
 
   /**
    * Query at earliest available block
    */
   static get EARLIEST(): BlockQuery {
-    return new BlockQuery({ kind: 'earliest' });
+    return new BlockQuery({ sync_checkpoint: 'earliest_available' });
   }
 
   /**
    * Query at genesis block
    */
   static get GENESIS(): BlockQuery {
-    return new BlockQuery({ kind: 'genesis' });
+    return new BlockQuery({ sync_checkpoint: 'genesis' });
   }
 
   /**
    * Query at certain block with block height
    */
   static height(height: number): BlockQuery {
-    return new BlockQuery({ kind: 'height', height });
+    return new BlockQuery({ blockId: height });
   }
 
   /**
    * Query at certain block with block hash
    */
   static hash(hash: string): BlockQuery {
-    return new BlockQuery({ kind: 'hash', hash });
+    return new BlockQuery({ blockId: hash });
   }
 
   /**
@@ -129,14 +72,14 @@ export class BlockQuery {
    * @example
    * const blockQuery = BlockQuery.FINAL;
    *
-   * const supply1 = await account.view({
+   * const supply1: string = await account.view({
    *   contractId: 'wrap.near',
    *   methodName: 'ft_total_supply',
    *   blockQuery
    * });
    *
    * // supply2 may not be equal to supply1 because they may be queried at different block
-   * const supply2 = await account.view({
+   * const supply2: string = await account.view({
    *   contractId: 'wrap.near',
    *   methodName: 'ft_total_supply',
    *   blockQuery
@@ -145,22 +88,22 @@ export class BlockQuery {
    *@example
    * const blockQuery = await BlockQuery.FINAL.height(provider);
    *
-   * const supply1 = await account.view({
+   * const supply1: string = await account.view({
    *   contractId: 'wrap.near',
    *   methodName: 'ft_total_supply',
    *   blockQuery
    * });
    *
    * // supply2 must be equal to supply1 because they are queried at the same block
-   * const supply2 = await account.view({
+   * const supply2: string = await account.view({
    *   contractId: 'wrap.near',
    *   methodName: 'ft_total_supply',
    *   blockQuery
    * });
    */
   async height(provider: Provider): Promise<BlockQuery> {
-    if (this.internal.kind === 'height') {
-      return BlockQuery.height(this.internal.height);
+    if ('blockId' in this.reference && typeof this.reference.blockId === 'number') {
+      return BlockQuery.height(this.reference.blockId);
     }
     const block = await provider.block(this.toReference());
     return BlockQuery.height(block.header.height);
@@ -173,14 +116,14 @@ export class BlockQuery {
    * @example
    * const blockQuery = BlockQuery.FINAL;
    *
-   * const supply1 = await account.view({
+   * const supply1: string = await account.view({
    *   contractId: 'wrap.near',
    *   methodName: 'ft_total_supply',
    *   blockQuery
    * });
    *
    * // supply2 may not be equal to supply1 because they may be queried at different block
-   * const supply2 = await account.view({
+   * const supply2: string = await account.view({
    *   contractId: 'wrap.near',
    *   methodName: 'ft_total_supply',
    *   blockQuery
@@ -189,33 +132,24 @@ export class BlockQuery {
    *@example
    * const blockQuery = await BlockQuery.FINAL.hash(provider);
    *
-   * const supply1 = await account.view({
+   * const supply1: string = await account.view({
    *   contractId: 'wrap.near',
    *   methodName: 'ft_total_supply',
    *   blockQuery
    * });
    *
    * // supply2 must be equal to supply1 because they are queried at the same block
-   * const supply2 = await account.view({
+   * const supply2: string = await account.view({
    *   contractId: 'wrap.near',
    *   methodName: 'ft_total_supply',
    *   blockQuery
    * });
    */
   async hash(provider: Provider): Promise<BlockQuery> {
-    if (this.internal.kind === 'hash') {
-      return BlockQuery.hash(this.internal.hash);
+    if ('blockId' in this.reference && typeof this.reference.blockId === 'string') {
+      return BlockQuery.hash(this.reference.blockId);
     }
     const block = await provider.block(this.toReference());
     return BlockQuery.hash(block.header.hash);
   }
 }
-
-type BlockQueryInternal =
-  | { kind: 'optimistic' }
-  | { kind: 'doomslug' }
-  | { kind: 'final' }
-  | { kind: 'earliest' }
-  | { kind: 'genesis' }
-  | { kind: 'height'; height: number }
-  | { kind: 'hash'; hash: string };

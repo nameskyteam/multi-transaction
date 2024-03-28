@@ -12,30 +12,30 @@ import {
 import { MultiAction } from './MultiAction';
 
 export class MultiTransaction {
-  private readonly transactions: LocalTransaction[];
+  private readonly transactions: InternalTransaction[];
 
   private constructor() {
     this.transactions = [];
   }
 
-  private get transaction(): LocalTransaction {
+  private get transaction(): InternalTransaction {
     if (this.transactions.length === 0) {
       throw new MultiTransactionError('Transaction not found');
     }
     return this.transactions[this.transactions.length - 1];
   }
 
-  private addTransactions(transactions: LocalTransaction[]): this {
+  private addTransactions(transactions: InternalTransaction[]): this {
     this.transactions.push(...transactions);
     return this;
   }
 
   static fromTransactions(transactions: Transaction[]): MultiTransaction {
-    return MultiTransaction.new().addTransactions(convertTransactionsToLocalTransactions(transactions));
+    return MultiTransaction.new().addTransactions(fromTransactions(transactions));
   }
 
   toTransactions(): Transaction[] {
-    return Array.from(convertLocalTransactionsToTransactions(this.transactions));
+    return toTransactions(this.transactions);
   }
 
   extend(mTransaction: MultiTransaction): this {
@@ -145,7 +145,7 @@ export class MultiTransaction {
   }
 }
 
-function convertTransactionsToLocalTransactions(transactions: Transaction[]): LocalTransaction[] {
+function fromTransactions(transactions: Transaction[]): InternalTransaction[] {
   return transactions.map(({ signerId, receiverId, actions }) => ({
     signerId,
     receiverId,
@@ -153,7 +153,7 @@ function convertTransactionsToLocalTransactions(transactions: Transaction[]): Lo
   }));
 }
 
-function convertLocalTransactionsToTransactions(transactions: LocalTransaction[]): Transaction[] {
+function toTransactions(transactions: InternalTransaction[]): Transaction[] {
   return transactions.map(({ signerId, receiverId, mAction }) => ({
     signerId,
     receiverId,
@@ -161,7 +161,7 @@ function convertLocalTransactionsToTransactions(transactions: LocalTransaction[]
   }));
 }
 
-type LocalTransaction = Omit<Transaction, 'actions'> & {
+type InternalTransaction = Omit<Transaction, 'actions'> & {
   mAction: MultiAction;
 };
 
