@@ -12,8 +12,8 @@
   ],
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "prettier": "prettier src/*.ts src/**/*.ts --write",
-    "lint": "eslint src/*.ts src/**/*.ts --fix",
+    "prettier": "prettier src/{**,}/*.ts --write",
+    "lint": "eslint src/{**,}/*.ts --fix",
     "prepare": "husky"
   },
   "dependencies": {
@@ -40,7 +40,7 @@
     "printWidth": 120
   },
   "lint-staged": {
-    "src/*.ts src/**/*.ts": [
+    "src/{**,}/*.ts": [
       "eslint --fix",
       "prettier --write"
     ]
