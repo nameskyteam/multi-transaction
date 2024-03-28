@@ -7,8 +7,7 @@ export interface Send {
   sendRaw(mTransaction: MultiTransaction, options?: SendRawOptions): Promise<FinalExecutionOutcome[]>;
 }
 
-export type SendOptions<Value> = {
-  throwReceiptErrors?: boolean;
+export type SendOptions<Value> = SendRawOptions & {
   parser?: Parser<Value>;
 };
 

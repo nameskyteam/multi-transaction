@@ -29,12 +29,12 @@ export function fungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): Fun
   };
 
   const transfer_call = (options: FtTransferCallOptions): T => {
-    const { args, gas } = options;
+    const { args, gas = Gas.parse(50, 'T') } = options;
     return functionCall({
       methodName: 'ft_transfer_call',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
-      gas: gas ?? Gas.parse(50, 'T'),
+      gas,
     });
   };
 
@@ -53,21 +53,21 @@ export function nonFungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): 
   };
 
   const transfer_call = (options: NftTransferCallOptions): T => {
-    const { args, gas } = options;
+    const { args, gas = Gas.parse(50, 'T') } = options;
     return functionCall({
       methodName: 'nft_transfer_call',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
-      gas: gas ?? Gas.parse(50, 'T'),
+      gas,
     });
   };
 
   const approve = (options: NftApproveOptions): T => {
-    const { args, attachedDeposit, gas } = options;
+    const { args, attachedDeposit = Amount.parse('0.005', 'NEAR'), gas } = options;
     return functionCall({
       methodName: 'nft_approve',
       args,
-      attachedDeposit: attachedDeposit ?? Amount.parse('0.005', 'NEAR'),
+      attachedDeposit,
       gas,
     });
   };

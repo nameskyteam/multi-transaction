@@ -1,5 +1,6 @@
 import { Buffer } from 'buffer';
 import { BorshSchema, borshSerialize } from 'borsher';
+import { MaybeUint8Array } from '../types';
 
 export type Stringify<T> = (data: T) => Buffer;
 
@@ -22,11 +23,8 @@ export class Stringifier<T> {
     return new Stringifier(stringify);
   }
 
-  stringifyOrSkip(data: T | Uint8Array): Buffer {
-    const isUint8Array =
-      typeof data === 'object' && data !== null && 'byteLength' in data && 'length' in data && 'buffer' in data;
-
-    if (isUint8Array) {
+  stringifyOrSkip(data: MaybeUint8Array<T>): Buffer {
+    if (data instanceof Uint8Array) {
       return Buffer.from(data);
     } else {
       return this.stringify(data);
