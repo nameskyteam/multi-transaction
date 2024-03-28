@@ -23,10 +23,7 @@ export class Stringifier<T> {
   }
 
   stringifyOrSkip(data: T | Uint8Array): Buffer {
-    const isUint8Array =
-      typeof data === 'object' && data !== null && 'byteLength' in data && 'length' in data && 'buffer' in data;
-
-    if (isUint8Array) {
+    if (data instanceof Uint8Array) {
       return Buffer.from(data);
     } else {
       return this.stringify(data);

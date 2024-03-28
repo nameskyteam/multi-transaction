@@ -18,20 +18,23 @@ import { Amount } from './Amount';
 import { Gas } from './Gas';
 
 export function fungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): FungibleTokenFunctionCall<T> {
-  const transfer = ({ args, gas }: FtTransferOptions): T =>
-    functionCall({
+  const transfer = (options: FtTransferOptions): T => {
+    const { args, gas } = options;
+    return functionCall({
       methodName: 'ft_transfer',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
+  };
 
-  const transfer_call = ({ args, gas }: FtTransferCallOptions): T => {
+  const transfer_call = (options: FtTransferCallOptions): T => {
+    const { args, gas = Gas.parse(50, 'T') } = options;
     return functionCall({
       methodName: 'ft_transfer_call',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
-      gas: gas ?? Gas.parse(50, 'T'),
+      gas,
     });
   };
 
@@ -39,7 +42,8 @@ export function fungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): Fun
 }
 
 export function nonFungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): NonFungibleTokenFunctionCall<T> {
-  const transfer = ({ args, gas }: NftTransferOptions): T => {
+  const transfer = (options: NftTransferOptions): T => {
+    const { args, gas } = options;
     return functionCall({
       methodName: 'nft_transfer',
       args,
@@ -48,25 +52,28 @@ export function nonFungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): 
     });
   };
 
-  const transfer_call = ({ args, gas }: NftTransferCallOptions): T => {
+  const transfer_call = (options: NftTransferCallOptions): T => {
+    const { args, gas = Gas.parse(50, 'T') } = options;
     return functionCall({
       methodName: 'nft_transfer_call',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
-      gas: gas ?? Gas.parse(50, 'T'),
-    });
-  };
-
-  const approve = ({ args, attachedDeposit, gas }: NftApproveOptions): T => {
-    return functionCall({
-      methodName: 'nft_approve',
-      args,
-      attachedDeposit: attachedDeposit ?? Amount.parse('0.005', 'NEAR'),
       gas,
     });
   };
 
-  const revoke = ({ args, gas }: NftRevokeOptions): T => {
+  const approve = (options: NftApproveOptions): T => {
+    const { args, attachedDeposit = Amount.parse('0.005', 'NEAR'), gas } = options;
+    return functionCall({
+      methodName: 'nft_approve',
+      args,
+      attachedDeposit,
+      gas,
+    });
+  };
+
+  const revoke = (options: NftRevokeOptions): T => {
+    const { args, gas } = options;
     return functionCall({
       methodName: 'nft_revoke',
       args,
@@ -75,7 +82,8 @@ export function nonFungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): 
     });
   };
 
-  const revoke_all = ({ args, gas }: NftRevokeAllOptions): T => {
+  const revoke_all = (options: NftRevokeAllOptions): T => {
+    const { args, gas } = options;
     return functionCall({
       methodName: 'nft_revoke_all',
       args,
@@ -88,7 +96,8 @@ export function nonFungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): 
 }
 
 export function storageManagementFunctionCall<T>(functionCall: FunctionCall<T>): StorageManagementFunctionCall<T> {
-  const deposit = ({ args, attachedDeposit, gas }: StorageDepositOptions): T => {
+  const deposit = (options: StorageDepositOptions): T => {
+    const { args, attachedDeposit, gas } = options;
     return functionCall({
       methodName: 'storage_deposit',
       args,
@@ -97,7 +106,8 @@ export function storageManagementFunctionCall<T>(functionCall: FunctionCall<T>):
     });
   };
 
-  const withdraw = ({ args, gas }: StorageWithdrawOptions = {}): T => {
+  const withdraw = (options: StorageWithdrawOptions = {}): T => {
+    const { args, gas } = options;
     return functionCall({
       methodName: 'storage_withdraw',
       args,
@@ -106,7 +116,8 @@ export function storageManagementFunctionCall<T>(functionCall: FunctionCall<T>):
     });
   };
 
-  const unregister = ({ args, gas }: StorageUnregisterOptions = {}): T => {
+  const unregister = (options: StorageUnregisterOptions = {}): T => {
+    const { args, gas } = options;
     return functionCall({
       methodName: 'storage_unregister',
       args,

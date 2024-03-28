@@ -95,13 +95,15 @@ export class MultiAction {
   /**
    * Add a FunctionCall Action following previous actions
    */
-  functionCall<Args = EmptyArgs>({
-    methodName,
-    args = {} as Args,
-    attachedDeposit = Amount.ZERO,
-    gas = Gas.DEFAULT,
-    stringifier = Stringifier.json(),
-  }: FunctionCallOptions<Args>): this {
+  functionCall<Args = EmptyArgs>(options: FunctionCallOptions<Args>): this {
+    const {
+      methodName,
+      args = {} as Args,
+      attachedDeposit = Amount.ZERO,
+      gas = Gas.DEFAULT,
+      stringifier = Stringifier.json(),
+    } = options;
+
     return this.addActions([
       Actions.functionCall({
         methodName,

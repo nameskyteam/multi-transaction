@@ -6,15 +6,8 @@ export interface Call {
   callRaw<Args>(options: CallRawOptions<Args>): Promise<FinalExecutionOutcome>;
 }
 
-export type CallOptions<Value, Args> = {
-  contractId: string;
-  methodName: string;
-  args?: Args;
-  attachedDeposit?: string;
-  gas?: string;
-  stringifier?: Stringifier<Args>;
+export type CallOptions<Value, Args> = CallRawOptions<Args> & {
   parser?: Parser<Value>;
-  throwReceiptErrors?: boolean;
 };
 
 export type CallRawOptions<Args> = {
