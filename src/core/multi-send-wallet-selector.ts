@@ -25,30 +25,29 @@ export async function setupMultiSendWalletSelector(
   let allowMultipleSelectors: boolean | undefined;
   let selector: WalletSelector;
 
-  if ('wallet' in options) {
-    selector = options;
+  if ('selector' in options) {
+    selector = options.selector;
   } else {
-    allowMultipleSelectors = options.allowMultipleSelectors;
     selector = await setupWalletSelector(options);
+    allowMultipleSelectors = options.allowMultipleSelectors;
   }
 
   if (allowMultipleSelectors) {
-    return extendWalletSelector(selector);
+    return createMultiSendWalletSelector(selector);
   }
 
   if (!MULTI_SEND_WALLET_SELECTOR) {
-    MULTI_SEND_WALLET_SELECTOR = extendWalletSelector(selector);
+    MULTI_SEND_WALLET_SELECTOR = createMultiSendWalletSelector(selector);
   }
 
   return MULTI_SEND_WALLET_SELECTOR;
 }
 
-function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector {
+function createMultiSendWalletSelector(selector: WalletSelector): MultiSendWalletSelector {
   const near = new Near(selector.options.network);
 
   return {
     ...selector,
-    near,
 
     getActiveAccount() {
       return this.store.getState().accounts.find((accountState) => accountState.active);
@@ -58,7 +57,7 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
       return this.store.getState().accounts;
     },
 
-    async isLoginAccessKeyActive(options = {}) {
+    async isLoginAccessKeyAvailable(options = {}) {
       const { accountId = this.getActiveAccount()?.accountId, requiredAllowance = Amount.parse('0.01', 'NEAR') } =
         options;
 
@@ -75,7 +74,7 @@ function extendWalletSelector(selector: WalletSelector): MultiSendWalletSelector
         return false;
       }
 
-      const account = await this.near.account(accountId);
+      const account = await near.account(accountId);
       const accessKeys = await account.getAccessKeys();
       const accessKey = accessKeys.find((accessKey) => {
         const remotePublicKey = PublicKey.fromString(accessKey.public_key);

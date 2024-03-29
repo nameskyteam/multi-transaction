@@ -1,5 +1,4 @@
 import { AccountState, WalletSelector } from '@near-wallet-selector/core';
-import { Near } from 'near-api-js';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { View, ViewOptions } from './view';
 import { Call, CallOptions, CallRawOptions } from './call';
@@ -8,11 +7,7 @@ import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-selector.types';
 import { EmptyArgs } from './function-call';
 
-export interface MultiSendWalletSelector extends WalletSelector, WalletSelectorExtension {}
-
-interface WalletSelectorExtension extends View, Call, Send {
-  near: Near;
-
+export interface MultiSendWalletSelector extends WalletSelector, View, Call, Send {
   /**
    * Account that is login
    */
@@ -24,9 +19,9 @@ interface WalletSelectorExtension extends View, Call, Send {
   getAccounts(): AccountState[];
 
   /**
-   * Is login access key active
+   * Is login access key available
    */
-  isLoginAccessKeyActive(options?: IsLoginAccessKeyActiveOptions): Promise<boolean>;
+  isLoginAccessKeyAvailable(options?: IsLoginAccessKeyAvailableOptions): Promise<boolean>;
 
   /**
    * View a contract method and return success value
@@ -57,7 +52,7 @@ interface WalletSelectorExtension extends View, Call, Send {
   ): Promise<FinalExecutionOutcome[]>;
 }
 
-export type IsLoginAccessKeyActiveOptions = {
+export type IsLoginAccessKeyAvailableOptions = {
   accountId?: string;
   requiredAllowance?: string;
 };
@@ -82,4 +77,4 @@ export type MultiSendWalletSelectorSendRawOptions = SendRawOptions & {
   callbackUrl?: string;
 };
 
-export type MultiSendWalletSelectorOptions = WalletSelectorParams | WalletSelector;
+export type MultiSendWalletSelectorOptions = WalletSelectorParams | { selector: WalletSelector };
