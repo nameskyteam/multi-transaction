@@ -33,20 +33,5 @@
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
     "typescript": "^5.4.3"
-  },
-  "prettier": {
-    "semi": true,
-    "singleQuote": true,
-    "printWidth": 120
-  },
-  "lint-staged": {
-    "src/*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "src/**/*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ]
   }
 }
