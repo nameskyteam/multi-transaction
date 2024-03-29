@@ -20,7 +20,7 @@ export class MultiTransaction {
 
   private get transaction(): InternalTransaction {
     if (this.transactions.length === 0) {
-      throw new MultiTransactionError('Transaction not found');
+      throw new MultiTransactionError('Transaction not found. Use `.batch` to add a transaction');
     }
     return this.transactions[this.transactions.length - 1];
   }
