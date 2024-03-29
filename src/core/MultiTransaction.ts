@@ -38,6 +38,14 @@ export class MultiTransaction {
     return toTransactions(this.transactions);
   }
 
+  countTransactions(): number {
+    return this.transactions.length;
+  }
+
+  countActions(): number {
+    return this.transaction.mAction.countActions();
+  }
+
   extend(mTransaction: MultiTransaction): this {
     return this.addTransactions(mTransaction.transactions);
   }

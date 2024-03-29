@@ -37,6 +37,10 @@ export class MultiAction {
     return Array.from(this.actions);
   }
 
+  countActions(): number {
+    return this.actions.length;
+  }
+
   extend(mAction: MultiAction): this {
     return this.addActions(mAction.actions);
   }
