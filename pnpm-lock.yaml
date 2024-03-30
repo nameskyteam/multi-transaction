@@ -74,8 +74,8 @@ importers:
         specifier: ^9.1.2
         version: 9.1.2
       borsher:
-        specifier: ^3.3.0
-        version: 3.3.0
+        specifier: ^3.4.0
+        version: 3.4.0
       buffer:
         specifier: ^6.0.3
         version: 6.0.3
@@ -1042,8 +1042,8 @@ packages:
     resolution: {integrity: sha512-kc9+BgR3zz9+cjbwM8ODoUB4fs3X3I5A/HtX7LZKxCLaMrEeDFoBpnhZY//DTS1VZBSs6S5v46RZRbZjRFspEg==}
     dev: false
 
-  /borsher@3.3.0:
-    resolution: {integrity: sha512-nUG/EQ0aEznGkMrDAtW/x6smgfXG0lFn9RHOZGBp6Q4Mc2yFLNDXAQDJou+XvIj156qjie7YMWRMEcQ9lelJRA==}
+  /borsher@3.4.0:
+    resolution: {integrity: sha512-Ab9y0PLHEVCUe+JEFfReByPrg8s3mYFEtJwSXe97c2l7UuGY/bLImkb5hdVkXh7WZLpGi97brQY2lrOGK6+EkQ==}
     dependencies:
       borsh: 2.0.0
       buffer: 6.0.3

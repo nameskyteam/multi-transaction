@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "bignumber.js": "^9.1.2",
-    "borsher": "^3.3.0",
+    "borsher": "^3.4.0",
     "buffer": "^6.0.3"
   }
 }
