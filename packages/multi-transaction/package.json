@@ -1,0 +1,23 @@
+{
+  "name": "multi-transaction",
+  "version": "10.5.0",
+  "license": "MIT",
+  "description": "Make construction of transaction easier on NEAR blockchain.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "lint": "eslint src/{**,}/*.ts --fix",
+    "prettier": "prettier src/{**,}/*.ts --write"
+  },
+  "dependencies": {
+    "@multi-transaction/core": "workspace:*",
+    "@multi-transaction/account": "workspace:*",
+    "@multi-transaction/wallet-selector": "workspace:*"
+  }
+}

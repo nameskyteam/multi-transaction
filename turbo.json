@@ -1,0 +1,13 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "all": {
+      "dependsOn": ["lint", "prettier", "build"]
+    },
+    "build": {
+      "dependsOn": ["^build"]
+    },
+    "lint": {},
+    "prettier": {}
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@multi-transaction/account",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "Multi Send Account implementation for Multi Transaction.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "lint": "eslint src/{**,}/*.ts --fix",
+    "prettier": "prettier src/{**,}/*.ts --write"
+  },
+  "dependencies": {
+    "@multi-transaction/core": "workspace:*",
+    "bn.js": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/bn.js": "^5.1.5"
+  }
+}

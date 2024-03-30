@@ -1,0 +1,23 @@
+{
+  "name": "@multi-transaction/core",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "Multi Transaction Core implementation.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "lint": "eslint src/{**,}/*.ts --fix",
+    "prettier": "prettier src/{**,}/*.ts --write"
+  },
+  "dependencies": {
+    "bignumber.js": "^9.1.2",
+    "borsher": "^3.2.0",
+    "buffer": "^6.0.3"
+  }
+}

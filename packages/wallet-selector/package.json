@@ -1,0 +1,22 @@
+{
+  "name": "@multi-transaction/wallet-selector",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "Multi Send Wallet Selector implementation for Multi Transaction.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "lint": "eslint src/{**,}/*.ts --fix",
+    "prettier": "prettier src/{**,}/*.ts --write"
+  },
+  "dependencies": {
+    "@multi-transaction/core": "workspace:*",
+    "@near-wallet-selector/core": "^8.9.2"
+  }
+}

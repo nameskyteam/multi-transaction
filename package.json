@@ -1,37 +1,30 @@
 {
-  "name": "multi-transaction",
-  "version": "10.4.0",
-  "license": "MIT",
-  "description": "Make the construction of the transaction easier on NEAR blockchain.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "commonjs",
-  "files": [
-    "dist",
-    "src"
-  ],
+  "private": true,
+  "name": "@multi-transaction/monorepo",
   "scripts": {
-    "build": "rm -rf dist && tsc",
-    "lint": "eslint src/{**,}/*.ts --fix",
-    "prettier": "prettier src/{**,}/*.ts --write",
+    "all": "turbo all --no-daemon",
+    "build": "turbo build --no-daemon",
+    "lint": "turbo lint --no-daemon",
+    "prettier": "turbo prettier --no-daemon",
     "prepare": "husky"
   },
   "dependencies": {
-    "@near-wallet-selector/core": "^8.9.2",
-    "bignumber.js": "^9.1.2",
-    "bn.js": "^5.2.1",
-    "borsher": "^3.1.0",
-    "buffer": "^6.0.3",
-    "near-api-js": "^2.1.4"
+    "@near-js/accounts": "^1.0.4",
+    "@near-js/crypto": "^1.2.1",
+    "@near-js/transactions": "^1.1.2",
+    "@near-js/types": "^0.0.4",
+    "@near-js/utils": "^0.1.0",
+    "@near-js/wallet-account": "^1.1.1"
   },
   "devDependencies": {
-    "@types/bn.js": "^5.1.1",
+    "@changesets/cli": "^2.27.1",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.3.1",
     "eslint": "^8.57.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
+    "turbo": "^1.13.0",
     "typescript": "^5.4.3"
   }
 }
