@@ -10,7 +10,7 @@ import {
   Parser,
   SendTransactionError,
   BigNumber,
-  parseOutcome,
+  parseOutcomeValue,
   throwReceiptErrorsFromOutcomes,
 } from '@multi-transaction/core';
 import { MultiSendWalletSelector } from './MultiSendWalletSelector';
@@ -103,7 +103,7 @@ function createMultiSendWalletSelector(selector: WalletSelector): MultiSendWalle
       const { parser, ...sendRawOptions } = options;
       const outcomes = await this.sendRaw(mTransaction, sendRawOptions);
       const outcome = outcomes?.[outcomes.length - 1];
-      return parseOutcome(outcome, parser);
+      return parseOutcomeValue(outcome, parser);
     },
 
     async sendRaw(mTransaction, options = {}) {
@@ -151,7 +151,7 @@ function createMultiSendWalletSelector(selector: WalletSelector): MultiSendWalle
     async call(options) {
       const { parser, ...callRawOptions } = options;
       const outcome = await this.callRaw(callRawOptions);
-      return parseOutcome(outcome, parser);
+      return parseOutcomeValue(outcome, parser);
     },
 
     async callRaw(options) {

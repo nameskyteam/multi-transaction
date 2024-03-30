@@ -4,7 +4,7 @@ import { Buffer } from 'buffer';
 import { Parser } from './Parser';
 import { ParseOutcomeError, ReceiptErrorMessage, ReceiptError } from '../errors';
 
-export function parseOutcome<Value>(outcome: FinalExecutionOutcome, parser: Parser<Value> = Parser.json()): Value {
+export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parser: Parser<Value> = Parser.json()): Value {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
   if (successValue) {
     const valueRaw = Buffer.from(successValue, 'base64');

@@ -5,14 +5,14 @@ import {
   Transaction,
   Action,
   AccessKey,
-  View,
-  ViewOptions,
-  Call,
-  CallOptions,
-  CallRawOptions,
   Send,
   SendOptions,
   SendRawOptions,
+  Call,
+  CallOptions,
+  CallRawOptions,
+  View,
+  ViewOptions,
   Numeric,
   EmptyArgs,
   FtTransferArgs,
@@ -49,7 +49,7 @@ import {
   BlockWithHeader,
   Parser,
   Stringifier,
-  parseOutcome,
+  parseOutcomeValue,
   throwReceiptErrorsFromOutcomes,
 } from './utils';
 
@@ -58,19 +58,19 @@ BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_DOWN,
 });
 
-export { Transaction, Action, AccessKey };
-export { MultiAction, MultiTransaction, EmptyArgs };
-export { View, ViewOptions, Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions };
+export { MultiTransaction, MultiAction, EmptyArgs };
+export { Send, SendOptions, SendRawOptions, Call, CallOptions, CallRawOptions, View, ViewOptions };
 export {
   BlockQuery,
   BlockQueryProvider,
   BlockWithHeader,
   Stringifier,
   Parser,
-  parseOutcome,
+  parseOutcomeValue,
   throwReceiptErrorsFromOutcomes,
 };
 export { BigNumber, Numeric, Amount, AmountUnits, Gas, GasUnits };
+export { Transaction, Action, AccessKey };
 export { SendTransactionError, UnreachableError };
 export { FtTransferArgs, FtTransferCallArgs, FtBalanceOfArgs, FungibleTokenMetadata };
 export {

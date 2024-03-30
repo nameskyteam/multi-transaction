@@ -4,19 +4,19 @@ import {
   MultiTransaction,
   EmptyArgs,
   Send,
+  SendOptions,
+  SendRawOptions,
   Call,
+  CallOptions,
+  CallRawOptions,
   View,
   ViewOptions,
   Stringifier,
   Parser,
   BlockQuery,
   SendTransactionError,
-  parseOutcome,
+  parseOutcomeValue,
   throwReceiptErrorsFromOutcomes,
-  CallOptions,
-  CallRawOptions,
-  SendOptions,
-  SendRawOptions,
 } from '@multi-transaction/core';
 import { parseNearApiJsTransactions } from './utils';
 
@@ -40,7 +40,7 @@ export class MultiSendAccount extends Account implements Send, Call, View {
     const { parser, ...sendRawOptions } = options;
     const outcomes = await this.sendRaw(mTransaction, sendRawOptions);
     const outcome = outcomes[outcomes.length - 1];
-    return parseOutcome(outcome, parser);
+    return parseOutcomeValue(outcome, parser);
   }
 
   /**
@@ -78,7 +78,7 @@ export class MultiSendAccount extends Account implements Send, Call, View {
   async call<Value, Args = EmptyArgs>(options: MultiSendAccountCallOptions<Value, Args>): Promise<Value> {
     const { parser, ...callRawOptions } = options;
     const outcome = await this.callRaw(callRawOptions);
-    return parseOutcome(outcome, parser);
+    return parseOutcomeValue(outcome, parser);
   }
 
   /**
