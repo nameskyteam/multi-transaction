@@ -15,7 +15,7 @@ import {
   SendRawOptions,
 } from '@multi-transaction/core';
 
-export interface MultiSendWalletSelector extends WalletSelector, View, Call, Send {
+export interface MultiSendWalletSelector extends WalletSelector, Send, Call, View {
   /**
    * Account that is login
    */
@@ -32,9 +32,17 @@ export interface MultiSendWalletSelector extends WalletSelector, View, Call, Sen
   isLoginAccessKeyAvailable(options?: IsLoginAccessKeyAvailableOptions): Promise<boolean>;
 
   /**
-   * View a contract method and return success value
+   * Send multiple transactions and return success value of last transaction
    */
-  view<Value, Args = EmptyArgs>(options: ViewOptions<Value, Args>): Promise<Value>;
+  send<Value>(mTransaction: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value>;
+
+  /**
+   * Send multiple transactions and return outcomes
+   */
+  sendRaw(
+    mTransaction: MultiTransaction,
+    options?: MultiSendWalletSelectorSendRawOptions,
+  ): Promise<FinalExecutionOutcome[]>;
 
   /**
    * Call a contract method and return success value
@@ -47,17 +55,9 @@ export interface MultiSendWalletSelector extends WalletSelector, View, Call, Sen
   callRaw<Args = EmptyArgs>(options: MultiSendWalletSelectorCallRawOptions<Args>): Promise<FinalExecutionOutcome>;
 
   /**
-   * Send multiple transactions and return success value of last transaction
+   * View a contract method and return success value
    */
-  send<Value>(mTransaction: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value>;
-
-  /**
-   * Send multiple transactions and return outcomes
-   */
-  sendRaw(
-    mTransaction: MultiTransaction,
-    options?: MultiSendWalletSelectorSendRawOptions,
-  ): Promise<FinalExecutionOutcome[]>;
+  view<Value, Args = EmptyArgs>(options: ViewOptions<Value, Args>): Promise<Value>;
 }
 
 export type IsLoginAccessKeyAvailableOptions = {

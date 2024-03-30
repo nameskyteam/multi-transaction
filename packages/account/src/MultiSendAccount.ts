@@ -22,7 +22,7 @@ import {
   MultiSendAccountSendRawOptions,
 } from './types';
 
-export class MultiSendAccount extends Account implements View, Call, Send {
+export class MultiSendAccount extends Account implements Send, Call, View {
   private constructor(connection: Connection, accountId: string) {
     super(connection, accountId);
   }
@@ -33,57 +33,6 @@ export class MultiSendAccount extends Account implements View, Call, Send {
 
   static fromAccount(account: Account): MultiSendAccount {
     return new MultiSendAccount(account.connection, account.accountId);
-  }
-
-  /**
-   * View a contract method and return success value
-   */
-  async view<Value, Args = EmptyArgs>(options: ViewOptions<Value, Args>): Promise<Value> {
-    const {
-      contractId,
-      methodName,
-      args,
-      stringifier = Stringifier.json(),
-      parser = Parser.json(),
-      blockQuery = BlockQuery.OPTIMISTIC,
-    } = options;
-
-    return this.viewFunction({
-      contractId,
-      methodName,
-      args: args as object,
-      stringify: (args) => stringifier.stringifyOrSkip(args),
-      parse: (buffer) => parser.parse(buffer),
-      blockQuery: blockQuery.toReference(),
-    });
-  }
-
-  /**
-   * Call a contract method and return success value
-   */
-  async call<Value, Args = EmptyArgs>(options: MultiSendAccountCallOptions<Value, Args>): Promise<Value> {
-    const { parser, ...callRawOptions } = options;
-    const outcome = await this.callRaw(callRawOptions);
-    return parseOutcome(outcome, parser);
-  }
-
-  /**
-   * Call a contract method and return outcome
-   */
-  async callRaw<Args = EmptyArgs>(options: MultiSendAccountCallRawOptions<Args>): Promise<FinalExecutionOutcome> {
-    const { contractId, methodName, args, attachedDeposit, gas, stringifier, ...sendRawOptions } = options;
-
-    const mTransaction = MultiTransaction.batch(contractId).functionCall({
-      methodName,
-      args,
-      attachedDeposit,
-      gas,
-      stringifier,
-    });
-
-    const outcomes = await this.sendRaw(mTransaction, sendRawOptions);
-
-    return outcomes[0];
   }
 
   /**
@@ -123,5 +72,56 @@ export class MultiSendAccount extends Account implements View, Call, Send {
     }
 
     return outcomes;
+  }
+
+  /**
+   * Call a contract method and return success value
+   */
+  async call<Value, Args = EmptyArgs>(options: MultiSendAccountCallOptions<Value, Args>): Promise<Value> {
+    const { parser, ...callRawOptions } = options;
+    const outcome = await this.callRaw(callRawOptions);
+    return parseOutcome(outcome, parser);
+  }
+
+  /**
+   * Call a contract method and return outcome
+   */
+  async callRaw<Args = EmptyArgs>(options: MultiSendAccountCallRawOptions<Args>): Promise<FinalExecutionOutcome> {
+    const { contractId, methodName, args, attachedDeposit, gas, stringifier, ...sendRawOptions } = options;
+
+    const mTransaction = MultiTransaction.batch(contractId).functionCall({
+      methodName,
+      args,
+      attachedDeposit,
+      gas,
+      stringifier,
+    });
+
+    const outcomes = await this.sendRaw(mTransaction, sendRawOptions);
+
+    return outcomes[0];
+  }
+
+  /**
+   * View a contract method and return success value
+   */
+  async view<Value, Args = EmptyArgs>(options: ViewOptions<Value, Args>): Promise<Value> {
+    const {
+      contractId,
+      methodName,
+      args,
+      stringifier = Stringifier.json(),
+      parser = Parser.json(),
+      blockQuery = BlockQuery.OPTIMISTIC,
+    } = options;
+
+    return this.viewFunction({
+      contractId,
+      methodName,
+      args: args as object,
+      stringify: (args) => stringifier.stringifyOrSkip(args),
+      parse: (buffer) => parser.parse(buffer),
+      blockQuery: blockQuery.toReference(),
+    });
   }
 }
