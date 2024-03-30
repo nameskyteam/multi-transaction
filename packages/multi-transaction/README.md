@@ -37,8 +37,6 @@ const mTransaction = MultiTransaction
     attachedDeposit: Amount.ONE_YOCTO,
     gas: Gas.parse('10', 'T'),
   });
-
-console.log(mTransaction.toTransactions());
 ```
 
 More information about [MultiTransaction](../core/README.md)
