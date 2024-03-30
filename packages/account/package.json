@@ -17,10 +17,6 @@
   },
   "dependencies": {
     "@multi-transaction/core": "workspace:*",
-    "@near-js/accounts": "^1.0.4",
-    "@near-js/crypto": "^1.2.1",
-    "@near-js/transactions": "^1.1.2",
-    "@near-js/types": "^0.0.4",
     "bn.js": "^5.2.1"
   },
   "devDependencies": {

@@ -8,6 +8,14 @@
     "prettier": "turbo prettier --no-daemon",
     "prepare": "husky"
   },
+  "dependencies": {
+    "@near-js/accounts": "^1.0.4",
+    "@near-js/crypto": "^1.2.1",
+    "@near-js/transactions": "^1.1.2",
+    "@near-js/types": "^0.0.4",
+    "@near-js/utils": "^0.1.0",
+    "@near-js/wallet-account": "^1.1.1"
+  },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
