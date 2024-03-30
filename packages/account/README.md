@@ -1,5 +1,5 @@
 # Multi Send Account
-Multi Send Account implementation for Multi Transaction
+Multi Send Account implementation for [Multi Transaction Core](../core/README.md)
 
 ## Install
 ```shell
@@ -16,7 +16,7 @@ import { MultiSendAccount } from '@multi-transaction/account';
 const account = MultiSendAccount.new(connection, 'alice.near');
 ```
 
-Send transaction(s)
+### Send Multi Transaction
 ```ts
 const mTransaction = MultiTransaction
   .batch('wrap.near')
@@ -24,37 +24,37 @@ const mTransaction = MultiTransaction
     methodName: 'ft_transfer',
     args: {
       receiver_id: 'bob.near',
-      amount: Amount.parse('8.88', 'NEAR')
+      amount: Amount.parse('8.88', 'NEAR'),
     },
     attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.parse('10', 'T')
+    gas: Gas.parse('10', 'T'),
   });
 
 await account.send(mTransaction);
 ```
 
-Call a contract method
+### Call Contract Method
 ```ts
 await account.call({
   contractId: 'wrap.near',
   methodName: 'ft_transfer',
   args: {
     receiver_id: 'bob.near',
-    amount: Amount.parse('8.88', 'NEAR')
+    amount: Amount.parse('8.88', 'NEAR'),
   },
   attachedDeposit: Amount.ONE_YOCTO,
-  gas: Gas.parse('10', 'T')
+  gas: Gas.parse('10', 'T'),
 });
 ```
 
-View a contract method
+### View Contract Method
 ```ts
 const amount: string = await account.view({
   contractId: 'wrap.near',
   methodName: 'ft_balance_of',
   args: {
-    account_id: 'alice.near'
-  }
+    account_id: 'alice.near',
+  },
 });
 
 console.log(`Balance: ${Amount.format(amount, 'NEAR')} wNEAR`);

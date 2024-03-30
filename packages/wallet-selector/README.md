@@ -1,5 +1,5 @@
 # Multi Send Wallet Selector
-Multi Send Wallet Selector implementation for Multi Transaction
+Multi Send Wallet Selector implementation for [Multi Transaction Core](../core/README.md)
 
 ## Install
 ```shell
@@ -17,11 +17,11 @@ const selector = await setupMultiSendWalletSelector({
   network: 'mainnet',
   modules: [
     /* wallet modules */
-  ]
+  ],
 });
 ```
 
-Send transaction(s)
+### Send Multi Transaction
 ```ts
 const mTransaction = MultiTransaction
   .batch('wrap.near')
@@ -29,37 +29,37 @@ const mTransaction = MultiTransaction
     methodName: 'ft_transfer',
     args: {
       receiver_id: 'bob.near',
-      amount: Amount.parse('8.88', 'NEAR')
+      amount: Amount.parse('8.88', 'NEAR'),
     },
     attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.parse('10', 'T')
+    gas: Gas.parse('10', 'T'),
   });
 
 await selector.send(mTransaction);
 ```
 
-Call a contract method
+### Call Contract Method
 ```ts
 await selector.call({
   contractId: 'wrap.near',
   methodName: 'ft_transfer',
   args: {
     receiver_id: 'bob.near',
-    amount: Amount.parse('8.88', 'NEAR')
+    amount: Amount.parse('8.88', 'NEAR'),
   },
   attachedDeposit: Amount.ONE_YOCTO,
-  gas: Gas.parse('10', 'T')
+  gas: Gas.parse('10', 'T'),
 });
 ```
 
-View a contract method
+### View Contract Method
 ```ts
 const amount: string = await selector.view({
   contractId: 'wrap.near',
   methodName: 'ft_balance_of',
   args: {
-    account_id: 'alice.near'
-  }
+    account_id: 'alice.near',
+  },
 });
 
 console.log(`Balance: ${Amount.format(amount, 'NEAR')} wNEAR`);

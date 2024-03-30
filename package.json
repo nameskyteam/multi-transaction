@@ -2,9 +2,10 @@
   "private": true,
   "name": "@multi-transaction/monorepo",
   "scripts": {
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "prettier": "turbo run prettier",
+    "all": "turbo all --no-daemon",
+    "build": "turbo build --no-daemon",
+    "lint": "turbo lint --no-daemon",
+    "prettier": "turbo prettier --no-daemon",
     "prepare": "husky"
   },
   "devDependencies": {
