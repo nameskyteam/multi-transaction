@@ -26,9 +26,6 @@ importers:
       prettier:
         specifier: ^3.2.5
         version: 3.2.5
-      tslib:
-        specifier: ^2.6.2
-        version: 2.6.2
       turbo:
         specifier: ^1.13.0
         version: 1.13.0
@@ -1811,6 +1808,7 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    dev: false
 
   /turbo-darwin-64@1.13.0:
     resolution: {integrity: sha512-ctHeJXtQgBcgxnCXwrJTGiq57HtwF7zWz5NTuSv//5yeU01BtQIt62ArKfjudOhRefWJbX3Z5srn88XTb9hfww==}
