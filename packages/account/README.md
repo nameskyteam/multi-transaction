@@ -1,5 +1,5 @@
-# Multi Send Account
-Multi Send Account implementation for [Multi Transaction Core](../core/README.md)
+# Multi Transaction Account
+Multi Transaction Account implementation
 
 ## Install
 ```shell
@@ -16,7 +16,7 @@ import { MultiSendAccount } from '@multi-transaction/account';
 const account = MultiSendAccount.new(connection, 'alice.near');
 ```
 
-### Send Multi Transaction
+### Send Transaction(s)
 ```ts
 const mTransaction = MultiTransaction
   .batch('wrap.near')

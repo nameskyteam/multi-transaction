@@ -1,5 +1,5 @@
 # Multi Transaction Core
-Multi Transaction Core implementation. This package is usually used with [Multi Send Account](../account/README.md) or [Multi Send Wallet Selector](../wallet-selector/README.md)
+Multi Transaction Core implementation
 
 ## Install
 ```shell
@@ -25,8 +25,6 @@ const mTransaction = MultiTransaction
     attachedDeposit: Amount.ONE_YOCTO,
     gas: Gas.parse('10', 'T'),
   });
-
-console.log(mTransaction.toTransactions());
 ```
 
 ### Batch Transaction
@@ -52,8 +50,6 @@ const mTransaction = MultiTransaction
     attachedDeposit: Amount.ONE_YOCTO,
     gas: Gas.parse('10', 'T'),
   });
-
-console.log(mTransaction.toTransactions());
 ```
 
 ### Multiple Transactions
@@ -89,6 +85,37 @@ const mTransaction = MultiTransaction
     attachedDeposit: Amount.ONE_YOCTO,
     gas: Gas.parse('10', 'T'),
   });
+```
 
-console.log(mTransaction.toTransactions());
+### Fungible Token Transaction
+```ts
+const mTransaction = MultiTransaction
+  .batch('wrap.near')
+  .ft.transfer({
+    args: {
+      receiver_id: 'bob.near',
+      amount: Amount.parse('8.88', 'NEAR'),
+    },
+  });
+```
+
+### Non-Fungible Token Transaction
+```ts
+const mTransaction = MultiTransaction
+  .batch('core.namesky.near')
+  .nft.transfer({
+    args: {
+      receiver_id: 'bob.near',
+      token_id: 'apple.near',
+    },
+  });
+```
+
+### Storage Management Transaction
+```ts
+const mTransaction = MultiTransaction
+  .batch('wrap.near')
+  .storage.deposit({ 
+    attachedDeposit: Amount.parse('0.01', 'NEAR'),
+  });
 ```

@@ -1,5 +1,5 @@
-# Multi Send Wallet Selector
-Multi Send Wallet Selector implementation for [Multi Transaction Core](../core/README.md)
+# Multi Transaction Wallet Selector
+Multi Transaction Wallet Selector implementation
 
 ## Install
 ```shell
@@ -21,7 +21,7 @@ const selector = await setupMultiSendWalletSelector({
 });
 ```
 
-### Send Multi Transaction
+### Send Transaction(s)
 ```ts
 const mTransaction = MultiTransaction
   .batch('wrap.near')

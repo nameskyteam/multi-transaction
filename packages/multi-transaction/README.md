@@ -20,7 +20,7 @@ pnpm add @multi-transaction/account
 pnpm add @multi-transaction/wallet-selector
 ```
 
-## Multi Transaction
+## MultiTransaction
 ```ts
 import { MultiTransaction, Amount, Gas } from 'multi-transaction';
 ```
@@ -43,7 +43,7 @@ console.log(mTransaction.toTransactions());
 
 More information about [MultiTransaction](../core/README.md)
 
-## Multi Send Account
+## MultiSendAccount
 ```ts
 import { MultiSendAccount } from 'multi-transaction';
 ```
@@ -58,7 +58,7 @@ await account.send(mTransaction);
 
 More information about [MultiSendAccount](../account/README.md)
 
-## Multi Send Wallet Selector
+## MultiSendWalletSelector
 ```ts
 import { setupMultiSendWalletSelector } from 'multi-transaction';
 ```
