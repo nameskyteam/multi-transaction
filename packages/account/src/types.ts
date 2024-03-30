@@ -1,5 +1,5 @@
-import {CallOptions, CallRawOptions, SendOptions, SendRawOptions} from "@multi-transaction/core";
-import { Action as NearApiJsAction } from "@near-js/transactions/lib/actions";
+import { CallOptions, CallRawOptions, SendOptions, SendRawOptions } from '@multi-transaction/core';
+import { Action as NearApiJsAction } from '@near-js/transactions/lib/actions';
 
 export type MultiSendAccountCallOptions<Value, Args> = CallOptions<Value, Args>;
 

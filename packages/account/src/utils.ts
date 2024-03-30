@@ -14,8 +14,8 @@ import {
   Action as NearApiJsAction,
   AccessKey as NearApiJsAccessKey,
 } from 'near-api-js/lib/transaction';
-import { AccessKey, Action, Transaction, MultiTransaction, UnreachableError} from '@multi-transaction/core';
-import { NearApiJsTransaction } from "./types";
+import { AccessKey, Action, Transaction, MultiTransaction, UnreachableError } from '@multi-transaction/core';
+import { NearApiJsTransaction } from './types';
 
 export function parseNearApiJsTransactions(mTransaction: MultiTransaction): NearApiJsTransaction[] {
   return mTransaction.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));

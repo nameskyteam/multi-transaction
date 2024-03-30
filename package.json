@@ -2,9 +2,7 @@
   "private": true,
   "name": "@multi-transaction/monorepo",
   "scripts": {
-    "build": "rm -rf dist && tsc",
-    "lint": "eslint packages/{**,}/*.ts --fix",
-    "prettier": "prettier packages/{**,}/*.ts --write",
+    "build": "turbo run build",
     "prepare": "husky"
   },
   "devDependencies": {

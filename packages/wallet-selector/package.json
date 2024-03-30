@@ -13,14 +13,12 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "lint": "eslint src/{**,}/*.ts --fix",
-    "prettier": "prettier src/{**,}/*.ts --write",
-    "prepare": "husky"
+    "prettier": "prettier src/{**,}/*.ts --write"
   },
   "dependencies": {
     "@multi-transaction/core": "workspace:*",
     "@near-wallet-selector/core": "^8.9.2",
-    "near-api-js": "^2.1.4",
-    "bignumber.js": "^9.1.2"
+    "near-api-js": "^2.1.4"
   },
   "devDependencies": {
     "typescript": "^5.4.3"

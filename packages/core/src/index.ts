@@ -1,8 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import {
-  MultiAction,
-  MultiTransaction,
-} from './core';
+import { MultiAction, MultiTransaction } from './core';
 import { SendTransactionError, UnreachableError } from './errors';
 import {
   Transaction,
@@ -64,7 +61,15 @@ BigNumber.config({
 export { Transaction, Action, AccessKey };
 export { MultiAction, MultiTransaction, EmptyArgs };
 export { View, ViewOptions, Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions };
-export { BlockQuery, BlockQueryProvider, BlockWithHeader, Stringifier, Parser, parseOutcome, throwReceiptErrorsFromOutcomes };
+export {
+  BlockQuery,
+  BlockQueryProvider,
+  BlockWithHeader,
+  Stringifier,
+  Parser,
+  parseOutcome,
+  throwReceiptErrorsFromOutcomes,
+};
 export { BigNumber, Numeric, Amount, AmountUnits, Gas, GasUnits };
 export { SendTransactionError, UnreachableError };
 export { FtTransferArgs, FtTransferCallArgs, FtBalanceOfArgs, FungibleTokenMetadata };

@@ -13,8 +13,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "lint": "eslint src/{**,}/*.ts --fix",
-    "prettier": "prettier src/{**,}/*.ts --write",
-    "prepare": "husky"
+    "prettier": "prettier src/{**,}/*.ts --write"
   },
   "dependencies": {
     "@multi-transaction/core": "workspace:*",

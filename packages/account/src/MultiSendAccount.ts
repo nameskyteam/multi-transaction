@@ -14,13 +14,13 @@ import {
   parseOutcome,
   throwReceiptErrorsFromOutcomes,
 } from '@multi-transaction/core';
-import { parseNearApiJsTransactions } from "./utils";
+import { parseNearApiJsTransactions } from './utils';
 import {
   MultiSendAccountCallOptions,
   MultiSendAccountCallRawOptions,
   MultiSendAccountSendOptions,
-  MultiSendAccountSendRawOptions
-} from "./types";
+  MultiSendAccountSendRawOptions,
+} from './types';
 
 export class MultiSendAccount extends Account implements View, Call, Send {
   private constructor(connection: Connection, accountId: string) {

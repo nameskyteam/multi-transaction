@@ -22,7 +22,6 @@
     "near-api-js": "^2.1.4"
   },
   "devDependencies": {
-    "@types/bn.js": "^5.1.1",
     "typescript": "^5.4.3"
   }
 }
