@@ -77,6 +77,18 @@ importers:
         specifier: ^0.0.4
         version: 0.0.4
 
+  packages/multi-transaction:
+    dependencies:
+      '@multi-transaction/account':
+        specifier: workspace:*
+        version: link:../account
+      '@multi-transaction/core':
+        specifier: workspace:*
+        version: link:../core
+      '@multi-transaction/wallet-selector':
+        specifier: workspace:*
+        version: link:../wallet-selector
+
   packages/wallet-selector:
     dependencies:
       '@multi-transaction/core':

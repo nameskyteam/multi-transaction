@@ -1,8 +1,8 @@
 {
-  "name": "@multi-transaction/wallet-selector",
+  "name": "multi-transaction",
   "version": "0.0.1",
   "license": "MIT",
-  "description": "MultiSendWalletSelector implementation for MultiTransaction.",
+  "description": "Make construction of transaction easier on NEAR blockchain.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",
@@ -17,11 +17,7 @@
   },
   "dependencies": {
     "@multi-transaction/core": "workspace:*",
-    "@near-js/crypto": "^1.2.1",
-    "@near-js/wallet-account": "^1.1.1",
-    "@near-wallet-selector/core": "^8.9.2"
-  },
-  "devDependencies": {
-    "@near-js/types": "^0.0.4"
+    "@multi-transaction/account": "workspace:*",
+    "@multi-transaction/wallet-selector": "workspace:*"
   }
 }
