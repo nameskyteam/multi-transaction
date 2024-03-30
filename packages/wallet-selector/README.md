@@ -61,6 +61,4 @@ const amount: string = await selector.view({
     account_id: 'alice.near',
   },
 });
-
-console.log(`Balance: ${Amount.format(amount, 'NEAR')} wNEAR`);
 ```
