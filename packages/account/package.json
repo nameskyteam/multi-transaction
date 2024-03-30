@@ -1,6 +1,6 @@
 {
   "name": "@multi-transaction/account",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "license": "MIT",
   "description": "Multi Send Account implementation for Multi Transaction.",
   "main": "dist/index.js",

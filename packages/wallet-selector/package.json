@@ -1,6 +1,6 @@
 {
   "name": "@multi-transaction/wallet-selector",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "license": "MIT",
   "description": "Multi Send Wallet Selector implementation for Multi Transaction.",
   "main": "dist/index.js",
