@@ -1,19 +1,6 @@
 import BN from 'bn.js';
-import { PublicKey } from 'near-api-js/lib/utils';
-import {
-  addKey,
-  createAccount,
-  deleteAccount,
-  deleteKey,
-  deployContract,
-  fullAccessKey,
-  functionCall,
-  functionCallAccessKey,
-  stake,
-  transfer,
-  Action as NearApiJsAction,
-  AccessKey as NearApiJsAccessKey,
-} from 'near-api-js/lib/transaction';
+import { PublicKey } from '@near-js/crypto';
+import { actionCreators, Action as NearApiJsAction, AccessKey as NearApiJsAccessKey } from '@near-js/transactions';
 import { AccessKey, Action, Transaction, MultiTransaction, UnreachableError } from '@multi-transaction/core';
 import { NearApiJsTransaction } from './types';
 
@@ -31,42 +18,42 @@ function parseNearApiJsTransaction(transaction: Transaction): NearApiJsTransacti
 
 function parseNearApiJsAction(action: Action): NearApiJsAction {
   if (action.type === 'CreateAccount') {
-    return createAccount();
+    return actionCreators.createAccount();
   }
 
   if (action.type === 'DeleteAccount') {
     const { beneficiaryId } = action.params;
-    return deleteAccount(beneficiaryId);
+    return actionCreators.deleteAccount(beneficiaryId);
   }
 
   if (action.type === 'AddKey') {
     const { publicKey, accessKey } = action.params;
-    return addKey(PublicKey.fromString(publicKey), parseNearApiJsAccessKey(accessKey));
+    return actionCreators.addKey(PublicKey.fromString(publicKey), parseNearApiJsAccessKey(accessKey));
   }
 
   if (action.type === 'DeleteKey') {
     const { publicKey } = action.params;
-    return deleteKey(PublicKey.fromString(publicKey));
+    return actionCreators.deleteKey(PublicKey.fromString(publicKey));
   }
 
   if (action.type === 'DeployContract') {
     const { code } = action.params;
-    return deployContract(code);
+    return actionCreators.deployContract(code);
   }
 
   if (action.type === 'Stake') {
     const { amount, publicKey } = action.params;
-    return stake(new BN(amount), PublicKey.fromString(publicKey));
+    return actionCreators.stake(new BN(amount), PublicKey.fromString(publicKey));
   }
 
   if (action.type === 'FunctionCall') {
     const { methodName, args, gas, attachedDeposit } = action.params;
-    return functionCall(methodName, args, new BN(gas), new BN(attachedDeposit));
+    return actionCreators.functionCall(methodName, args, new BN(gas), new BN(attachedDeposit));
   }
 
   if (action.type === 'Transfer') {
     const { amount } = action.params;
-    return transfer(new BN(amount));
+    return actionCreators.transfer(new BN(amount));
   }
 
   throw new UnreachableError();
@@ -74,9 +61,9 @@ function parseNearApiJsAction(action: Action): NearApiJsAction {
 
 function parseNearApiJsAccessKey(accessKey: AccessKey): NearApiJsAccessKey {
   if (accessKey.permission === 'FullAccess') {
-    return fullAccessKey();
+    return actionCreators.fullAccessKey();
   } else {
     const { receiverId, methodNames, allowance } = accessKey.permission;
-    return functionCallAccessKey(receiverId, methodNames, allowance ? new BN(allowance) : undefined);
+    return actionCreators.functionCallAccessKey(receiverId, methodNames, allowance ? new BN(allowance) : undefined);
   }
 }

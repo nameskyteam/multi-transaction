@@ -1,4 +1,4 @@
-import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
+import { FinalExecutionOutcome } from '@near-js/types';
 import { Parser, Stringifier } from '../utils';
 
 export interface Call {

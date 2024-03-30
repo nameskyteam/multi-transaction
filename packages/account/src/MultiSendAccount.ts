@@ -1,5 +1,5 @@
-import { Account, Connection } from 'near-api-js';
-import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
+import { Account, Connection } from '@near-js/accounts';
+import { FinalExecutionOutcome } from '@near-js/types';
 import {
   MultiTransaction,
   EmptyArgs,

@@ -1,7 +1,7 @@
 import { setupWalletSelector, WalletSelector } from '@near-wallet-selector/core';
-import { Near } from 'near-api-js';
-import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
-import { PublicKey } from 'near-api-js/lib/utils';
+import { FinalExecutionOutcome } from '@near-js/types';
+import { PublicKey } from '@near-js/crypto';
+import { Near } from '@near-js/wallet-account';
 import {
   MultiTransaction,
   Amount,
@@ -11,7 +11,7 @@ import {
   parseOutcome,
   throwReceiptErrorsFromOutcomes,
   SendTransactionError,
-  BigNumber
+  BigNumber,
 } from '@multi-transaction/core';
 import { MultiSendWalletSelector, MultiSendWalletSelectorOptions } from './types';
 import { parseWalletSelectorTransactions } from './utils';

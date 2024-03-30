@@ -17,10 +17,11 @@
   },
   "dependencies": {
     "@multi-transaction/core": "workspace:*",
-    "@near-wallet-selector/core": "^8.9.2",
-    "near-api-js": "^2.1.4"
+    "@near-js/crypto": "^1.2.1",
+    "@near-js/wallet-account": "^1.1.1",
+    "@near-wallet-selector/core": "^8.9.2"
   },
   "devDependencies": {
-    "typescript": "^5.4.3"
+    "@near-js/types": "^0.0.4"
   }
 }

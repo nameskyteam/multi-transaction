@@ -3,6 +3,8 @@
   "name": "@multi-transaction/monorepo",
   "scripts": {
     "build": "turbo run build",
+    "lint": "turbo run lint",
+    "prettier": "turbo run prettier",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -12,6 +14,8 @@
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
-    "turbo": "^1.13.0"
+    "tslib": "^2.6.2",
+    "turbo": "^1.13.0",
+    "typescript": "^5.4.3"
   }
 }

@@ -1,4 +1,4 @@
-import { BlockReference } from 'near-api-js/lib/providers/provider';
+import { BlockReference } from '@near-js/types';
 
 export class BlockQuery {
   private readonly reference: BlockReference;

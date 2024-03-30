@@ -1,5 +1,5 @@
 import { AccountState, WalletSelector } from '@near-wallet-selector/core';
-import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
+import { FinalExecutionOutcome } from '@near-js/types';
 import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-selector.types';
 import { Action as NearWalletSelectorAction } from '@near-wallet-selector/core/src/lib/wallet/transactions.types';
 import {

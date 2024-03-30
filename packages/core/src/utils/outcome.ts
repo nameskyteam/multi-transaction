@@ -1,5 +1,5 @@
-import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/providers';
-import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
+import { FinalExecutionOutcome, FinalExecutionStatus } from '@near-js/types';
+import { parseRpcError } from '@near-js/utils';
 import { Buffer } from 'buffer';
 import { Parser } from './Parser';
 import { ParseOutcomeError, ReceiptErrorMessage, ReceiptError } from '../errors';

@@ -16,12 +16,12 @@
     "prettier": "prettier src/{**,}/*.ts --write"
   },
   "dependencies": {
+    "@near-js/utils": "^0.1.0",
     "bignumber.js": "^9.1.2",
     "borsher": "^3.2.0",
-    "buffer": "^6.0.3",
-    "near-api-js": "^2.1.4"
+    "buffer": "^6.0.3"
   },
   "devDependencies": {
-    "typescript": "^5.4.3"
+    "@near-js/types": "^0.0.4"
   }
 }

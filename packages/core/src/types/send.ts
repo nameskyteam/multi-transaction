@@ -1,4 +1,4 @@
-import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
+import { FinalExecutionOutcome } from '@near-js/types';
 import { MultiTransaction } from '../core';
 import { Parser } from '../utils';
 
