@@ -1,37 +1,19 @@
 {
-  "name": "multi-transaction",
-  "version": "10.4.0",
-  "license": "MIT",
-  "description": "Make the construction of the transaction easier on NEAR blockchain.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "commonjs",
-  "files": [
-    "dist",
-    "src"
-  ],
+  "private": true,
+  "name": "@multi-transaction/monorepo",
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "lint": "eslint src/{**,}/*.ts --fix",
-    "prettier": "prettier src/{**,}/*.ts --write",
+    "lint": "eslint packages/{**,}/*.ts --fix",
+    "prettier": "prettier packages/{**,}/*.ts --write",
     "prepare": "husky"
   },
-  "dependencies": {
-    "@near-wallet-selector/core": "^8.9.2",
-    "bignumber.js": "^9.1.2",
-    "bn.js": "^5.2.1",
-    "borsher": "^3.1.0",
-    "buffer": "^6.0.3",
-    "near-api-js": "^2.1.4"
-  },
   "devDependencies": {
-    "@types/bn.js": "^5.1.1",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.3.1",
     "eslint": "^8.57.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
-    "typescript": "^5.4.3"
+    "turbo": "^1.13.0"
   }
 }

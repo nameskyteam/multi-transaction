@@ -1,4 +1,3 @@
-import { Action as NearWalletSelectorAction } from '@near-wallet-selector/core';
 import BN from 'bn.js';
 import { PublicKey } from 'near-api-js/lib/utils';
 import {
@@ -15,9 +14,8 @@ import {
   Action as NearApiJsAction,
   AccessKey as NearApiJsAccessKey,
 } from 'near-api-js/lib/transaction';
-import { AccessKey, Action, Transaction } from '../types';
-import { MultiTransaction } from '../core';
-import { unreachable } from './common';
+import { AccessKey, Action, Transaction, MultiTransaction, UnreachableError} from '@multi-transaction/core';
+import { NearApiJsTransaction } from "./types";
 
 export function parseNearApiJsTransactions(mTransaction: MultiTransaction): NearApiJsTransaction[] {
   return mTransaction.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));
@@ -71,7 +69,7 @@ function parseNearApiJsAction(action: Action): NearApiJsAction {
     return transfer(new BN(amount));
   }
 
-  unreachable();
+  throw new UnreachableError();
 }
 
 function parseNearApiJsAccessKey(accessKey: AccessKey): NearApiJsAccessKey {
@@ -82,75 +80,3 @@ function parseNearApiJsAccessKey(accessKey: AccessKey): NearApiJsAccessKey {
     return functionCallAccessKey(receiverId, methodNames, allowance ? new BN(allowance) : undefined);
   }
 }
-
-export function parseNearWalletSelectorTransactions(mTransaction: MultiTransaction): NearWalletSelectorTransaction[] {
-  return mTransaction.toTransactions().map((transaction) => parseNearWalletSelectorTransaction(transaction));
-}
-
-function parseNearWalletSelectorTransaction(transaction: Transaction): NearWalletSelectorTransaction {
-  const { signerId, receiverId, actions } = transaction;
-  return {
-    signerId,
-    receiverId,
-    actions: actions.map((action) => parseNearWalletSelectorAction(action)),
-  };
-}
-
-function parseNearWalletSelectorAction(action: Action): NearWalletSelectorAction {
-  if (
-    action.type === 'CreateAccount' ||
-    action.type === 'DeleteAccount' ||
-    action.type === 'AddKey' ||
-    action.type === 'DeleteKey' ||
-    action.type === 'DeployContract'
-  ) {
-    return action;
-  }
-
-  if (action.type === 'Stake') {
-    const { amount, publicKey } = action.params;
-    return {
-      type: action.type,
-      params: {
-        stake: amount,
-        publicKey,
-      },
-    };
-  }
-
-  if (action.type === 'FunctionCall') {
-    const { methodName, args, gas, attachedDeposit } = action.params;
-    return {
-      type: action.type,
-      params: {
-        methodName,
-        args,
-        gas,
-        deposit: attachedDeposit,
-      },
-    };
-  }
-
-  if (action.type === 'Transfer') {
-    const { amount } = action.params;
-    return {
-      type: action.type,
-      params: {
-        deposit: amount,
-      },
-    };
-  }
-
-  unreachable();
-}
-
-export type NearApiJsTransaction = {
-  receiverId: string;
-  actions: NearApiJsAction[];
-};
-
-export type NearWalletSelectorTransaction = {
-  signerId?: string;
-  receiverId: string;
-  actions: NearWalletSelectorAction[];
-};

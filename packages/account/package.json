@@ -1,0 +1,28 @@
+{
+  "name": "@multi-transaction/account",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "Make the construction of the transaction easier on NEAR blockchain.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "lint": "eslint src/{**,}/*.ts --fix",
+    "prettier": "prettier src/{**,}/*.ts --write",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@multi-transaction/core": "workspace:*",
+    "near-api-js": "^2.1.4",
+    "bn.js": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/bn.js": "^5.1.5",
+    "typescript": "^5.4.3"
+  }
+}

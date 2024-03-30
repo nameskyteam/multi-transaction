@@ -1,0 +1,28 @@
+{
+  "name": "@multi-transaction/wallet-selector",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "Make the construction of the transaction easier on NEAR blockchain.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "lint": "eslint src/{**,}/*.ts --fix",
+    "prettier": "prettier src/{**,}/*.ts --write",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@multi-transaction/core": "workspace:*",
+    "@near-wallet-selector/core": "^8.9.2",
+    "near-api-js": "^2.1.4",
+    "bignumber.js": "^9.1.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.3"
+  }
+}

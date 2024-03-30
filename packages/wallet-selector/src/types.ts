@@ -1,11 +1,8 @@
 import { AccountState, WalletSelector } from '@near-wallet-selector/core';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
-import { View, ViewOptions } from './view';
-import { Call, CallOptions, CallRawOptions } from './call';
-import { Send, SendOptions, SendRawOptions } from './send';
-import { MultiTransaction } from '../core';
 import { WalletSelectorParams } from '@near-wallet-selector/core/src/lib/wallet-selector.types';
-import { EmptyArgs } from './function-call';
+import { Action as NearWalletSelectorAction } from "@near-wallet-selector/core/src/lib/wallet/transactions.types";
+import { MultiTransaction, EmptyArgs, View, ViewOptions, Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions } from '@multi-transaction/core'
 
 export interface MultiSendWalletSelector extends WalletSelector, View, Call, Send {
   /**
@@ -78,3 +75,9 @@ export type MultiSendWalletSelectorSendRawOptions = SendRawOptions & {
 };
 
 export type MultiSendWalletSelectorOptions = WalletSelectorParams | { selector: WalletSelector };
+
+export type WalletSelectorTransaction = {
+  signerId?: string;
+  receiverId: string;
+  actions: NearWalletSelectorAction[];
+};

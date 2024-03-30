@@ -2,20 +2,12 @@ import { BigNumber } from 'bignumber.js';
 import {
   MultiAction,
   MultiTransaction,
-  MultiSendAccount,
-  MultiSendAccountCallOptions,
-  MultiSendAccountCallRawOptions,
-  MultiSendAccountSendOptions,
-  MultiSendAccountSendRawOptions,
-  setupMultiSendWalletSelector,
 } from './core';
+import { SendTransactionError, UnreachableError } from './errors';
 import {
-  MultiSendWalletSelectorOptions,
-  MultiSendWalletSelector,
-  MultiSendWalletSelectorCallOptions,
-  MultiSendWalletSelectorCallRawOptions,
-  MultiSendWalletSelectorSendOptions,
-  MultiSendWalletSelectorSendRawOptions,
+  Transaction,
+  Action,
+  AccessKey,
   View,
   ViewOptions,
   Call,
@@ -61,6 +53,7 @@ import {
   Parser,
   Stringifier,
   parseOutcome,
+  throwReceiptErrorsFromOutcomes,
 } from './utils';
 
 BigNumber.config({
@@ -68,25 +61,12 @@ BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_DOWN,
 });
 
+export { Transaction, Action, AccessKey };
 export { MultiAction, MultiTransaction, EmptyArgs };
-export {
-  MultiSendAccount,
-  MultiSendAccountCallOptions,
-  MultiSendAccountCallRawOptions,
-  MultiSendAccountSendOptions,
-  MultiSendAccountSendRawOptions,
-};
-export {
-  MultiSendWalletSelector,
-  MultiSendWalletSelectorCallOptions,
-  MultiSendWalletSelectorCallRawOptions,
-  MultiSendWalletSelectorSendOptions,
-  MultiSendWalletSelectorSendRawOptions,
-};
-export { MultiSendWalletSelectorOptions, setupMultiSendWalletSelector };
 export { View, ViewOptions, Call, CallOptions, CallRawOptions, Send, SendOptions, SendRawOptions };
-export { BlockQuery, BlockQueryProvider, BlockWithHeader, Stringifier, Parser, parseOutcome };
+export { BlockQuery, BlockQueryProvider, BlockWithHeader, Stringifier, Parser, parseOutcome, throwReceiptErrorsFromOutcomes };
 export { BigNumber, Numeric, Amount, AmountUnits, Gas, GasUnits };
+export { SendTransactionError, UnreachableError };
 export { FtTransferArgs, FtTransferCallArgs, FtBalanceOfArgs, FungibleTokenMetadata };
 export {
   NftTransferArgs,
