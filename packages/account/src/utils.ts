@@ -1,8 +1,12 @@
 import BN from 'bn.js';
 import { PublicKey } from '@near-js/crypto';
 import { actionCreators, Action as NearApiJsAction, AccessKey as NearApiJsAccessKey } from '@near-js/transactions';
-import { AccessKey, Action, Transaction, MultiTransaction, UnreachableError } from '@multi-transaction/core';
-import { NearApiJsTransaction } from './types';
+import { MultiTransaction, Transaction, Action, AccessKey, UnreachableError } from '@multi-transaction/core';
+
+type NearApiJsTransaction = {
+  receiverId: string;
+  actions: NearApiJsAction[];
+};
 
 export function parseNearApiJsTransactions(mTransaction: MultiTransaction): NearApiJsTransaction[] {
   return mTransaction.toTransactions().map((transaction) => parseNearApiJsTransaction(transaction));

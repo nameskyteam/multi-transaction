@@ -1,195 +1,84 @@
-import { setupWalletSelector, WalletSelector } from '@near-wallet-selector/core';
 import { FinalExecutionOutcome } from '@near-js/types';
-import { PublicKey } from '@near-js/crypto';
-import { Near } from '@near-js/wallet-account';
+import { WalletSelector, AccountState } from '@near-wallet-selector/core';
 import {
   MultiTransaction,
-  Amount,
-  BlockQuery,
-  Stringifier,
-  Parser,
-  parseOutcome,
-  throwReceiptErrorsFromOutcomes,
-  SendTransactionError,
-  BigNumber,
+  EmptyArgs,
+  Send,
+  SendOptions,
+  SendRawOptions,
+  Call,
+  CallOptions,
+  CallRawOptions,
+  View,
+  ViewOptions,
 } from '@multi-transaction/core';
-import { MultiSendWalletSelector, MultiSendWalletSelectorOptions } from './types';
-import { parseWalletSelectorTransactions } from './utils';
 
-let MULTI_SEND_WALLET_SELECTOR: MultiSendWalletSelector | undefined;
+export interface MultiSendWalletSelector extends WalletSelector, Send, Call, View {
+  /**
+   * Account that is login
+   */
+  getActiveAccount(): AccountState | undefined;
 
-export async function setupMultiSendWalletSelector(
-  options: MultiSendWalletSelectorOptions,
-): Promise<MultiSendWalletSelector> {
-  let allowMultipleSelectors: boolean | undefined;
-  let selector: WalletSelector;
+  /**
+   * Accounts that have logged in
+   */
+  getAccounts(): AccountState[];
 
-  if ('selector' in options) {
-    selector = options.selector;
-  } else {
-    selector = await setupWalletSelector(options);
-    allowMultipleSelectors = options.allowMultipleSelectors;
-  }
+  /**
+   * Is login access key available
+   */
+  isLoginAccessKeyAvailable(options?: IsLoginAccessKeyAvailableOptions): Promise<boolean>;
 
-  if (allowMultipleSelectors) {
-    return createMultiSendWalletSelector(selector);
-  }
+  /**
+   * Send multiple transactions and return success value of last transaction
+   */
+  send<Value>(mTransaction: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value>;
 
-  if (!MULTI_SEND_WALLET_SELECTOR) {
-    MULTI_SEND_WALLET_SELECTOR = createMultiSendWalletSelector(selector);
-  }
+  /**
+   * Send multiple transactions and return outcomes
+   */
+  sendRaw(
+    mTransaction: MultiTransaction,
+    options?: MultiSendWalletSelectorSendRawOptions,
+  ): Promise<FinalExecutionOutcome[]>;
 
-  return MULTI_SEND_WALLET_SELECTOR;
+  /**
+   * Call a contract method and return success value
+   */
+  call<Value, Args = EmptyArgs>(options: MultiSendWalletSelectorCallOptions<Value, Args>): Promise<Value>;
+
+  /**
+   * Call a contract method and return outcome
+   */
+  callRaw<Args = EmptyArgs>(options: MultiSendWalletSelectorCallRawOptions<Args>): Promise<FinalExecutionOutcome>;
+
+  /**
+   * View a contract method and return success value
+   */
+  view<Value, Args = EmptyArgs>(options: ViewOptions<Value, Args>): Promise<Value>;
 }
 
-function createMultiSendWalletSelector(selector: WalletSelector): MultiSendWalletSelector {
-  const near = new Near(selector.options.network);
+export type IsLoginAccessKeyAvailableOptions = {
+  accountId?: string;
+  requiredAllowance?: string;
+};
 
-  return {
-    ...selector,
+export type MultiSendWalletSelectorCallOptions<Value, Args> = CallOptions<Value, Args> & {
+  walletId?: string;
+  callbackUrl?: string;
+};
 
-    getActiveAccount() {
-      return this.store.getState().accounts.find((accountState) => accountState.active);
-    },
+export type MultiSendWalletSelectorCallRawOptions<Args> = CallRawOptions<Args> & {
+  walletId?: string;
+  callbackUrl?: string;
+};
 
-    getAccounts() {
-      return this.store.getState().accounts;
-    },
+export type MultiSendWalletSelectorSendOptions<Value> = SendOptions<Value> & {
+  walletId?: string;
+  callbackUrl?: string;
+};
 
-    async isLoginAccessKeyAvailable(options = {}) {
-      const { accountId = this.getActiveAccount()?.accountId, requiredAllowance = Amount.parse('0.01', 'NEAR') } =
-        options;
-
-      if (!accountId) {
-        return false;
-      }
-
-      const accountStates = this.getAccounts();
-      const accountState = accountStates.find((accountState) => accountState.accountId === accountId);
-
-      const publicKey = accountState?.publicKey;
-
-      if (!publicKey) {
-        return false;
-      }
-
-      const account = await near.account(accountId);
-      const accessKeys = await account.getAccessKeys();
-      const accessKey = accessKeys.find((accessKey) => {
-        const remotePublicKey = PublicKey.fromString(accessKey.public_key);
-        const localPublicKey = PublicKey.fromString(publicKey);
-        return remotePublicKey.toString() === localPublicKey.toString();
-      });
-
-      if (!accessKey) {
-        return false;
-      }
-
-      if (accessKey.access_key.permission === 'FullAccess') {
-        return true;
-      }
-
-      const allowance = accessKey.access_key.permission.FunctionCall.allowance;
-
-      if (!allowance) {
-        return true;
-      }
-
-      const remainingAllowance = BigNumber(allowance);
-      return remainingAllowance.gte(requiredAllowance);
-    },
-
-    async view(options) {
-      const {
-        contractId,
-        methodName,
-        args,
-        stringifier = Stringifier.json(),
-        parser = Parser.json(),
-        blockQuery = BlockQuery.OPTIMISTIC,
-      } = options;
-
-      const viewer = await near.account('');
-
-      return viewer.viewFunction({
-        contractId,
-        methodName,
-        args: args as object,
-        stringify: (args) => stringifier.stringifyOrSkip(args),
-        parse: (buffer) => parser.parse(buffer),
-        blockQuery: blockQuery.toReference(),
-      });
-    },
-
-    async call(options) {
-      const { parser, ...callRawOptions } = options;
-      const outcome = await this.callRaw(callRawOptions);
-      return parseOutcome(outcome, parser);
-    },
-
-    async callRaw(options) {
-      const { contractId, methodName, args, attachedDeposit, gas, stringifier, ...sendRawOptions } = options;
-
-      const mTransaction = MultiTransaction.batch(contractId).functionCall({
-        methodName,
-        args,
-        attachedDeposit,
-        gas,
-        stringifier,
-      });
-
-      const outcomes = await this.sendRaw(mTransaction, sendRawOptions);
-
-      return outcomes?.[0];
-    },
-
-    async send(mTransaction, options = {}) {
-      const { parser, ...sendRawOptions } = options;
-      const outcomes = await this.sendRaw(mTransaction, sendRawOptions);
-      const outcome = outcomes?.[outcomes.length - 1];
-      return parseOutcome(outcome, parser);
-    },
-
-    async sendRaw(mTransaction, options = {}) {
-      const { throwReceiptErrors, walletId, callbackUrl } = options;
-
-      const transactions = parseWalletSelectorTransactions(mTransaction);
-
-      if (transactions.length === 0) {
-        throw new SendTransactionError('Transaction not found.');
-      }
-
-      const wallet = await this.wallet(walletId);
-
-      let outcomes: FinalExecutionOutcome[] | undefined;
-
-      if (transactions.length === 1) {
-        const outcome = await wallet.signAndSendTransaction({
-          ...transactions[0],
-          callbackUrl,
-        });
-        if (outcome) {
-          outcomes = [outcome];
-        }
-      } else {
-        const res = await wallet.signAndSendTransactions({
-          transactions,
-          callbackUrl,
-        });
-        if (res) {
-          outcomes = res;
-        }
-      }
-
-      while (!outcomes) {
-        // browser wallet, wait for direction
-      }
-
-      if (throwReceiptErrors) {
-        throwReceiptErrorsFromOutcomes(outcomes);
-      }
-
-      return outcomes;
-    },
-  };
-}
+export type MultiSendWalletSelectorSendRawOptions = SendRawOptions & {
+  walletId?: string;
+  callbackUrl?: string;
+};

@@ -3,24 +3,22 @@ import { FinalExecutionOutcome } from '@near-js/types';
 import {
   MultiTransaction,
   EmptyArgs,
+  Send,
+  Call,
   View,
   ViewOptions,
-  Call,
-  Send,
   Stringifier,
   Parser,
   BlockQuery,
   SendTransactionError,
   parseOutcome,
   throwReceiptErrorsFromOutcomes,
+  CallOptions,
+  CallRawOptions,
+  SendOptions,
+  SendRawOptions,
 } from '@multi-transaction/core';
 import { parseNearApiJsTransactions } from './utils';
-import {
-  MultiSendAccountCallOptions,
-  MultiSendAccountCallRawOptions,
-  MultiSendAccountSendOptions,
-  MultiSendAccountSendRawOptions,
-} from './types';
 
 export class MultiSendAccount extends Account implements Send, Call, View {
   private constructor(connection: Connection, accountId: string) {
@@ -125,3 +123,11 @@ export class MultiSendAccount extends Account implements Send, Call, View {
     });
   }
 }
+
+export type MultiSendAccountCallOptions<Value, Args> = CallOptions<Value, Args>;
+
+export type MultiSendAccountCallRawOptions<Args> = CallRawOptions<Args>;
+
+export type MultiSendAccountSendOptions<Value> = SendOptions<Value>;
+
+export type MultiSendAccountSendRawOptions = SendRawOptions;

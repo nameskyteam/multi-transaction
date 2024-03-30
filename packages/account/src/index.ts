@@ -1,3 +1,7 @@
-export * from './MultiSendAccount';
-export * from './utils';
-export * from './types';
+export {
+  MultiSendAccount,
+  MultiSendAccountSendOptions,
+  MultiSendAccountSendRawOptions,
+  MultiSendAccountCallOptions,
+  MultiSendAccountCallRawOptions,
+} from './MultiSendAccount';
