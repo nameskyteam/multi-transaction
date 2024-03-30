@@ -3,118 +3,48 @@ Make the construction of the transaction easier on [NEAR](https://near.org) bloc
 
 ## Install
 ```shell
-yarn add multi-transaction
+pnpm add multi-transaction
 ```
 
-## View
+## Multi Transaction
 ```ts
-import { MultiSendAccount, Amount } from 'multi-transaction';
+import { MultiTransaction, Amount, Gas } from 'multi-transaction';
 ```
 
 ```ts
-const account = MultiSendAccount.new(near.connection);
+const mTransaction = MultiTransaction
+  .batch('wrap.near')
+  .functionCall({
+    methodName: 'ft_transfer',
+    args: {
+      receiver_id: 'bob.near',
+      amount: Amount.parse('8.88', 'NEAR')
+    },
+    attachedDeposit: Amount.ONE_YOCTO,
+    gas: Gas.parse('10', 'T')
+  });
 
-const amount: string = await account.view({
-  contractId: 'wrap.near',
-  methodName: 'ft_balance_of',
-  args: {
-    account_id: 'alice.near'
-  }
-});
-
-console.log(`Balance: ${Amount.format(amount, 'NEAR')} wNEAR`);
+console.log(mTransaction);
 ```
 
-### Call
+More usage about [MultiTransaction](packages/core/README.md)
+
+## Multi Send Account
 ```ts
 import { MultiSendAccount, Amount, Gas } from 'multi-transaction';
 ```
 
 ```ts
-const account = MultiSendAccount.new(near.connection, 'alice.near');
-
-await account.call({
-  contractId: 'wrap.near',
-  methodName: 'ft_transfer',
-  args: {
-    receiver_id: 'bob.near',
-    amount: Amount.parse('8.88', 'NEAR')
-  },
-  attachedDeposit: Amount.ONE_YOCTO,
-  gas: Gas.parse('10', 'T')
-});
-```
-
-### Batch Transaction
-```ts
-import { MultiTransaction, MultiSendAccount, Amount, Gas } from 'multi-transaction';
+const account = MultiSendAccount.new(connection, 'alice.near');
 ```
 
 ```ts
-const account = MultiSendAccount.new(near.connection, 'alice.near');
-
-// one transaction that contains two actions
-const mTransaction = MultiTransaction
-  .batch('wrap.near')
-  .functionCall({
-    methodName: 'ft_transfer',
-    args: {
-      receiver_id: 'bob.near',
-      amount: Amount.parse('8.88', 'NEAR')
-    },
-    attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.parse('10', 'T')
-  })
-  .functionCall({
-    methodName: 'ft_transfer',
-    args: {
-      receiver_id: 'carol.near',
-      amount: Amount.parse('8.88', 'NEAR')
-    },
-    attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.parse('10', 'T')
-  });
-
 await account.send(mTransaction);
 ```
 
-### Multiple Transactions
-```ts
-import { MultiTransaction, MultiSendAccount, Amount, Gas } from 'multi-transaction';
-```
+More usage about [MultiSendAccount](packages/account/README.md)
 
-```ts
-const account = MultiSendAccount.new(near.connection, 'alice.near');
-
-// two transactions, each contains one action
-const mTransaction = MultiTransaction
-  .batch('wrap.near')
-  .functionCall({
-    methodName: 'ft_transfer',
-    args: {
-      receiver_id: 'bob.near',
-      amount: Amount.parse('8.88', 'NEAR')
-    },
-    attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.parse('10', 'T')
-  })
-  .batch('usdt.tether-token.near')
-  .functionCall({
-    methodName: 'ft_transfer',
-    args: {
-      receiver_id: 'bob.near',
-      amount: Amount.parse('8.88', 'USDT')
-    },
-    attachedDeposit: Amount.ONE_YOCTO,
-    gas: Gas.parse('10', 'T')
-  });
-
-await account.send(mTransaction);
-```
-
-## Wallet Selector
-You can replace the official `WalletSelector` with `MultiSendWalletSelector` while keeping other usage unchanged
-
+## Multi Send Wallet Selector
 ```ts
 import { setupMultiSendWalletSelector } from 'multi-transaction';
 ```
@@ -127,3 +57,9 @@ const selector = await setupMultiSendWalletSelector({
   ]
 });
 ```
+
+```ts
+await selector.send(mTransaction);
+```
+
+More usage about [MultiSendWalletSelector](packages/wallet-selector/README.md)

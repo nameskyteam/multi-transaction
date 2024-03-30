@@ -2,7 +2,7 @@
   "name": "@multi-transaction/account",
   "version": "0.0.1",
   "license": "MIT",
-  "description": "MultiSendAccount implementation for MultiTransaction.",
+  "description": "Multi Send Account implementation for Multi Transaction.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",

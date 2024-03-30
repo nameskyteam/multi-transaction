@@ -2,7 +2,7 @@
   "name": "@multi-transaction/core",
   "version": "0.0.1",
   "license": "MIT",
-  "description": "MultiTransaction and MultiAction implementation.",
+  "description": "Multi Transaction implementation.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",
