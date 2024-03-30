@@ -47,19 +47,22 @@ importers:
       '@near-js/transactions':
         specifier: ^1.1.2
         version: 1.1.2
+      '@near-js/types':
+        specifier: ^0.0.4
+        version: 0.0.4
       bn.js:
         specifier: ^5.2.1
         version: 5.2.1
     devDependencies:
-      '@near-js/types':
-        specifier: ^0.0.4
-        version: 0.0.4
       '@types/bn.js':
         specifier: ^5.1.5
         version: 5.1.5
 
   packages/core:
     dependencies:
+      '@near-js/types':
+        specifier: ^0.0.4
+        version: 0.0.4
       '@near-js/utils':
         specifier: ^0.1.0
         version: 0.1.0
@@ -72,10 +75,6 @@ importers:
       buffer:
         specifier: ^6.0.3
         version: 6.0.3
-    devDependencies:
-      '@near-js/types':
-        specifier: ^0.0.4
-        version: 0.0.4
 
   packages/multi-transaction:
     dependencies:
@@ -97,16 +96,15 @@ importers:
       '@near-js/crypto':
         specifier: ^1.2.1
         version: 1.2.1
+      '@near-js/types':
+        specifier: ^0.0.4
+        version: 0.0.4
       '@near-js/wallet-account':
         specifier: ^1.1.1
         version: 1.1.1
       '@near-wallet-selector/core':
         specifier: ^8.9.2
         version: 8.9.5(near-api-js@2.1.4)
-    devDependencies:
-      '@near-js/types':
-        specifier: ^0.0.4
-        version: 0.0.4
 
 packages:
 
@@ -333,6 +331,7 @@ packages:
     resolution: {integrity: sha512-8TTMbLMnmyG06R5YKWuS/qFG1tOA3/9lX4NgBqQPsvaWmDsa+D+QwOkrEHDegped0ZHQwcjAXjKML1S1TyGYKg==}
     dependencies:
       bn.js: 5.2.1
+    dev: false
 
   /@near-js/utils@0.0.4:
     resolution: {integrity: sha512-mPUEPJbTCMicGitjEGvQqOe8AS7O4KkRCxqd0xuE/X6gXF1jz1pYMZn4lNUeUz2C84YnVSGLAM0o9zcN6Y4hiA==}
@@ -716,6 +715,7 @@ packages:
 
   /bn.js@5.2.1:
     resolution: {integrity: sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ==}
+    dev: false
 
   /borsh@0.7.0:
     resolution: {integrity: sha512-CLCsZGIBCFnPtkNnieW/a8wmreDmfUtjU2m9yHrzPXIlNbqVs0AQrSatSG6vdNYUqdc83tkQi2eHfF98ubzQLA==}
