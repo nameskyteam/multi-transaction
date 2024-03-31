@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import { Buffer } from 'buffer';
 import { MultiAction, MultiTransaction } from './core';
 import { SendTransactionError, UnreachableError } from './errors';
 import {
@@ -40,6 +41,7 @@ import {
   StorageBalanceBounds,
 } from './types';
 import {
+  Units,
   Amount,
   AmountUnits,
   Gas,
@@ -69,7 +71,7 @@ export {
   parseOutcomeValue,
   throwReceiptErrorsFromOutcomes,
 };
-export { BigNumber, Numeric, Amount, AmountUnits, Gas, GasUnits };
+export { Buffer, BigNumber, Numeric, Units, Amount, AmountUnits, Gas, GasUnits };
 export { Transaction, Action, AccessKey };
 export { SendTransactionError, UnreachableError };
 export { FtTransferArgs, FtTransferCallArgs, FtBalanceOfArgs, FungibleTokenMetadata };

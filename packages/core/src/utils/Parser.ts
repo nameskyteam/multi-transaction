@@ -1,4 +1,5 @@
 import { borshDeserialize, BorshSchema } from 'borsher';
+import { Buffer } from 'buffer';
 
 export type Parse<T> = (buffer: Uint8Array) => T;
 
