@@ -5,9 +5,14 @@
       "dependsOn": ["lint", "prettier", "build"]
     },
     "build": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "cache": false
     },
-    "lint": {},
-    "prettier": {}
+    "lint": {
+      "cache": false
+    },
+    "prettier": {
+      "cache": false
+    }
   }
 }
