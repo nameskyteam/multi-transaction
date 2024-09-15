@@ -17,6 +17,6 @@
   },
   "dependencies": {
     "@multi-transaction/core": "workspace:*",
-    "@near-wallet-selector/core": "^8.9.2"
+    "@near-wallet-selector/core": "^8.9.13"
   }
 }

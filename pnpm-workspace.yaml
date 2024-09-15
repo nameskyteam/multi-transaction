@@ -1,2 +1,5 @@
 packages:
-  - "packages/*"
+  - "packages/multi-transaction"
+  - "packages/core"
+  - "packages/account"
+  - "packages/wallet-selector"

@@ -16,10 +16,6 @@
     "prettier": "prettier src/{**,}/*.ts --write"
   },
   "dependencies": {
-    "@multi-transaction/core": "workspace:*",
-    "bn.js": "^5.2.1"
-  },
-  "devDependencies": {
-    "@types/bn.js": "^5.1.5"
+    "@multi-transaction/core": "workspace:*"
   }
 }
