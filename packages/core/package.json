@@ -15,6 +15,10 @@
     "lint": "eslint src/{**,}/*.ts --fix",
     "prettier": "prettier src/{**,}/*.ts --write"
   },
+  "peerDependencies": {
+    "@near-js/types": "^0.2.1",
+    "@near-js/utils": "^0.2.2"
+  },
   "dependencies": {
     "bignumber.js": "^9.1.2",
     "borsher": "^3.5.0",
