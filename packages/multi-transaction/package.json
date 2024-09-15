@@ -16,8 +16,8 @@
     "prettier": "prettier src/{**,}/*.ts --write"
   },
   "dependencies": {
-    "@multi-transaction/core": "workspace:*",
     "@multi-transaction/account": "workspace:*",
+    "@multi-transaction/core": "workspace:*",
     "@multi-transaction/wallet-selector": "workspace:*"
   }
 }

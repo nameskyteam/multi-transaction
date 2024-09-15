@@ -15,13 +15,11 @@
     "lint": "eslint src/{**,}/*.ts --fix",
     "prettier": "prettier src/{**,}/*.ts --write"
   },
-  "peerDependencies": {
-    "@near-js/crypto": "^1.2.4",
-    "@near-js/types": "^0.2.1",
-    "@near-js/wallet-account": "^1.2.2"
-  },
   "dependencies": {
     "@multi-transaction/core": "workspace:*",
+    "@near-js/crypto": "^1.2.4",
+    "@near-js/types": "^0.2.1",
+    "@near-js/wallet-account": "^1.2.2",
     "@near-wallet-selector/core": "^8.9.13"
   }
 }
