@@ -1,18 +1,17 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "tasks": {
     "all": {
       "dependsOn": ["lint", "prettier", "build"]
     },
     "build": {
-      "dependsOn": ["^build"],
-      "cache": false
+      "dependsOn": ["^build"]
     },
     "lint": {
-      "cache": false
+      "dependsOn": ["^lint"]
     },
     "prettier": {
-      "cache": false
+      "dependsOn": ["^prettier"]
     }
   }
 }
