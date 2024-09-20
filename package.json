@@ -2,8 +2,8 @@
   "private": true,
   "name": "@multi-transaction/monorepo",
   "scripts": {
-    "all": "turbo all --no-daemon",
     "build": "turbo build --no-daemon",
+    "check": "turbo check --no-daemon",
     "lint": "turbo lint --no-daemon",
     "prettier": "turbo prettier --no-daemon",
     "prepare": "husky"

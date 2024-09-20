@@ -1,11 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
-    "all": {
-      "dependsOn": ["lint", "prettier", "build"]
-    },
     "build": {
       "dependsOn": ["^build"]
+    },
+    "check": {
+      "dependsOn": ["^check"]
     },
     "lint": {
       "dependsOn": ["^lint"]
