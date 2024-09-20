@@ -12,8 +12,8 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "check": "tsc --noEmit",
-    "lint": "eslint src/{**,}/*.ts --fix",
-    "prettier": "prettier src/{**,}/*.ts --write"
+    "lint": "eslint 'src/**/*.ts' --fix",
+    "prettier": "prettier 'src/**/*.ts' --write --list-different"
   },
   "dependencies": {
     "@multi-transaction/core": "workspace:*",
