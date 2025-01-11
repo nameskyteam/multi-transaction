@@ -13,7 +13,11 @@ import {
   ViewOptions,
 } from '@multi-transaction/core';
 
-export interface MultiSendWalletSelector extends WalletSelector, Send, Call, View {
+export interface MultiSendWalletSelector
+  extends WalletSelector,
+    Send,
+    Call,
+    View {
   /**
    * Account that is login
    */
@@ -27,12 +31,17 @@ export interface MultiSendWalletSelector extends WalletSelector, Send, Call, Vie
   /**
    * Is login access key available
    */
-  isLoginAccessKeyAvailable(options?: IsLoginAccessKeyAvailableOptions): Promise<boolean>;
+  isLoginAccessKeyAvailable(
+    options?: IsLoginAccessKeyAvailableOptions,
+  ): Promise<boolean>;
 
   /**
    * Send multiple transactions and return success value of last transaction
    */
-  send<Value>(mTransaction: MultiTransaction, options?: MultiSendWalletSelectorSendOptions<Value>): Promise<Value>;
+  send<Value>(
+    mTransaction: MultiTransaction,
+    options?: MultiSendWalletSelectorSendOptions<Value>,
+  ): Promise<Value>;
 
   /**
    * Send multiple transactions and return outcomes
@@ -45,17 +54,23 @@ export interface MultiSendWalletSelector extends WalletSelector, Send, Call, Vie
   /**
    * Call a contract method and return success value
    */
-  call<Value, Args = EmptyArgs>(options: MultiSendWalletSelectorCallOptions<Value, Args>): Promise<Value>;
+  call<Value, Args = EmptyArgs>(
+    options: MultiSendWalletSelectorCallOptions<Value, Args>,
+  ): Promise<Value>;
 
   /**
    * Call a contract method and return outcome
    */
-  callRaw<Args = EmptyArgs>(options: MultiSendWalletSelectorCallRawOptions<Args>): Promise<FinalExecutionOutcome>;
+  callRaw<Args = EmptyArgs>(
+    options: MultiSendWalletSelectorCallRawOptions<Args>,
+  ): Promise<FinalExecutionOutcome>;
 
   /**
    * View a contract method and return success value
    */
-  view<Value, Args = EmptyArgs>(options: ViewOptions<Value, Args>): Promise<Value>;
+  view<Value, Args = EmptyArgs>(
+    options: ViewOptions<Value, Args>,
+  ): Promise<Value>;
 }
 
 export type IsLoginAccessKeyAvailableOptions = {
@@ -63,15 +78,19 @@ export type IsLoginAccessKeyAvailableOptions = {
   requiredAllowance?: string;
 };
 
-export type MultiSendWalletSelectorCallOptions<Value, Args> = CallOptions<Value, Args> & {
+export type MultiSendWalletSelectorCallOptions<Value, Args> = CallOptions<
+  Value,
+  Args
+> & {
   walletId?: string;
   callbackUrl?: string;
 };
 
-export type MultiSendWalletSelectorCallRawOptions<Args> = CallRawOptions<Args> & {
-  walletId?: string;
-  callbackUrl?: string;
-};
+export type MultiSendWalletSelectorCallRawOptions<Args> =
+  CallRawOptions<Args> & {
+    walletId?: string;
+    callbackUrl?: string;
+  };
 
 export type MultiSendWalletSelectorSendOptions<Value> = SendOptions<Value> & {
   walletId?: string;

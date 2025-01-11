@@ -130,10 +130,14 @@ export class MultiAction {
   }
 
   get nft(): NonFungibleTokenFunctionCall<this> {
-    return nonFungibleTokenFunctionCall((options) => this.functionCall(options));
+    return nonFungibleTokenFunctionCall((options) =>
+      this.functionCall(options),
+    );
   }
 
   get storage(): StorageManagementFunctionCall<this> {
-    return storageManagementFunctionCall((options) => this.functionCall(options));
+    return storageManagementFunctionCall((options) =>
+      this.functionCall(options),
+    );
   }
 }

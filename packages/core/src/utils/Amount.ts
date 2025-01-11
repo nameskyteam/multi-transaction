@@ -50,7 +50,11 @@ export class Amount {
    * @param units units
    * @param decimalPlaces decimal places
    */
-  static format(amount: Numeric, units: AmountUnits, decimalPlaces?: number): string {
+  static format(
+    amount: Numeric,
+    units: AmountUnits,
+    decimalPlaces?: number,
+  ): string {
     amount = Units.format(amount, Amount.unitsToDecimals(units));
     if (decimalPlaces) {
       return amount.toFixed(decimalPlaces);

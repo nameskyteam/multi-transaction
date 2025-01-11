@@ -2,9 +2,16 @@ import { FinalExecutionOutcome, FinalExecutionStatus } from '@near-js/types';
 import { parseRpcError } from '@near-js/utils';
 import { Buffer } from 'buffer';
 import { Parser } from './Parser';
-import { ParseOutcomeError, ReceiptErrorMessage, ReceiptError } from '../errors';
+import {
+  ParseOutcomeError,
+  ReceiptErrorMessage,
+  ReceiptError,
+} from '../errors';
 
-export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parser: Parser<Value> = Parser.json()): Value {
+export function parseOutcomeValue<Value>(
+  outcome: FinalExecutionOutcome,
+  parser: Parser<Value> = Parser.json(),
+): Value {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
   if (successValue) {
     const valueRaw = Buffer.from(successValue, 'base64');
@@ -16,14 +23,20 @@ export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome, parser:
   }
 }
 
-export function throwReceiptErrorsFromOutcomes(outcomes: FinalExecutionOutcome[]) {
-  const errors = outcomes.map((outcome) => getReceiptErrorsFromOutcome(outcome)).flat();
+export function throwReceiptErrorsFromOutcomes(
+  outcomes: FinalExecutionOutcome[],
+) {
+  const errors = outcomes
+    .map((outcome) => getReceiptErrorsFromOutcome(outcome))
+    .flat();
   if (errors.length !== 0) {
     throw new ReceiptError(errors);
   }
 }
 
-function getReceiptErrorsFromOutcome(outcome: FinalExecutionOutcome): ReceiptErrorMessage[] {
+function getReceiptErrorsFromOutcome(
+  outcome: FinalExecutionOutcome,
+): ReceiptErrorMessage[] {
   const errors: ReceiptErrorMessage[] = [];
   outcome.receipts_outcome.forEach((receipt) => {
     const status = receipt.outcome.status;

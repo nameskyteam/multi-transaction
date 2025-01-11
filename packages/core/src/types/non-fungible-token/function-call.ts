@@ -1,4 +1,10 @@
-import { NftTransferArgs, NftTransferCallArgs, NftApproveArgs, NftRevokeArgs, NftRevokeAllArgs } from './args';
+import {
+  NftTransferArgs,
+  NftTransferCallArgs,
+  NftApproveArgs,
+  NftRevokeArgs,
+  NftRevokeAllArgs,
+} from './args';
 
 export type NonFungibleTokenFunctionCall<T> = {
   /**

@@ -1,4 +1,7 @@
-export { MultiSendWalletSelectorOptions, setupMultiSendWalletSelector } from './multi-send-wallet-selector';
+export {
+  MultiSendWalletSelectorOptions,
+  setupMultiSendWalletSelector,
+} from './multi-send-wallet-selector';
 export {
   IsLoginAccessKeyAvailableOptions,
   MultiSendWalletSelector,

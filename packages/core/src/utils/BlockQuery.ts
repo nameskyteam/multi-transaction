@@ -101,7 +101,10 @@ export class BlockQuery {
    * });
    */
   async height(provider: BlockQueryProvider): Promise<BlockQuery> {
-    if ('blockId' in this.reference && typeof this.reference.blockId === 'number') {
+    if (
+      'blockId' in this.reference &&
+      typeof this.reference.blockId === 'number'
+    ) {
       return BlockQuery.height(this.reference.blockId);
     }
     const block = await provider.block(this.toReference());
@@ -145,7 +148,10 @@ export class BlockQuery {
    * });
    */
   async hash(provider: BlockQueryProvider): Promise<BlockQuery> {
-    if ('blockId' in this.reference && typeof this.reference.blockId === 'string') {
+    if (
+      'blockId' in this.reference &&
+      typeof this.reference.blockId === 'string'
+    ) {
       return BlockQuery.hash(this.reference.blockId);
     }
     const block = await provider.block(this.toReference());

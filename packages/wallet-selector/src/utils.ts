@@ -1,5 +1,10 @@
 import { Action as WalletSelectorAction } from '@near-wallet-selector/core';
-import { MultiTransaction, Transaction, Action, UnreachableError } from '@multi-transaction/core';
+import {
+  MultiTransaction,
+  Transaction,
+  Action,
+  UnreachableError,
+} from '@multi-transaction/core';
 
 type WalletSelectorTransaction = {
   signerId?: string;
@@ -7,11 +12,17 @@ type WalletSelectorTransaction = {
   actions: WalletSelectorAction[];
 };
 
-export function parseWalletSelectorTransactions(mTransaction: MultiTransaction): WalletSelectorTransaction[] {
-  return mTransaction.toTransactions().map((transaction) => parseWalletSelectorTransaction(transaction));
+export function parseWalletSelectorTransactions(
+  mTransaction: MultiTransaction,
+): WalletSelectorTransaction[] {
+  return mTransaction
+    .toTransactions()
+    .map((transaction) => parseWalletSelectorTransaction(transaction));
 }
 
-function parseWalletSelectorTransaction(transaction: Transaction): WalletSelectorTransaction {
+function parseWalletSelectorTransaction(
+  transaction: Transaction,
+): WalletSelectorTransaction {
   const { signerId, receiverId, actions } = transaction;
   return {
     signerId,

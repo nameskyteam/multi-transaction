@@ -1,4 +1,8 @@
-import { setupWalletSelector, WalletSelector, WalletSelectorParams } from '@near-wallet-selector/core';
+import {
+  setupWalletSelector,
+  WalletSelector,
+  WalletSelectorParams,
+} from '@near-wallet-selector/core';
 import { FinalExecutionOutcome } from '@near-js/types';
 import { PublicKey } from '@near-js/crypto';
 import { Near } from '@near-js/wallet-account';
@@ -42,14 +46,18 @@ export async function setupMultiSendWalletSelector(
   return MULTI_SEND_WALLET_SELECTOR;
 }
 
-function createMultiSendWalletSelector(selector: WalletSelector): MultiSendWalletSelector {
+function createMultiSendWalletSelector(
+  selector: WalletSelector,
+): MultiSendWalletSelector {
   const near = new Near(selector.options.network);
 
   return {
     ...selector,
 
     getActiveAccount() {
-      return this.store.getState().accounts.find((accountState) => accountState.active);
+      return this.store
+        .getState()
+        .accounts.find((accountState) => accountState.active);
     },
 
     getAccounts() {
@@ -57,15 +65,19 @@ function createMultiSendWalletSelector(selector: WalletSelector): MultiSendWalle
     },
 
     async isLoginAccessKeyAvailable(options = {}) {
-      const { accountId = this.getActiveAccount()?.accountId, requiredAllowance = Amount.parse('0.01', 'NEAR') } =
-        options;
+      const {
+        accountId = this.getActiveAccount()?.accountId,
+        requiredAllowance = Amount.parse('0.01', 'NEAR'),
+      } = options;
 
       if (!accountId) {
         return false;
       }
 
       const accountStates = this.getAccounts();
-      const accountState = accountStates.find((accountState) => accountState.accountId === accountId);
+      const accountState = accountStates.find(
+        (accountState) => accountState.accountId === accountId,
+      );
 
       const publicKey = accountState?.publicKey;
 
@@ -155,7 +167,15 @@ function createMultiSendWalletSelector(selector: WalletSelector): MultiSendWalle
     },
 
     async callRaw(options) {
-      const { contractId, methodName, args, attachedDeposit, gas, stringifier, ...sendRawOptions } = options;
+      const {
+        contractId,
+        methodName,
+        args,
+        attachedDeposit,
+        gas,
+        stringifier,
+        ...sendRawOptions
+      } = options;
 
       const mTransaction = MultiTransaction.batch(contractId).functionCall({
         methodName,
@@ -194,4 +214,6 @@ function createMultiSendWalletSelector(selector: WalletSelector): MultiSendWalle
   };
 }
 
-export type MultiSendWalletSelectorOptions = WalletSelectorParams | { selector: WalletSelector };
+export type MultiSendWalletSelectorOptions =
+  | WalletSelectorParams
+  | { selector: WalletSelector };

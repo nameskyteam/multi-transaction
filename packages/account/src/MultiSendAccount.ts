@@ -36,7 +36,10 @@ export class MultiSendAccount extends Account implements Send, Call, View {
   /**
    * Send multiple transactions and return success value of last transaction
    */
-  async send<Value>(mTransaction: MultiTransaction, options: MultiSendAccountSendOptions<Value> = {}): Promise<Value> {
+  async send<Value>(
+    mTransaction: MultiTransaction,
+    options: MultiSendAccountSendOptions<Value> = {},
+  ): Promise<Value> {
     const { parser, ...sendRawOptions } = options;
     const outcomes = await this.sendRaw(mTransaction, sendRawOptions);
     const outcome = outcomes[outcomes.length - 1];
@@ -75,7 +78,9 @@ export class MultiSendAccount extends Account implements Send, Call, View {
   /**
    * Call a contract method and return success value
    */
-  async call<Value, Args = EmptyArgs>(options: MultiSendAccountCallOptions<Value, Args>): Promise<Value> {
+  async call<Value, Args = EmptyArgs>(
+    options: MultiSendAccountCallOptions<Value, Args>,
+  ): Promise<Value> {
     const { parser, ...callRawOptions } = options;
     const outcome = await this.callRaw(callRawOptions);
     return parseOutcomeValue(outcome, parser);
@@ -84,8 +89,18 @@ export class MultiSendAccount extends Account implements Send, Call, View {
   /**
    * Call a contract method and return outcome
    */
-  async callRaw<Args = EmptyArgs>(options: MultiSendAccountCallRawOptions<Args>): Promise<FinalExecutionOutcome> {
-    const { contractId, methodName, args, attachedDeposit, gas, stringifier, ...sendRawOptions } = options;
+  async callRaw<Args = EmptyArgs>(
+    options: MultiSendAccountCallRawOptions<Args>,
+  ): Promise<FinalExecutionOutcome> {
+    const {
+      contractId,
+      methodName,
+      args,
+      attachedDeposit,
+      gas,
+      stringifier,
+      ...sendRawOptions
+    } = options;
 
     const mTransaction = MultiTransaction.batch(contractId).functionCall({
       methodName,
@@ -103,7 +118,9 @@ export class MultiSendAccount extends Account implements Send, Call, View {
   /**
    * View a contract method and return success value
    */
-  async view<Value, Args = EmptyArgs>(options: ViewOptions<Value, Args>): Promise<Value> {
+  async view<Value, Args = EmptyArgs>(
+    options: ViewOptions<Value, Args>,
+  ): Promise<Value> {
     const {
       contractId,
       methodName,

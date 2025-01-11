@@ -17,7 +17,9 @@ import {
 import { Amount } from './Amount';
 import { Gas } from './Gas';
 
-export function fungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): FungibleTokenFunctionCall<T> {
+export function fungibleTokenFunctionCall<T>(
+  functionCall: FunctionCall<T>,
+): FungibleTokenFunctionCall<T> {
   const transfer = (options: FtTransferOptions): T => {
     const { args, gas } = options;
     return functionCall({
@@ -41,7 +43,9 @@ export function fungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): Fun
   return { transfer, transfer_call };
 }
 
-export function nonFungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): NonFungibleTokenFunctionCall<T> {
+export function nonFungibleTokenFunctionCall<T>(
+  functionCall: FunctionCall<T>,
+): NonFungibleTokenFunctionCall<T> {
   const transfer = (options: NftTransferOptions): T => {
     const { args, gas } = options;
     return functionCall({
@@ -63,7 +67,11 @@ export function nonFungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): 
   };
 
   const approve = (options: NftApproveOptions): T => {
-    const { args, attachedDeposit = Amount.parse('0.005', 'NEAR'), gas } = options;
+    const {
+      args,
+      attachedDeposit = Amount.parse('0.005', 'NEAR'),
+      gas,
+    } = options;
     return functionCall({
       methodName: 'nft_approve',
       args,
@@ -95,7 +103,9 @@ export function nonFungibleTokenFunctionCall<T>(functionCall: FunctionCall<T>): 
   return { transfer, transfer_call, approve, revoke, revoke_all };
 }
 
-export function storageManagementFunctionCall<T>(functionCall: FunctionCall<T>): StorageManagementFunctionCall<T> {
+export function storageManagementFunctionCall<T>(
+  functionCall: FunctionCall<T>,
+): StorageManagementFunctionCall<T> {
   const deposit = (options: StorageDepositOptions): T => {
     const { args, attachedDeposit, gas } = options;
     return functionCall({

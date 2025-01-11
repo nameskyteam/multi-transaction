@@ -1,4 +1,8 @@
-import { StorageDepositArgs, StorageWithdrawArgs, StorageUnregisterArgs } from './args';
+import {
+  StorageDepositArgs,
+  StorageWithdrawArgs,
+  StorageUnregisterArgs,
+} from './args';
 
 export type StorageManagementFunctionCall<T> = {
   /**

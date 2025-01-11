@@ -1,5 +1,9 @@
 import { MultiTransactionError } from '../errors';
-import { fungibleTokenFunctionCall, nonFungibleTokenFunctionCall, storageManagementFunctionCall } from '../utils';
+import {
+  fungibleTokenFunctionCall,
+  nonFungibleTokenFunctionCall,
+  storageManagementFunctionCall,
+} from '../utils';
 import {
   EmptyArgs,
   AccessKey,
@@ -20,7 +24,9 @@ export class MultiTransaction {
 
   private get transaction(): InternalTransaction {
     if (this.transactions.length === 0) {
-      throw new MultiTransactionError('Transaction not found. Use `.batch` to add a transaction');
+      throw new MultiTransactionError(
+        'Transaction not found. Use `.batch` to add a transaction',
+      );
     }
     return this.transactions[this.transactions.length - 1];
   }
@@ -31,7 +37,9 @@ export class MultiTransaction {
   }
 
   static fromTransactions(transactions: Transaction[]): MultiTransaction {
-    return MultiTransaction.new().addTransactions(fromTransactions(transactions));
+    return MultiTransaction.new().addTransactions(
+      fromTransactions(transactions),
+    );
   }
 
   toTransactions(): Transaction[] {
@@ -65,7 +73,9 @@ export class MultiTransaction {
    * Add a transaction following previous transactions
    */
   batch(receiverId: string, signerId?: string): this {
-    return this.addTransactions([{ signerId, receiverId, mAction: MultiAction.new() }]);
+    return this.addTransactions([
+      { signerId, receiverId, mAction: MultiAction.new() },
+    ]);
   }
 
   /**
@@ -145,11 +155,15 @@ export class MultiTransaction {
   }
 
   get nft(): NonFungibleTokenFunctionCall<this> {
-    return nonFungibleTokenFunctionCall((options) => this.functionCall(options));
+    return nonFungibleTokenFunctionCall((options) =>
+      this.functionCall(options),
+    );
   }
 
   get storage(): StorageManagementFunctionCall<this> {
-    return storageManagementFunctionCall((options) => this.functionCall(options));
+    return storageManagementFunctionCall((options) =>
+      this.functionCall(options),
+    );
   }
 }
 
