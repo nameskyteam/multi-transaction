@@ -1,6 +1,7 @@
 export class ReceiptError extends Error {
   constructor(messages: ReceiptErrorMessage[]) {
     super(JSON.stringify(messages));
+    this.name = 'ReceiptError';
   }
 }
 
