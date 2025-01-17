@@ -1,31 +1,31 @@
 export type Token = {
   token_id: string;
   owner_id: string;
-  metadata?: TokenMetadata;
-  approved_account_ids?: Record<string, number>;
+  metadata?: TokenMetadata | null;
+  approved_account_ids?: Record<string, number> | null;
 };
 
 export type TokenMetadata = {
-  title?: string;
-  description?: string;
-  media?: string;
-  media_hash?: string;
-  copies?: number;
-  issued_at?: string;
-  expires_at?: string;
-  starts_at?: string;
-  updated_at?: string;
-  extra?: string;
-  reference?: string;
-  reference_hash?: string;
+  title?: string | null;
+  description?: string | null;
+  media?: string | null;
+  media_hash?: string | null;
+  copies?: number | null;
+  issued_at?: string | null;
+  expires_at?: string | null;
+  starts_at?: string | null;
+  updated_at?: string | null;
+  extra?: string | null;
+  reference?: string | null;
+  reference_hash?: string | null;
 };
 
 export type NFTContractMetadata = {
   spec: string;
   name: string;
   symbol: string;
-  icon?: string;
-  base_uri?: string;
-  reference?: string;
-  reference_hash?: string;
+  icon?: string | null;
+  base_uri?: string | null;
+  reference?: string | null;
+  reference_hash?: string | null;
 };

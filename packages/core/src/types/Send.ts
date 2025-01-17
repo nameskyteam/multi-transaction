@@ -7,6 +7,7 @@ export interface Send {
     mTransaction: MultiTransaction,
     options?: SendOptions<Value>,
   ): Promise<Value>;
+
   sendRaw(
     mTransaction: MultiTransaction,
     options?: SendRawOptions,
