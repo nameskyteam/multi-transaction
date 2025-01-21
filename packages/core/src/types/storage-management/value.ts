@@ -5,5 +5,5 @@ export type StorageBalance = {
 
 export type StorageBalanceBounds = {
   min: string;
-  max?: string | null;
+  max: string | null;
 };
