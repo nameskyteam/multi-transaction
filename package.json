@@ -4,16 +4,15 @@
   "scripts": {
     "build": "turbo build --no-daemon",
     "check": "turbo check --no-daemon",
-    "lint": "turbo lint --no-daemon && eslint '*.js' --fix",
-    "prettier": "turbo prettier --no-daemon && prettier '*.js' --write --list-different",
+    "lint": "turbo lint --no-daemon && eslint '*.mjs' --fix",
+    "prettier": "turbo prettier --no-daemon && prettier '*.mjs' --write --list-different",
     "prepare": "husky"
   },
   "devDependencies": {
+    "@eslint/js": "^9.23.0",
     "@types/jest": "^29.5.13",
     "@types/node": "^20.17.12",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
-    "eslint": "^8.57.1",
+    "eslint": "^9.23.0",
     "husky": "^9.1.6",
     "jest": "^29.7.0",
     "lint-staged": "^15.2.10",
@@ -21,7 +20,8 @@
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "turbo": "^2.1.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.28.0"
   },
   "packageManager": "pnpm@9.11.0"
 }
