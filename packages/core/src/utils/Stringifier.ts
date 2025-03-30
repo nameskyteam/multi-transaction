@@ -14,7 +14,7 @@ export class Stringifier<T> {
     return new Stringifier((data) => Buffer.from(JSON.stringify(data)));
   }
 
-  static borsh<T>(schema: BorshSchema): Stringifier<T> {
+  static borsh<T>(schema: BorshSchema<T>): Stringifier<T> {
     return new Stringifier((data) => borshSerialize(schema, data));
   }
 

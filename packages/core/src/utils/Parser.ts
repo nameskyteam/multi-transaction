@@ -14,7 +14,7 @@ export class Parser<T> {
     return new Parser((buffer) => JSON.parse(Buffer.from(buffer).toString()));
   }
 
-  static borsh<T>(schema: BorshSchema): Parser<T> {
+  static borsh<T>(schema: BorshSchema<T>): Parser<T> {
     return new Parser((buffer) => borshDeserialize(schema, buffer));
   }
 
