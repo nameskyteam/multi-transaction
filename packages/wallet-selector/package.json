@@ -17,9 +17,10 @@
   },
   "dependencies": {
     "@multi-transaction/core": "workspace:*",
-    "@near-js/crypto": "^1.2.4",
-    "@near-js/types": "^0.2.1",
-    "@near-js/wallet-account": "^1.2.2",
-    "@near-wallet-selector/core": "^8.9.13"
+    "@near-js/accounts": "^2.2.2",
+    "@near-js/crypto": "^2.2.2",
+    "@near-js/providers": "^2.2.2",
+    "@near-js/types": "^2.2.2",
+    "@near-wallet-selector/core": "^9.0.3"
   }
 }

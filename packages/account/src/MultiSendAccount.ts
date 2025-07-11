@@ -1,4 +1,6 @@
-import { Account, Connection } from '@near-js/accounts';
+import { Account } from '@near-js/accounts';
+import { Provider } from '@near-js/providers';
+import { Signer } from '@near-js/signers';
 import { FinalExecutionOutcome } from '@near-js/types';
 import {
   MultiTransaction,
@@ -21,16 +23,24 @@ import {
 import { parseNearApiJsTransactions } from './utils';
 
 export class MultiSendAccount extends Account implements Send, Call, View {
-  private constructor(connection: Connection, accountId: string) {
-    super(connection, accountId);
+  private constructor(provider: Provider, accountId = '', signer?: Signer) {
+    super(accountId, provider, signer);
   }
 
-  static new(connection: Connection, accountId = ''): MultiSendAccount {
-    return new MultiSendAccount(connection, accountId);
+  static new(
+    provider: Provider,
+    accountId?: string,
+    signer?: Signer,
+  ): MultiSendAccount {
+    return new MultiSendAccount(provider, accountId, signer);
   }
 
   static fromAccount(account: Account): MultiSendAccount {
-    return new MultiSendAccount(account.connection, account.accountId);
+    return new MultiSendAccount(
+      account.provider,
+      account.accountId,
+      account.getSigner(),
+    );
   }
 
   /**
@@ -130,6 +140,7 @@ export class MultiSendAccount extends Account implements Send, Call, View {
       blockQuery = BlockQuery.OPTIMISTIC,
     } = options;
 
+    // TODO: change to raw query
     return this.viewFunction({
       contractId,
       methodName,

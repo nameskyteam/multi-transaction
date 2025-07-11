@@ -5,7 +5,7 @@ import {
 } from '@near-wallet-selector/core';
 import { FinalExecutionOutcome } from '@near-js/types';
 import { PublicKey } from '@near-js/crypto';
-import { Near } from '@near-js/wallet-account';
+import { JsonRpcProvider } from '@near-js/providers';
 import {
   MultiTransaction,
   Amount,
@@ -19,6 +19,7 @@ import {
 } from '@multi-transaction/core';
 import { MultiSendWalletSelector } from './MultiSendWalletSelector';
 import { parseWalletSelectorTransactions } from './utils';
+import { Account } from '@near-js/accounts';
 
 let MULTI_SEND_WALLET_SELECTOR: MultiSendWalletSelector | undefined;
 
@@ -49,7 +50,9 @@ export async function setupMultiSendWalletSelector(
 function createMultiSendWalletSelector(
   selector: WalletSelector,
 ): MultiSendWalletSelector {
-  const near = new Near(selector.options.network);
+  const provider = new JsonRpcProvider({
+    url: selector.options.network.nodeUrl,
+  });
 
   return {
     ...selector,
@@ -85,8 +88,8 @@ function createMultiSendWalletSelector(
         return false;
       }
 
-      const account = await near.account(accountId);
-      const accessKeys = await account.getAccessKeys();
+      const account = new Account(accountId, provider);
+      const { keys: accessKeys } = await account.getAccessKeyList();
       const accessKey = accessKeys.find((accessKey) => {
         const remotePublicKey = PublicKey.fromString(accessKey.public_key);
         const localPublicKey = PublicKey.fromString(publicKey);
@@ -200,9 +203,8 @@ function createMultiSendWalletSelector(
         blockQuery = BlockQuery.OPTIMISTIC,
       } = options;
 
-      const viewer = await near.account('');
-
-      return viewer.viewFunction({
+      // TODO: change to raw query
+      return new Account('', provider).viewFunction({
         contractId,
         methodName,
         args: args as object,
