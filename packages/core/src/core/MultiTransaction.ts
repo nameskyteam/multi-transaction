@@ -5,7 +5,7 @@ import {
   storageManagementFunctionCall,
 } from '../utils';
 import {
-  EmptyArgs,
+  JsonArgs,
   AccessKey,
   Transaction,
   FunctionCallOptions,
@@ -137,7 +137,7 @@ export class MultiTransaction {
   /**
    * Add a FunctionCall Action following previous actions
    */
-  functionCall<Args = EmptyArgs>(options: FunctionCallOptions<Args>): this {
+  functionCall<Args = JsonArgs>(options: FunctionCallOptions<Args>): this {
     this.transaction.mAction.functionCall(options);
     return this;
   }

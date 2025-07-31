@@ -15,7 +15,7 @@ import {
   View,
   ViewOptions,
   Numeric,
-  EmptyArgs,
+  JsonArgs,
   FtTransferArgs,
   FtTransferCallArgs,
   FtBalanceOfArgs,
@@ -60,7 +60,7 @@ BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_DOWN,
 });
 
-export { MultiTransaction, MultiAction, EmptyArgs };
+export { MultiTransaction, MultiAction, JsonArgs };
 export {
   Send,
   SendOptions,

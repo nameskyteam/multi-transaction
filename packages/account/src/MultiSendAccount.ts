@@ -4,7 +4,7 @@ import { Signer } from '@near-js/signers';
 import { FinalExecutionOutcome } from '@near-js/types';
 import {
   MultiTransaction,
-  EmptyArgs,
+  JsonArgs,
   Send,
   SendOptions,
   SendRawOptions,
@@ -88,7 +88,7 @@ export class MultiSendAccount extends Account implements Send, Call, View {
   /**
    * Call a contract method and return success value
    */
-  async call<Value, Args = EmptyArgs>(
+  async call<Value, Args = JsonArgs>(
     options: MultiSendAccountCallOptions<Value, Args>,
   ): Promise<Value> {
     const { parser, ...callRawOptions } = options;
@@ -99,7 +99,7 @@ export class MultiSendAccount extends Account implements Send, Call, View {
   /**
    * Call a contract method and return outcome
    */
-  async callRaw<Args = EmptyArgs>(
+  async callRaw<Args = JsonArgs>(
     options: MultiSendAccountCallRawOptions<Args>,
   ): Promise<FinalExecutionOutcome> {
     const {
@@ -128,7 +128,7 @@ export class MultiSendAccount extends Account implements Send, Call, View {
   /**
    * View a contract method and return success value
    */
-  async view<Value, Args = EmptyArgs>(
+  async view<Value, Args = JsonArgs>(
     options: ViewOptions<Value, Args>,
   ): Promise<Value> {
     const {
