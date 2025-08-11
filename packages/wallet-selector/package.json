@@ -1,6 +1,6 @@
 {
   "name": "@multi-transaction/wallet-selector",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "license": "MIT",
   "description": "Multi Transaction Wallet Selector implementation.",
   "main": "dist/index.js",
@@ -17,9 +17,9 @@
   },
   "dependencies": {
     "@multi-transaction/core": "workspace:*",
-    "@near-js/crypto": "^1.2.4",
-    "@near-js/types": "^0.2.1",
-    "@near-js/wallet-account": "^1.2.2",
-    "@near-wallet-selector/core": "^8.9.13"
+    "@near-js/crypto": "=1.4.0",
+    "@near-js/types": "=0.3.0",
+    "@near-js/wallet-account": "=1.3.0",
+    "@near-wallet-selector/core": "=9.3.0"
   }
 }
