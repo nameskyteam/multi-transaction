@@ -77,7 +77,7 @@ export interface MultiSendWalletSelector
   ): Promise<Value>;
 
   /**
-   * View a contract method and return outcome
+   * View a contract method and return raw result
    */
   viewRaw<Args = JsonArgs>(
     options: ViewRawOptions<Args>,

@@ -143,6 +143,9 @@ export class MultiSendAccount extends Account implements Send, Call, View {
     return parser.parse(valueRaw);
   }
 
+  /**
+   * View a contract method and return raw result
+   */
   async viewRaw<Args = JsonArgs>(
     options: ViewRawOptions<Args>,
   ): Promise<CallContractViewFunctionResultRaw> {
