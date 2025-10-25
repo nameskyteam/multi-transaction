@@ -1,6 +1,6 @@
 {
   "name": "@multi-transaction/account",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "license": "MIT",
   "description": "Multi Transaction Account implementation.",
   "main": "dist/index.js",
@@ -16,12 +16,11 @@
     "prettier": "prettier 'src/**/*.ts' --write --list-different"
   },
   "dependencies": {
+    "@multi-transaction/common-utils": "workspace:*",
     "@multi-transaction/core": "workspace:*",
-    "@near-js/accounts": "^2.2.2",
-    "@near-js/crypto": "^2.2.2",
-    "@near-js/providers": "^2.2.2",
-    "@near-js/signers": "^2.2.2",
-    "@near-js/transactions": "^2.2.2",
-    "@near-js/types": "^2.2.2"
+    "@near-js/accounts": "=2.3.0",
+    "@near-js/providers": "=2.3.0",
+    "@near-js/signers": "=2.3.0",
+    "@near-js/types": "=2.3.0"
   }
 }

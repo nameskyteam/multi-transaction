@@ -20,7 +20,7 @@ import {
   parseOutcomeValue,
   throwReceiptErrorsFromOutcomes,
 } from '@multi-transaction/core';
-import { parseNearApiJsTransactions } from './utils';
+import { parseNearApiJsTransactions } from '@multi-transaction/common-utils';
 
 export class MultiSendAccount extends Account implements Send, Call, View {
   private constructor(provider: Provider, accountId = '', signer?: Signer) {

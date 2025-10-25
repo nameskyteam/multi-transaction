@@ -1,9 +1,3 @@
-import { PublicKey } from '@near-js/crypto';
-import {
-  actionCreators,
-  Action as NearApiJsAction,
-  AccessKey as NearApiJsAccessKey,
-} from '@near-js/transactions';
 import {
   MultiTransaction,
   Transaction,
@@ -11,8 +5,14 @@ import {
   AccessKey,
   UnreachableError,
 } from '@multi-transaction/core';
+import { PublicKey } from '@near-js/crypto';
+import {
+  actionCreators,
+  Action as NearApiJsAction,
+  AccessKey as NearApiJsAccessKey,
+} from '@near-js/transactions';
 
-type NearApiJsTransaction = {
+export type NearApiJsTransaction = {
   receiverId: string;
   actions: NearApiJsAction[];
 };
@@ -25,10 +25,11 @@ export function parseNearApiJsTransactions(
     .map((transaction) => parseNearApiJsTransaction(transaction));
 }
 
-function parseNearApiJsTransaction(
+export function parseNearApiJsTransaction(
   transaction: Transaction,
 ): NearApiJsTransaction {
-  const { receiverId, actions } = transaction;
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  const { signerId, receiverId, actions } = transaction;
   return {
     receiverId,
     actions: actions.map((action) => parseNearApiJsAction(action)),

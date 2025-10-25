@@ -18,7 +18,7 @@ import {
   throwReceiptErrorsFromOutcomes,
 } from '@multi-transaction/core';
 import { MultiSendWalletSelector } from './MultiSendWalletSelector';
-import { parseWalletSelectorTransactions } from './utils';
+import { parseNearApiJsTransactions } from '@multi-transaction/common-utils';
 import { Account } from '@near-js/accounts';
 
 let MULTI_SEND_WALLET_SELECTOR: MultiSendWalletSelector | undefined;
@@ -124,7 +124,7 @@ function createMultiSendWalletSelector(
     async sendRaw(mTransaction, options = {}) {
       const { throwReceiptErrors, walletId, callbackUrl } = options;
 
-      const transactions = parseWalletSelectorTransactions(mTransaction);
+      const transactions = parseNearApiJsTransactions(mTransaction);
 
       if (transactions.length === 0) {
         throw new SendTransactionError('Transaction not found.');
