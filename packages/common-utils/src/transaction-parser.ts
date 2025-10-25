@@ -13,6 +13,7 @@ import {
 } from '@near-js/transactions';
 
 export type NearApiJsTransaction = {
+  signerId?: string;
   receiverId: string;
   actions: NearApiJsAction[];
 };
@@ -28,9 +29,9 @@ export function parseNearApiJsTransactions(
 export function parseNearApiJsTransaction(
   transaction: Transaction,
 ): NearApiJsTransaction {
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   const { signerId, receiverId, actions } = transaction;
   return {
+    signerId,
     receiverId,
     actions: actions.map((action) => parseNearApiJsAction(action)),
   };
