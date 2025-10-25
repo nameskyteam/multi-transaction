@@ -1,6 +1,6 @@
 {
   "name": "@multi-transaction/common-utils",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.4",
   "license": "MIT",
   "description": "Multi Transaction common utilities.",
   "main": "dist/index.js",
