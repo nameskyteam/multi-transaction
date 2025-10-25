@@ -1,4 +1,7 @@
-import { FinalExecutionOutcome } from '@near-js/types';
+import {
+  CallContractViewFunctionResultRaw,
+  FinalExecutionOutcome,
+} from '@near-js/types';
 import { WalletSelector, AccountState } from '@near-wallet-selector/core';
 import {
   MultiTransaction,
@@ -12,6 +15,7 @@ import {
   View,
   ViewOptions,
 } from '@multi-transaction/core';
+import { ViewRawOptions } from '@multi-transaction/core';
 
 export interface MultiSendWalletSelector
   extends WalletSelector,
@@ -71,6 +75,13 @@ export interface MultiSendWalletSelector
   view<Value, Args = JsonArgs>(
     options: ViewOptions<Value, Args>,
   ): Promise<Value>;
+
+  /**
+   * View a contract method and return outcome
+   */
+  viewRaw<Args = JsonArgs>(
+    options: ViewRawOptions<Args>,
+  ): Promise<CallContractViewFunctionResultRaw>;
 }
 
 export type IsLoginAccessKeyAvailableOptions = {

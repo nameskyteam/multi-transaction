@@ -1,7 +1,10 @@
 import { Account } from '@near-js/accounts';
 import { Provider } from '@near-js/providers';
 import { Signer } from '@near-js/signers';
-import { FinalExecutionOutcome } from '@near-js/types';
+import {
+  CallContractViewFunctionResultRaw,
+  FinalExecutionOutcome,
+} from '@near-js/types';
 import {
   MultiTransaction,
   JsonArgs,
@@ -17,10 +20,12 @@ import {
   Parser,
   BlockQuery,
   SendTransactionError,
-  parseOutcomeValue,
-  throwReceiptErrorsFromOutcomes,
+  parseFinalExecutionOutcomeValue,
+  throwReceiptErrorsFromFinalExecutionOutcomes,
+  ViewRawOptions,
 } from '@multi-transaction/core';
 import { parseNearApiJsTransactions } from '@multi-transaction/common-utils';
+import { Buffer } from 'buffer';
 
 export class MultiSendAccount extends Account implements Send, Call, View {
   private constructor(provider: Provider, accountId = '', signer?: Signer) {
@@ -53,7 +58,7 @@ export class MultiSendAccount extends Account implements Send, Call, View {
     const { parser, ...sendRawOptions } = options;
     const outcomes = await this.sendRaw(mTransaction, sendRawOptions);
     const outcome = outcomes[outcomes.length - 1];
-    return parseOutcomeValue(outcome, parser);
+    return parseFinalExecutionOutcomeValue(outcome, parser);
   }
 
   /**
@@ -79,7 +84,7 @@ export class MultiSendAccount extends Account implements Send, Call, View {
     }
 
     if (throwReceiptErrors) {
-      throwReceiptErrorsFromOutcomes(outcomes);
+      throwReceiptErrorsFromFinalExecutionOutcomes(outcomes);
     }
 
     return outcomes;
@@ -93,7 +98,7 @@ export class MultiSendAccount extends Account implements Send, Call, View {
   ): Promise<Value> {
     const { parser, ...callRawOptions } = options;
     const outcome = await this.callRaw(callRawOptions);
-    return parseOutcomeValue(outcome, parser);
+    return parseFinalExecutionOutcomeValue(outcome, parser);
   }
 
   /**
@@ -131,23 +136,30 @@ export class MultiSendAccount extends Account implements Send, Call, View {
   async view<Value, Args = JsonArgs>(
     options: ViewOptions<Value, Args>,
   ): Promise<Value> {
+    const { parser = Parser.json(), ...viewRawOptions } = options;
+
+    const result = await this.viewRaw(viewRawOptions);
+    const valueRaw = Buffer.from(result.result);
+    return parser.parse(valueRaw);
+  }
+
+  async viewRaw<Args = JsonArgs>(
+    options: ViewRawOptions<Args>,
+  ): Promise<CallContractViewFunctionResultRaw> {
     const {
       contractId,
       methodName,
-      args,
+      args = {} as Args,
       stringifier = Stringifier.json(),
-      parser = Parser.json(),
       blockQuery = BlockQuery.OPTIMISTIC,
     } = options;
 
-    // TODO: change to raw query
-    return this.viewFunction({
-      contractId,
-      methodName,
-      args: args as object,
-      stringify: (args) => stringifier.stringifyOrSkip(args),
-      parse: (buffer) => parser.parse(buffer),
-      blockQuery: blockQuery.toReference(),
+    return this.provider.query({
+      ...blockQuery.toReference(),
+      request_type: 'call_function',
+      account_id: contractId,
+      method_name: methodName,
+      args_base64: stringifier.stringifyOrSkip(args).toString('base64'),
     });
   }
 }

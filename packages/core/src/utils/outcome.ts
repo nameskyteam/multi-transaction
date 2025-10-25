@@ -3,12 +3,12 @@ import { parseRpcError } from '@near-js/utils';
 import { Buffer } from 'buffer';
 import { Parser } from './Parser';
 import {
-  ParseOutcomeError,
+  ParseFinalExecutionOutcomeError,
   ReceiptErrorMessage,
   ReceiptError,
 } from '../errors';
 
-export function parseOutcomeValue<Value>(
+export function parseFinalExecutionOutcomeValue<Value>(
   outcome: FinalExecutionOutcome,
   parser: Parser<Value> = Parser.json(),
 ): Value {
@@ -19,22 +19,22 @@ export function parseOutcomeValue<Value>(
   } else if (successValue === '') {
     return undefined as Value;
   } else {
-    throw new ParseOutcomeError(`Execution status is Failure`);
+    throw new ParseFinalExecutionOutcomeError(`Execution status is Failure`);
   }
 }
 
-export function throwReceiptErrorsFromOutcomes(
+export function throwReceiptErrorsFromFinalExecutionOutcomes(
   outcomes: FinalExecutionOutcome[],
 ) {
   const errors = outcomes
-    .map((outcome) => getReceiptErrorsFromOutcome(outcome))
+    .map((outcome) => getReceiptErrorsFromFinalExecutionOutcome(outcome))
     .flat();
   if (errors.length !== 0) {
     throw new ReceiptError(errors);
   }
 }
 
-function getReceiptErrorsFromOutcome(
+function getReceiptErrorsFromFinalExecutionOutcome(
   outcome: FinalExecutionOutcome,
 ): ReceiptErrorMessage[] {
   const errors: ReceiptErrorMessage[] = [];

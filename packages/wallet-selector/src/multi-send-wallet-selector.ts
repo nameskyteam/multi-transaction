@@ -3,7 +3,10 @@ import {
   WalletSelector,
   WalletSelectorParams,
 } from '@near-wallet-selector/core';
-import { FinalExecutionOutcome } from '@near-js/types';
+import {
+  CallContractViewFunctionResultRaw,
+  FinalExecutionOutcome,
+} from '@near-js/types';
 import { PublicKey } from '@near-js/crypto';
 import { JsonRpcProvider } from '@near-js/providers';
 import {
@@ -14,12 +17,15 @@ import {
   Parser,
   SendTransactionError,
   BigNumber,
-  parseOutcomeValue,
-  throwReceiptErrorsFromOutcomes,
+  parseFinalExecutionOutcomeValue,
+  throwReceiptErrorsFromFinalExecutionOutcomes,
+  ViewRawOptions,
+  JsonArgs,
 } from '@multi-transaction/core';
 import { MultiSendWalletSelector } from './MultiSendWalletSelector';
 import { parseNearApiJsTransactions } from '@multi-transaction/common-utils';
 import { Account } from '@near-js/accounts';
+import { Buffer } from 'buffer';
 
 let MULTI_SEND_WALLET_SELECTOR: MultiSendWalletSelector | undefined;
 
@@ -118,7 +124,7 @@ function createMultiSendWalletSelector(
       const { parser, ...sendRawOptions } = options;
       const outcomes = await this.sendRaw(mTransaction, sendRawOptions);
       const outcome = outcomes?.[outcomes.length - 1];
-      return parseOutcomeValue(outcome, parser);
+      return parseFinalExecutionOutcomeValue(outcome, parser);
     },
 
     async sendRaw(mTransaction, options = {}) {
@@ -157,7 +163,7 @@ function createMultiSendWalletSelector(
       }
 
       if (throwReceiptErrors) {
-        throwReceiptErrorsFromOutcomes(outcomes);
+        throwReceiptErrorsFromFinalExecutionOutcomes(outcomes);
       }
 
       return outcomes;
@@ -166,7 +172,7 @@ function createMultiSendWalletSelector(
     async call(options) {
       const { parser, ...callRawOptions } = options;
       const outcome = await this.callRaw(callRawOptions);
-      return parseOutcomeValue(outcome, parser);
+      return parseFinalExecutionOutcomeValue(outcome, parser);
     },
 
     async callRaw(options) {
@@ -194,23 +200,29 @@ function createMultiSendWalletSelector(
     },
 
     async view(options) {
+      const { parser = Parser.json(), ...viewRawOptions } = options;
+      const result = await this.viewRaw(viewRawOptions);
+      const valueRaw = Buffer.from(result.result);
+      return parser.parse(valueRaw);
+    },
+
+    async viewRaw<Args = JsonArgs>(
+      options: ViewRawOptions<Args>,
+    ): Promise<CallContractViewFunctionResultRaw> {
       const {
         contractId,
         methodName,
-        args,
+        args = {} as Args,
         stringifier = Stringifier.json(),
-        parser = Parser.json(),
         blockQuery = BlockQuery.OPTIMISTIC,
       } = options;
 
-      // TODO: change to raw query
-      return new Account('', provider).viewFunction({
-        contractId,
-        methodName,
-        args: args as object,
-        stringify: (args) => stringifier.stringifyOrSkip(args),
-        parse: (buffer) => parser.parse(buffer),
-        blockQuery: blockQuery.toReference(),
+      return provider.query({
+        ...blockQuery.toReference(),
+        request_type: 'call_function',
+        account_id: contractId,
+        method_name: methodName,
+        args_base64: stringifier.stringifyOrSkip(args).toString('base64'),
       });
     },
   };

@@ -21,6 +21,7 @@
     "@near-js/accounts": "=2.3.0",
     "@near-js/providers": "=2.3.0",
     "@near-js/signers": "=2.3.0",
-    "@near-js/types": "=2.3.0"
+    "@near-js/types": "=2.3.0",
+    "buffer": "^6.0.3"
   }
 }

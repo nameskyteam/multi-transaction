@@ -1,11 +1,26 @@
 import { BigNumber } from 'bignumber.js';
-import { Buffer } from 'buffer';
-import { MultiAction, MultiTransaction } from './core';
-import { SendTransactionError, UnreachableError } from './errors';
-import {
-  Transaction,
-  Action,
-  AccessKey,
+
+BigNumber.config({
+  DECIMAL_PLACES: 100,
+  ROUNDING_MODE: BigNumber.ROUND_DOWN,
+});
+
+export { MultiTransaction, MultiAction } from './core';
+
+export {
+  BlockQuery,
+  BlockQueryProvider,
+  BlockWithHeader,
+  Stringifier,
+  Parser,
+  parseFinalExecutionOutcomeValue,
+  throwReceiptErrorsFromFinalExecutionOutcomes,
+} from './utils';
+
+export { Units, Amount, AmountUnits, Gas, GasUnits } from './utils';
+
+export {
+  JsonArgs,
   Send,
   SendOptions,
   SendRawOptions,
@@ -14,12 +29,19 @@ import {
   CallRawOptions,
   View,
   ViewOptions,
-  Numeric,
-  JsonArgs,
+  ViewRawOptions,
+} from './types';
+
+export { Transaction, Action, AccessKey } from './types';
+
+export {
   FtTransferArgs,
   FtTransferCallArgs,
   FtBalanceOfArgs,
   FungibleTokenMetadata,
+} from './types';
+
+export {
   NftTransferArgs,
   NftTransferCallArgs,
   NftTokenArgs,
@@ -33,6 +55,9 @@ import {
   Token,
   TokenMetadata,
   NFTContractMetadata,
+} from './types';
+
+export {
   StorageDepositArgs,
   StorageWithdrawArgs,
   StorageUnregisterArgs,
@@ -40,85 +65,15 @@ import {
   StorageBalance,
   StorageBalanceBounds,
 } from './types';
-import {
-  Units,
-  Amount,
-  AmountUnits,
-  Gas,
-  GasUnits,
-  BlockQuery,
-  BlockQueryProvider,
-  BlockWithHeader,
-  Parser,
-  Stringifier,
-  parseOutcomeValue,
-  throwReceiptErrorsFromOutcomes,
-} from './utils';
 
-BigNumber.config({
-  DECIMAL_PLACES: 100,
-  ROUNDING_MODE: BigNumber.ROUND_DOWN,
-});
+export { SendTransactionError, UnreachableError } from './errors';
 
-export { MultiTransaction, MultiAction, JsonArgs };
+export { BigNumber } from 'bignumber.js';
+
 export {
-  Send,
-  SendOptions,
-  SendRawOptions,
-  Call,
-  CallOptions,
-  CallRawOptions,
-  View,
-  ViewOptions,
-};
-export {
-  BlockQuery,
-  BlockQueryProvider,
-  BlockWithHeader,
-  Stringifier,
-  Parser,
-  parseOutcomeValue,
-  throwReceiptErrorsFromOutcomes,
-};
-export {
-  Buffer,
-  BigNumber,
-  Numeric,
-  Units,
-  Amount,
-  AmountUnits,
-  Gas,
-  GasUnits,
-};
-export { Transaction, Action, AccessKey };
-export { SendTransactionError, UnreachableError };
-export {
-  FtTransferArgs,
-  FtTransferCallArgs,
-  FtBalanceOfArgs,
-  FungibleTokenMetadata,
-};
-export {
-  NftTransferArgs,
-  NftTransferCallArgs,
-  NftTokenArgs,
-  NftApproveArgs,
-  NftRevokeArgs,
-  NftRevokeAllArgs,
-  NftIsApprovedArgs,
-  NftTokensArgs,
-  NftSupplyForOwnerArgs,
-  NftTokensForOwnerArgs,
-  Token,
-  TokenMetadata,
-  NFTContractMetadata,
-};
-export {
-  StorageDepositArgs,
-  StorageWithdrawArgs,
-  StorageUnregisterArgs,
-  StorageBalanceOfArgs,
-  StorageBalance,
-  StorageBalanceBounds,
-};
-export * from 'borsher';
+  borshSerialize,
+  borshDeserialize,
+  BorshSchema,
+  Unit,
+  Infer,
+} from 'borsher';
