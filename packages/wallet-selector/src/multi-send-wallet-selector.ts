@@ -23,7 +23,10 @@ import {
   JsonArgs,
 } from '@multi-transaction/core';
 import { MultiSendWalletSelector } from './MultiSendWalletSelector';
-import { parseNearApiJsTransactions } from '@multi-transaction/common-utils';
+import {
+  parseNearApiJsTransactions,
+  yieldNow,
+} from '@multi-transaction/common-utils';
 import { Account } from '@near-js/accounts';
 import { Buffer } from 'buffer';
 
@@ -159,7 +162,9 @@ function createMultiSendWalletSelector(
       }
 
       while (!outcomes) {
-        // browser wallet, wait for direction
+        // Waiting for Browser Wallet direction
+        // Don't block the thread
+        await yieldNow();
       }
 
       if (throwReceiptErrors) {
