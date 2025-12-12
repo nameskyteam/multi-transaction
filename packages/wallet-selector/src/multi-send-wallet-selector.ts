@@ -162,7 +162,7 @@ function createMultiSendWalletSelector(
       }
 
       while (!outcomes) {
-        // Waiting for Browser Wallet direction
+        // Redirecting to browser wallet
         // Don't block the thread
         await yieldNow();
       }
