@@ -10,6 +10,8 @@ export type Action =
   | AddKeyAction
   | DeleteKeyAction
   | DeployContractAction
+  | DeployGlobalContractAction
+  | UseGlobalContractAction
   | StakeAction
   | FunctionCallAction
   | TransferAction;
@@ -36,6 +38,16 @@ export type DeleteKeyAction = {
 export type DeployContractAction = {
   type: 'DeployContract';
   params: DeployContractParams;
+};
+
+export type DeployGlobalContractAction = {
+  type: 'DeployGlobalContract';
+  params: DeployGlobalContractParams;
+};
+
+export type UseGlobalContractAction = {
+  type: 'UseGlobalContract';
+  params: UseGlobalContractParams;
 };
 
 export type StakeAction = {
@@ -70,6 +82,15 @@ export type DeployContractParams = {
   code: Uint8Array;
 };
 
+export type DeployGlobalContractParams = {
+  code: Uint8Array;
+  deployMode: GlobalContractDeployMode;
+};
+
+export type UseGlobalContractParams = {
+  contractIdentifier: GlobalContractIdentifier;
+};
+
 export type StakeParams = {
   amount: string;
   publicKey: string;
@@ -85,6 +106,18 @@ export type FunctionCallParams = {
 export type TransferParams = {
   amount: string;
 };
+
+export type GlobalContractDeployMode = 'CodeHash' | 'AccountId';
+
+export type GlobalContractIdentifier =
+  | {
+      type: 'CodeHash';
+      codeHash: Uint8Array;
+    }
+  | {
+      type: 'AccountId';
+      accountId: string;
+    };
 
 export type AccessKey = {
   permission: AccessKeyPermission;

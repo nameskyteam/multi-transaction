@@ -3,6 +3,7 @@ import {
   Transaction,
   Action,
   AccessKey,
+  GlobalContractIdentifier,
   UnreachableError,
 } from '@multi-transaction/core';
 import { PublicKey } from '@near-js/crypto';
@@ -10,6 +11,8 @@ import {
   actionCreators,
   Action as NearAction,
   AccessKey as NearAccessKey,
+  GlobalContractDeployMode as NearGlobalContractDeployMode,
+  GlobalContractIdentifier as NearGlobalContractIdentifier,
 } from '@near-js/transactions';
 
 export type NearTransaction = {
@@ -65,6 +68,21 @@ function parseNearAction(action: Action): NearAction {
     return actionCreators.deployContract(code);
   }
 
+  if (action.type === 'DeployGlobalContract') {
+    const { code, deployMode } = action.params;
+    return actionCreators.deployGlobalContract(
+      code,
+      new NearGlobalContractDeployMode({ [deployMode]: null }),
+    );
+  }
+
+  if (action.type === 'UseGlobalContract') {
+    const { contractIdentifier } = action.params;
+    return actionCreators.useGlobalContract(
+      parseNearGlobalContractIdentifier(contractIdentifier),
+    );
+  }
+
   if (action.type === 'Stake') {
     const { amount, publicKey } = action.params;
     return actionCreators.stake(
@@ -102,4 +120,22 @@ function parseNearAccessKey(accessKey: AccessKey): NearAccessKey {
       allowance ? BigInt(allowance) : undefined,
     );
   }
+}
+
+function parseNearGlobalContractIdentifier(
+  contractIdentifier: GlobalContractIdentifier,
+): NearGlobalContractIdentifier {
+  if (contractIdentifier.type === 'CodeHash') {
+    return new NearGlobalContractIdentifier({
+      CodeHash: contractIdentifier.codeHash,
+    });
+  }
+
+  if (contractIdentifier.type === 'AccountId') {
+    return new NearGlobalContractIdentifier({
+      AccountId: contractIdentifier.accountId,
+    });
+  }
+
+  throw new UnreachableError();
 }

@@ -4,6 +4,8 @@ import {
   AddKeyAction,
   DeleteKeyAction,
   DeployContractAction,
+  DeployGlobalContractAction,
+  UseGlobalContractAction,
   StakeAction,
   FunctionCallAction,
   TransferAction,
@@ -11,6 +13,8 @@ import {
   AddKeyParams,
   DeleteKeyParams,
   DeployContractParams,
+  DeployGlobalContractParams,
+  UseGlobalContractParams,
   StakeParams,
   FunctionCallParams,
   TransferParams,
@@ -49,6 +53,24 @@ export class Actions {
   static deployContract(params: DeployContractParams): DeployContractAction {
     return {
       type: 'DeployContract',
+      params,
+    };
+  }
+
+  static deployGlobalContract(
+    params: DeployGlobalContractParams,
+  ): DeployGlobalContractAction {
+    return {
+      type: 'DeployGlobalContract',
+      params,
+    };
+  }
+
+  static useGlobalContract(
+    params: UseGlobalContractParams,
+  ): UseGlobalContractAction {
+    return {
+      type: 'UseGlobalContract',
       params,
     };
   }

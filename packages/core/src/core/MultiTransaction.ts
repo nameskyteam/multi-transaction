@@ -10,6 +10,8 @@ import {
   Transaction,
   FunctionCallOptions,
   FungibleTokenFunctionCall,
+  GlobalContractDeployMode,
+  GlobalContractIdentifier,
   NonFungibleTokenFunctionCall,
   StorageManagementFunctionCall,
 } from '../types';
@@ -123,6 +125,25 @@ export class MultiTransaction {
    */
   deployContract(code: Uint8Array): this {
     this.transaction.mAction.deployContract(code);
+    return this;
+  }
+
+  /**
+   * Add a DeployGlobalContract Action following previous actions
+   */
+  deployGlobalContract(
+    code: Uint8Array,
+    deployMode: GlobalContractDeployMode,
+  ): this {
+    this.transaction.mAction.deployGlobalContract(code, deployMode);
+    return this;
+  }
+
+  /**
+   * Add a UseGlobalContract Action following previous actions
+   */
+  useGlobalContract(contractIdentifier: GlobalContractIdentifier): this {
+    this.transaction.mAction.useGlobalContract(contractIdentifier);
     return this;
   }
 
