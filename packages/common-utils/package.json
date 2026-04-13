@@ -1,8 +1,8 @@
 {
-  "name": "@multi-transaction/core",
+  "name": "@multi-transaction/common-utils",
   "version": "2.0.0-beta.4",
   "license": "MIT",
-  "description": "Multi Transaction Core implementation.",
+  "description": "Multi Transaction common utilities.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",
@@ -19,10 +19,8 @@
     "prettier": "prettier 'src/**/*.ts' --write --list-different"
   },
   "dependencies": {
-    "@near-js/types": "=2.3.0",
-    "@near-js/utils": "=2.3.0",
-    "bignumber.js": "^9.1.2",
-    "borsher": "^4.0.0",
-    "buffer": "^6.0.3"
+    "@multi-transaction/core": "workspace:*",
+    "@near-js/crypto": "=2.3.0",
+    "@near-js/transactions": "=2.3.0"
   }
 }

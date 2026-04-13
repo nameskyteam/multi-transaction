@@ -13,7 +13,7 @@ import { MultiSendAccount } from '@multi-transaction/account';
 ```
 
 ```ts
-const account = MultiSendAccount.new(connection, 'alice.near');
+const account = MultiSendAccount.new(provider, 'alice.near', signer);
 ```
 
 ### Send Transaction(s)

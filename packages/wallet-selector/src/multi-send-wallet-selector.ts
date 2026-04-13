@@ -3,9 +3,12 @@ import {
   WalletSelector,
   WalletSelectorParams,
 } from '@near-wallet-selector/core';
-import { FinalExecutionOutcome } from '@near-js/types';
+import {
+  CallContractViewFunctionResultRaw,
+  FinalExecutionOutcome,
+} from '@near-js/types';
 import { PublicKey } from '@near-js/crypto';
-import { Near } from '@near-js/wallet-account';
+import { JsonRpcProvider } from '@near-js/providers';
 import {
   MultiTransaction,
   Amount,
@@ -14,11 +17,18 @@ import {
   Parser,
   SendTransactionError,
   BigNumber,
-  parseOutcomeValue,
-  throwReceiptErrorsFromOutcomes,
+  parseFinalExecutionOutcomeValue,
+  throwReceiptErrorsFromFinalExecutionOutcomes,
+  ViewRawOptions,
+  JsonArgs,
 } from '@multi-transaction/core';
 import { MultiSendWalletSelector } from './MultiSendWalletSelector';
-import { parseWalletSelectorTransactions } from './utils';
+import {
+  parseNearApiJsTransactions,
+  yieldNow,
+} from '@multi-transaction/common-utils';
+import { Account } from '@near-js/accounts';
+import { Buffer } from 'buffer';
 
 let MULTI_SEND_WALLET_SELECTOR: MultiSendWalletSelector | undefined;
 
@@ -49,7 +59,9 @@ export async function setupMultiSendWalletSelector(
 function createMultiSendWalletSelector(
   selector: WalletSelector,
 ): MultiSendWalletSelector {
-  const near = new Near(selector.options.network);
+  const provider = new JsonRpcProvider({
+    url: selector.options.network.nodeUrl,
+  });
 
   return {
     ...selector,
@@ -85,8 +97,8 @@ function createMultiSendWalletSelector(
         return false;
       }
 
-      const account = await near.account(accountId);
-      const accessKeys = await account.getAccessKeys();
+      const account = new Account(accountId, provider);
+      const { keys: accessKeys } = await account.getAccessKeyList();
       const accessKey = accessKeys.find((accessKey) => {
         const remotePublicKey = PublicKey.fromString(accessKey.public_key);
         const localPublicKey = PublicKey.fromString(publicKey);
@@ -115,13 +127,13 @@ function createMultiSendWalletSelector(
       const { parser, ...sendRawOptions } = options;
       const outcomes = await this.sendRaw(mTransaction, sendRawOptions);
       const outcome = outcomes?.[outcomes.length - 1];
-      return parseOutcomeValue(outcome, parser);
+      return parseFinalExecutionOutcomeValue(outcome, parser);
     },
 
     async sendRaw(mTransaction, options = {}) {
       const { throwReceiptErrors, walletId, callbackUrl } = options;
 
-      const transactions = parseWalletSelectorTransactions(mTransaction);
+      const transactions = parseNearApiJsTransactions(mTransaction);
 
       if (transactions.length === 0) {
         throw new SendTransactionError('Transaction not found.');
@@ -150,11 +162,13 @@ function createMultiSendWalletSelector(
       }
 
       while (!outcomes) {
-        // browser wallet, wait for direction
+        // Redirecting to browser wallet
+        // Don't block the thread
+        await yieldNow();
       }
 
       if (throwReceiptErrors) {
-        throwReceiptErrorsFromOutcomes(outcomes);
+        throwReceiptErrorsFromFinalExecutionOutcomes(outcomes);
       }
 
       return outcomes;
@@ -163,7 +177,7 @@ function createMultiSendWalletSelector(
     async call(options) {
       const { parser, ...callRawOptions } = options;
       const outcome = await this.callRaw(callRawOptions);
-      return parseOutcomeValue(outcome, parser);
+      return parseFinalExecutionOutcomeValue(outcome, parser);
     },
 
     async callRaw(options) {
@@ -191,24 +205,29 @@ function createMultiSendWalletSelector(
     },
 
     async view(options) {
+      const { parser = Parser.json(), ...viewRawOptions } = options;
+      const result = await this.viewRaw(viewRawOptions);
+      const valueRaw = Buffer.from(result.result);
+      return parser.parse(valueRaw);
+    },
+
+    async viewRaw<Args = JsonArgs>(
+      options: ViewRawOptions<Args>,
+    ): Promise<CallContractViewFunctionResultRaw> {
       const {
         contractId,
         methodName,
-        args,
+        args = {} as Args,
         stringifier = Stringifier.json(),
-        parser = Parser.json(),
         blockQuery = BlockQuery.OPTIMISTIC,
       } = options;
 
-      const viewer = await near.account('');
-
-      return viewer.viewFunction({
-        contractId,
-        methodName,
-        args: args as object,
-        stringify: (args) => stringifier.stringifyOrSkip(args),
-        parse: (buffer) => parser.parse(buffer),
-        blockQuery: blockQuery.toReference(),
+      return provider.query({
+        ...blockQuery.toReference(),
+        request_type: 'call_function',
+        account_id: contractId,
+        method_name: methodName,
+        args_base64: stringifier.stringifyOrSkip(args).toString('base64'),
       });
     },
   };

@@ -3,3 +3,4 @@ packages:
   - "packages/core"
   - "packages/account"
   - "packages/wallet-selector"
+  - "packages/common-utils"

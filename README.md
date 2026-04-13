@@ -47,7 +47,7 @@ import { MultiSendAccount } from 'multi-transaction';
 ```
 
 ```ts
-const account = MultiSendAccount.new(connection, 'alice.near');
+const account = MultiSendAccount.new(provider, 'alice.near', signer);
 ```
 
 ```ts

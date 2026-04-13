@@ -8,7 +8,7 @@ import {
   storageManagementFunctionCall,
 } from '../utils';
 import {
-  EmptyArgs,
+  JsonArgs,
   AccessKey,
   Action,
   FunctionCallOptions,
@@ -99,7 +99,7 @@ export class MultiAction {
   /**
    * Add a FunctionCall Action following previous actions
    */
-  functionCall<Args = EmptyArgs>(options: FunctionCallOptions<Args>): this {
+  functionCall<Args = JsonArgs>(options: FunctionCallOptions<Args>): this {
     const {
       methodName,
       args = {} as Args,

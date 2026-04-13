@@ -1,8 +1,13 @@
-import { Account, Connection } from '@near-js/accounts';
-import { FinalExecutionOutcome } from '@near-js/types';
+import { Account } from '@near-js/accounts';
+import { Provider } from '@near-js/providers';
+import { Signer } from '@near-js/signers';
+import {
+  CallContractViewFunctionResultRaw,
+  FinalExecutionOutcome,
+} from '@near-js/types';
 import {
   MultiTransaction,
-  EmptyArgs,
+  JsonArgs,
   Send,
   SendOptions,
   SendRawOptions,
@@ -15,22 +20,32 @@ import {
   Parser,
   BlockQuery,
   SendTransactionError,
-  parseOutcomeValue,
-  throwReceiptErrorsFromOutcomes,
+  parseFinalExecutionOutcomeValue,
+  throwReceiptErrorsFromFinalExecutionOutcomes,
+  ViewRawOptions,
 } from '@multi-transaction/core';
-import { parseNearApiJsTransactions } from './utils';
+import { parseNearApiJsTransactions } from '@multi-transaction/common-utils';
+import { Buffer } from 'buffer';
 
 export class MultiSendAccount extends Account implements Send, Call, View {
-  private constructor(connection: Connection, accountId: string) {
-    super(connection, accountId);
+  private constructor(provider: Provider, accountId = '', signer?: Signer) {
+    super(accountId, provider, signer);
   }
 
-  static new(connection: Connection, accountId = ''): MultiSendAccount {
-    return new MultiSendAccount(connection, accountId);
+  static new(
+    provider: Provider,
+    accountId?: string,
+    signer?: Signer,
+  ): MultiSendAccount {
+    return new MultiSendAccount(provider, accountId, signer);
   }
 
   static fromAccount(account: Account): MultiSendAccount {
-    return new MultiSendAccount(account.connection, account.accountId);
+    return new MultiSendAccount(
+      account.provider,
+      account.accountId,
+      account.getSigner(),
+    );
   }
 
   /**
@@ -43,7 +58,7 @@ export class MultiSendAccount extends Account implements Send, Call, View {
     const { parser, ...sendRawOptions } = options;
     const outcomes = await this.sendRaw(mTransaction, sendRawOptions);
     const outcome = outcomes[outcomes.length - 1];
-    return parseOutcomeValue(outcome, parser);
+    return parseFinalExecutionOutcomeValue(outcome, parser);
   }
 
   /**
@@ -69,7 +84,7 @@ export class MultiSendAccount extends Account implements Send, Call, View {
     }
 
     if (throwReceiptErrors) {
-      throwReceiptErrorsFromOutcomes(outcomes);
+      throwReceiptErrorsFromFinalExecutionOutcomes(outcomes);
     }
 
     return outcomes;
@@ -78,18 +93,18 @@ export class MultiSendAccount extends Account implements Send, Call, View {
   /**
    * Call a contract method and return success value
    */
-  async call<Value, Args = EmptyArgs>(
+  async call<Value, Args = JsonArgs>(
     options: MultiSendAccountCallOptions<Value, Args>,
   ): Promise<Value> {
     const { parser, ...callRawOptions } = options;
     const outcome = await this.callRaw(callRawOptions);
-    return parseOutcomeValue(outcome, parser);
+    return parseFinalExecutionOutcomeValue(outcome, parser);
   }
 
   /**
    * Call a contract method and return outcome
    */
-  async callRaw<Args = EmptyArgs>(
+  async callRaw<Args = JsonArgs>(
     options: MultiSendAccountCallRawOptions<Args>,
   ): Promise<FinalExecutionOutcome> {
     const {
@@ -118,25 +133,36 @@ export class MultiSendAccount extends Account implements Send, Call, View {
   /**
    * View a contract method and return success value
    */
-  async view<Value, Args = EmptyArgs>(
+  async view<Value, Args = JsonArgs>(
     options: ViewOptions<Value, Args>,
   ): Promise<Value> {
+    const { parser = Parser.json(), ...viewRawOptions } = options;
+
+    const result = await this.viewRaw(viewRawOptions);
+    const valueRaw = Buffer.from(result.result);
+    return parser.parse(valueRaw);
+  }
+
+  /**
+   * View a contract method and return raw result
+   */
+  async viewRaw<Args = JsonArgs>(
+    options: ViewRawOptions<Args>,
+  ): Promise<CallContractViewFunctionResultRaw> {
     const {
       contractId,
       methodName,
-      args,
+      args = {} as Args,
       stringifier = Stringifier.json(),
-      parser = Parser.json(),
       blockQuery = BlockQuery.OPTIMISTIC,
     } = options;
 
-    return this.viewFunction({
-      contractId,
-      methodName,
-      args: args as object,
-      stringify: (args) => stringifier.stringifyOrSkip(args),
-      parse: (buffer) => parser.parse(buffer),
-      blockQuery: blockQuery.toReference(),
+    return this.provider.query({
+      ...blockQuery.toReference(),
+      request_type: 'call_function',
+      account_id: contractId,
+      method_name: methodName,
+      args_base64: stringifier.stringifyOrSkip(args).toString('base64'),
     });
   }
 }

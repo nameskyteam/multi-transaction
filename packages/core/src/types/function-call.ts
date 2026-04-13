@@ -1,6 +1,6 @@
 import { Stringifier } from '../utils';
 
-export type FunctionCall<T> = <Args = EmptyArgs>(
+export type FunctionCall<T> = <Args = JsonArgs>(
   options: FunctionCallOptions<Args>,
 ) => T;
 
@@ -12,4 +12,4 @@ export type FunctionCallOptions<Args> = {
   stringifier?: Stringifier<Args>;
 };
 
-export type EmptyArgs = Record<string, never>;
+export type JsonArgs = Record<string, unknown>;
