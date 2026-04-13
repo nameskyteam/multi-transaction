@@ -1,7 +1,7 @@
 export {
-  NearApiJsTransaction,
-  parseNearApiJsTransaction,
-  parseNearApiJsTransactions,
+  NearTransaction,
+  parseNearTransaction,
+  parseNearTransactions,
 } from './transaction-parser';
 
 export { yieldNow } from './yield';
