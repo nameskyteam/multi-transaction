@@ -32,7 +32,13 @@ export {
   ViewRawOptions,
 } from './types';
 
-export { Transaction, Action, AccessKey } from './types';
+export {
+  Transaction,
+  Action,
+  AccessKey,
+  GlobalContractDeployMode,
+  GlobalContractIdentifier,
+} from './types';
 
 export {
   FtTransferArgs,

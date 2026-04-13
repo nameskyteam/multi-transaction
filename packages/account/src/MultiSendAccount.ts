@@ -24,7 +24,7 @@ import {
   throwReceiptErrorsFromFinalExecutionOutcomes,
   ViewRawOptions,
 } from '@multi-transaction/core';
-import { parseNearApiJsTransactions } from '@multi-transaction/common-utils';
+import { parseNearTransactions } from '@multi-transaction/common-utils';
 import { Buffer } from 'buffer';
 
 export class MultiSendAccount extends Account implements Send, Call, View {
@@ -70,7 +70,7 @@ export class MultiSendAccount extends Account implements Send, Call, View {
   ): Promise<FinalExecutionOutcome[]> {
     const { throwReceiptErrors } = options;
 
-    const transactions = parseNearApiJsTransactions(mTransaction);
+    const transactions = parseNearTransactions(mTransaction);
 
     if (transactions.length === 0) {
       throw new SendTransactionError('Transaction not found.');

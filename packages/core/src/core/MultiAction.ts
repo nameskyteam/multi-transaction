@@ -13,6 +13,8 @@ import {
   Action,
   FunctionCallOptions,
   FungibleTokenFunctionCall,
+  GlobalContractDeployMode,
+  GlobalContractIdentifier,
   NonFungibleTokenFunctionCall,
   StorageManagementFunctionCall,
 } from '../types';
@@ -87,6 +89,25 @@ export class MultiAction {
    */
   deployContract(code: Uint8Array): this {
     return this.addActions([Actions.deployContract({ code })]);
+  }
+
+  /**
+   * Add a DeployGlobalContract Action following previous actions
+   */
+  deployGlobalContract(
+    code: Uint8Array,
+    deployMode: GlobalContractDeployMode,
+  ): this {
+    return this.addActions([
+      Actions.deployGlobalContract({ code, deployMode }),
+    ]);
+  }
+
+  /**
+   * Add a UseGlobalContract Action following previous actions
+   */
+  useGlobalContract(contractIdentifier: GlobalContractIdentifier): this {
+    return this.addActions([Actions.useGlobalContract({ contractIdentifier })]);
   }
 
   /**

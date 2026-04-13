@@ -3,41 +3,44 @@ import {
   Transaction,
   Action,
   AccessKey,
+  GlobalContractIdentifier,
   UnreachableError,
 } from '@multi-transaction/core';
 import { PublicKey } from '@near-js/crypto';
 import {
   actionCreators,
-  Action as NearApiJsAction,
-  AccessKey as NearApiJsAccessKey,
+  Action as NearAction,
+  AccessKey as NearAccessKey,
+  GlobalContractDeployMode as NearGlobalContractDeployMode,
+  GlobalContractIdentifier as NearGlobalContractIdentifier,
 } from '@near-js/transactions';
 
-export type NearApiJsTransaction = {
+export type NearTransaction = {
   signerId?: string;
   receiverId: string;
-  actions: NearApiJsAction[];
+  actions: NearAction[];
 };
 
-export function parseNearApiJsTransactions(
+export function parseNearTransactions(
   mTransaction: MultiTransaction,
-): NearApiJsTransaction[] {
+): NearTransaction[] {
   return mTransaction
     .toTransactions()
-    .map((transaction) => parseNearApiJsTransaction(transaction));
+    .map((transaction) => parseNearTransaction(transaction));
 }
 
-export function parseNearApiJsTransaction(
+export function parseNearTransaction(
   transaction: Transaction,
-): NearApiJsTransaction {
+): NearTransaction {
   const { signerId, receiverId, actions } = transaction;
   return {
     signerId,
     receiverId,
-    actions: actions.map((action) => parseNearApiJsAction(action)),
+    actions: actions.map((action) => parseNearAction(action)),
   };
 }
 
-function parseNearApiJsAction(action: Action): NearApiJsAction {
+function parseNearAction(action: Action): NearAction {
   if (action.type === 'CreateAccount') {
     return actionCreators.createAccount();
   }
@@ -51,7 +54,7 @@ function parseNearApiJsAction(action: Action): NearApiJsAction {
     const { publicKey, accessKey } = action.params;
     return actionCreators.addKey(
       PublicKey.fromString(publicKey),
-      parseNearApiJsAccessKey(accessKey),
+      parseNearAccessKey(accessKey),
     );
   }
 
@@ -63,6 +66,21 @@ function parseNearApiJsAction(action: Action): NearApiJsAction {
   if (action.type === 'DeployContract') {
     const { code } = action.params;
     return actionCreators.deployContract(code);
+  }
+
+  if (action.type === 'DeployGlobalContract') {
+    const { code, deployMode } = action.params;
+    return actionCreators.deployGlobalContract(
+      code,
+      new NearGlobalContractDeployMode({ [deployMode]: null }),
+    );
+  }
+
+  if (action.type === 'UseGlobalContract') {
+    const { contractIdentifier } = action.params;
+    return actionCreators.useGlobalContract(
+      parseNearGlobalContractIdentifier(contractIdentifier),
+    );
   }
 
   if (action.type === 'Stake') {
@@ -91,7 +109,7 @@ function parseNearApiJsAction(action: Action): NearApiJsAction {
   throw new UnreachableError();
 }
 
-function parseNearApiJsAccessKey(accessKey: AccessKey): NearApiJsAccessKey {
+function parseNearAccessKey(accessKey: AccessKey): NearAccessKey {
   if (accessKey.permission === 'FullAccess') {
     return actionCreators.fullAccessKey();
   } else {
@@ -102,4 +120,22 @@ function parseNearApiJsAccessKey(accessKey: AccessKey): NearApiJsAccessKey {
       allowance ? BigInt(allowance) : undefined,
     );
   }
+}
+
+function parseNearGlobalContractIdentifier(
+  contractIdentifier: GlobalContractIdentifier,
+): NearGlobalContractIdentifier {
+  if (contractIdentifier.type === 'CodeHash') {
+    return new NearGlobalContractIdentifier({
+      CodeHash: contractIdentifier.codeHash,
+    });
+  }
+
+  if (contractIdentifier.type === 'AccountId') {
+    return new NearGlobalContractIdentifier({
+      AccountId: contractIdentifier.accountId,
+    });
+  }
+
+  throw new UnreachableError();
 }
